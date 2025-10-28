@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PassAlarmSimulator", "PassAlarmSimulator.csproj", "{54CCEB04-4C1F-4BA0-AECB-777F45BAD24D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54CCEB04-4C1F-4BA0-AECB-777F45BAD24D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54CCEB04-4C1F-4BA0-AECB-777F45BAD24D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54CCEB04-4C1F-4BA0-AECB-777F45BAD24D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54CCEB04-4C1F-4BA0-AECB-777F45BAD24D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91C896C2-474D-4BBE-9902-4FF486CE62B2}
+	EndGlobalSection
+EndGlobal
