@@ -1,5 +1,4 @@
 ﻿using CommandTransmitter.Device;
-using Device;
 using PassAlarmSimulator.Network;
 
 namespace Extensions

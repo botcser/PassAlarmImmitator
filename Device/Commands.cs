@@ -1,4 +1,6 @@
-﻿namespace Device
+﻿using System.Collections.Generic;
+
+namespace Device
 {
     public class Commands
     {

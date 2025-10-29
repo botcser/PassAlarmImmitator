@@ -1,6 +1,11 @@
 ﻿using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.Model.WP;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Threading;
 using CommandTransmitter.Device;
 
 namespace Device.Matreshka
@@ -326,22 +331,22 @@ namespace Device.Matreshka
             workParams.BackwardAlarmsCount = BitConverter.ToInt32(responsePeopleReturningAlarms, 1);
         }
         
-        public void SetZonesSensitivity(IRAPROM.MyCore.Model.WP.WorkParams workParams)
+        public void SetZonesSensitivity(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetZonesSensitivity.code, workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray());
         }
 
-        public void SetBaseSensitivity(IRAPROM.MyCore.Model.WP.WorkParams workParams)
+        public void SetBaseSensitivity(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetBaseSensitivity.code, new [] { (byte)workParams.BaseSensitivity });
         }
 
-        public void SetWorkFrequency(IRAPROM.MyCore.Model.WP.WorkParams workParams)
+        public void SetWorkFrequency(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetWorkFrequency.code, new[] { (byte)workParams.WorkingFreq });
         }
 
-        public void SetAlarmParams(IRAPROM.MyCore.Model.WP.WorkParams workParams)
+        public void SetAlarmParams(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetAlarmParams.code, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
         }

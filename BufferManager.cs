@@ -5,7 +5,7 @@
 // fragmenting heap memory.
 //
 // The operations exposed on the BufferManager class are not thread safe.
-using System.Collections.Generic;
+
 using System.Net.Sockets;
 
 namespace Assets.SimpleTTS.Scripts.Data

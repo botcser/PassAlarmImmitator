@@ -1,9 +1,7 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
-namespace Assets.SimpleTTS.Scripts
+namespace PassAlarmSimulator
 {
     public class SocketUnion
     {

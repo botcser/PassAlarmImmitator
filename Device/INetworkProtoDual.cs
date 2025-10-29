@@ -1,5 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Extensions;
 
 namespace Device
@@ -8,7 +13,7 @@ namespace Device
     {
         byte[] SendAndGet(byte[] outputBytes, int getCount);
 
-        private const int DeviceResponseTimeout = 1000;
+        private static readonly TimeSpan DeviceResponseTimeout = TimeSpan.FromMilliseconds(500);
 
         public static void SendAndGetCommon(Command command)
         {
@@ -58,18 +63,18 @@ namespace Device
                     if (!command.NeedResponse) return;
 
                     var _try = 3;
+                    var bytesTcp = new byte[2048];
 
                     do
                     {
-                        Task.Delay(1000);
+                        Task.Delay(DeviceResponseTimeout);
 
                         if (streamTcp.CanRead)
                         {
-                            var bytesTcp = new byte[1024];
-                            var redTcp = streamTcp.Read(bytesTcp, 0, 1024);
-                            var result = new byte[redTcp];
+                            var redBytesCount = streamTcp.Read(bytesTcp, 0, bytesTcp.Length);
+                            var result = new byte[redBytesCount];
 
-                            bytesTcp.CopyTo(result, redTcp);
+                            Array.Copy(bytesTcp, 0, result, 0, redBytesCount);
                             command.AddResponse(result, command.Port);
 #if DEBUG
                             Console.WriteLine($"Response: {BitConverter.ToString(result)}\n");

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace IRAPROM.MyCore.Model.MD
+﻿namespace IRAPROM.MyCore.Model.MD
 {
     public enum MetalDetectorSeries             // создано чтобы неООП ужилось с ООП
     {

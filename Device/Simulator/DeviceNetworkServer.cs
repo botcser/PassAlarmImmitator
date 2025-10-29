@@ -1,12 +1,14 @@
 ﻿using Device;
-using PassAlarmSimulator.Device.Simulator;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
+
 // ReSharper disable All
 
-namespace IRAPROM.MyCore.MyNetwork
+namespace PassAlarmSimulator.Device.Simulator
 {
     public class DeviceNetworkServer : IDisposable
     {

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Device.Matreshka.Simulator;
+﻿using Device.Matreshka.Simulator;
 
 namespace PassAlarmSimulator
 {

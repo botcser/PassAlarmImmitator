@@ -1,5 +1,4 @@
-﻿using Assets.SimpleTTS.Scripts;
-using Casualbunker.Server.Common;
+﻿using Casualbunker.Server.Common;
 using Device;
 using Extensions;
 
@@ -66,7 +65,6 @@ namespace PassAlarmSimulator.Network
         private readonly List<Command> _requests = new List<Command>();
         private readonly List<Command> _responses = new List<Command>();
 
-        private SocketUnion _socket;
         private WebsocketConnector _websocketConnector;
         private CancellationTokenSource _internalCancellationSourceToken;
         private bool _isListening;
