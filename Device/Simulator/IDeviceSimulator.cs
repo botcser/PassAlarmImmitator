@@ -20,14 +20,14 @@ namespace PassAlarmSimulator.Device.Simulator
 
         public Task Start()
         {
-            var task = new Task(() =>
+            var networkServer = new Task(() =>
             {
                 _networkServer.Run();
             });
 
-            task.Start();
+            networkServer.Start();
 
-            return task;
+            return networkServer;
         }
 
         public void Shutdown()

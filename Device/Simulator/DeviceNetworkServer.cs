@@ -102,13 +102,16 @@ namespace PassAlarmSimulator.Device.Simulator
                     var client = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
                     var buffer = new byte[1024];
 
+                    Console.WriteLine("TCP Client connected!");
+
                     using (var stream = client.GetStream())
                     {
                         while (client != null && client.Client != null && client.Connected)
                         {
-                            Console.WriteLine("TCP Client connected!");
-
                             var requestLen = await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
+                            
+                            if (requestLen == 0) break;
+                            
                             var request = new byte[requestLen];
 
                             Array.Copy(buffer, 0, request, 0, requestLen);
