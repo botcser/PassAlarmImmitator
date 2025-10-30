@@ -1,4 +1,5 @@
-﻿using Device;
+﻿using Assets.Common;
+using Device;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -64,19 +65,28 @@ namespace PassAlarmSimulator.Device.Simulator
         {
             Console.WriteLine($"UDP Listener started on port {_inputUdpPort}");
 
-            while (true)
+            try
             {
-                var result = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
-                var bytesCommand = FindResponse(result.Buffer, out var code);
-
-                Console.WriteLine($"Received UDP request from {result.RemoteEndPoint}: {BitConverter.ToString(result.Buffer)}: code {code}");
-                
-                using (var udpOutputClient = new UdpClient(_outputUdpPort))
+                while (true)
                 {
-                    udpOutputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
+                    var request = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
+                    var code = _datagramProto.GetCodeFromDatagram(request.Buffer);
 
-                    await udpOutputClient.SendAsync(bytesCommand, bytesCommand.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+                    Console.WriteLine($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}: code {code:X2}");
+
+                    var bytesCommand = FindResponse(request.Buffer, code);
+
+                    if (bytesCommand == Array.Empty<byte>()) continue;
+
+                    _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
+
+                    await _udpInputClient.SendAsync(bytesCommand, bytesCommand.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -85,34 +95,49 @@ namespace PassAlarmSimulator.Device.Simulator
             _tcpServer.Start();
 
             Console.WriteLine($"TCP Listener started on port {_tcpPort}");
-
-            while (true)
+            try
             {
-                var client = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
-
-                Console.WriteLine("TCP Client connected!");
-
-                using (var stream = client.GetStream())
+                while (true)
                 {
+                    var client = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
                     var buffer = new byte[1024];
 
-                    await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
+                    using (var stream = client.GetStream())
+                    {
+                        while (client != null && client.Client != null && client.Connected)
+                        {
+                            Console.WriteLine("TCP Client connected!");
 
-                    var bytesCommand = FindResponse(buffer, out var code);
+                            var requestLen = await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
+                            var request = new byte[requestLen];
 
-                    Console.WriteLine($"Received TCP request from {client.Client.RemoteEndPoint}: {BitConverter.ToString(buffer)}: code {code}");
+                            Array.Copy(buffer, 0, request, 0, requestLen);
 
-                    await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
+                            var code = _datagramProto.GetCodeFromDatagram(request);
+
+                            Console.WriteLine($"Received TCP request from {client.Client.RemoteEndPoint}: {BitConverter.ToString(request)}: code {code:X2}");
+
+                            var bytesCommand = FindResponse(buffer, code);
+
+                            if (bytesCommand == Array.Empty<byte>()) continue;
+
+                            await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
+                        }
+                    }
+
+                    client.Close();
+                    client.Dispose();
                 }
-
-                if (client == null || client.Client == null || !client.Connected) break;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
-        private byte[] FindResponse(byte[] request, out byte code)
+        private byte[] FindResponse(byte[] request, byte code)
         {
-            code = _datagramProto.GetCodeFromDatagram(request);
-            
             return _commandExtractor.ExtractCommand(code);
         }
 
