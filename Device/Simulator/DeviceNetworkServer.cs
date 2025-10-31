@@ -76,11 +76,11 @@ namespace PassAlarmSimulator.Device.Simulator
 
                     var bytesCommand = FindResponse(request.Buffer, code);
 
+                    Console.WriteLine($"Response: {BitConverter.ToString(bytesCommand)}");
+
                     if (bytesCommand == Array.Empty<byte>()) continue;
 
-                    _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
-
-                    await _udpInputClient.SendAsync(bytesCommand, bytesCommand.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+                    await UDPSend(bytesCommand);
                 }
             }
             catch (Exception e)
@@ -122,11 +122,22 @@ namespace PassAlarmSimulator.Device.Simulator
 
                             var bytesCommand = FindResponse(buffer, code);
 
+                            Console.WriteLine($"Response: {BitConverter.ToString(bytesCommand)}"); 
+                            
                             if (bytesCommand == Array.Empty<byte>()) continue;
 
-                            await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
+                            if (code == 0x41 || code == 0x42)                    //TODO
+                            {
+                                await UDPSend(bytesCommand);
+                            }
+                            else
+                            {
+                                await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
+                            }
                         }
                     }
+
+                    Console.WriteLine($"TCP Client closed!");
 
                     client.Close();
                     client.Dispose();
@@ -137,6 +148,16 @@ namespace PassAlarmSimulator.Device.Simulator
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private Task UDPSend(byte[] bytes)
+        {
+            _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
+
+            return Task.Run(() =>
+            {
+                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+            });
         }
 
         private byte[] FindResponse(byte[] request, byte code)
