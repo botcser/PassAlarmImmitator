@@ -1,18 +1,22 @@
 ﻿using Device.Matreshka.Simulator;
+using Extensions;
 
 namespace PassAlarmSimulator
 {
-    public class PassAlarmSimulator
+    public class PassAlarmSimulator : IStart
     {
-        public static void Run()
+        public Task Start()
         {
-            var matreshkaSimulator = new MatreshkaSimulator();
+            Console.WriteLine($"PassAlarmSimulator: I assume that the response files are in the directory {Directory.GetCurrentDirectory()}/<MatreshkaSimulator or/and ImpulseSimulator>");
 
-            var task = matreshkaSimulator.Start();
-            
-            task.Wait();
+            var task = new Task(() =>
+            {
+                new MatreshkaSimulator().Start();
+            });
 
-            return;
+            task.Start();
+
+            return task;
         }
     }
 }

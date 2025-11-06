@@ -1,4 +1,5 @@
-﻿await App.Main();
+﻿
+await App.Main();
 
 public class App
 {
@@ -7,12 +8,33 @@ public class App
     public static async Task Main()
     {
         Console.WriteLine("Hello, World!");
-        Console.WriteLine($"I assume that the response files are in the directory {Directory.GetCurrentDirectory()}/<MatreshkaSimulator or/and ImpulseSimulator>");
+        Console.WriteLine($"Choose the program, press number:\n\t 1 = PC Pass Alarm Simulator\n\t 2 = PC Validator\n\t 0 = Exit\n");
+        
+        var programNumber = "?";
 
-        var cs = new CancellationTokenSource();
+        while (programNumber != "0")
+        {
+            programNumber = Console.ReadLine();
 
-        PassAlarmSimulator.PassAlarmSimulator.Run();
-
+            switch (programNumber)
+            {
+                case "1":
+                    var task1 = new PassAlarmSimulator.PassAlarmSimulator();
+                    task1.Start().Wait();
+                    Environment.Exit(0);
+                    break;
+                case "2":
+                    var task2 = new Validator.Validator();
+                    task2.Start().Wait();
+                    Environment.Exit(0);
+                    break;
+                case "0":
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         Console.WriteLine("Goodbye, World!");
     }
 }

@@ -15,7 +15,7 @@ namespace PassAlarmSimulator.Device.Simulator
         public DeviceSimulator(int inputUdpPort, int outputUdpPort, int tcpPort, string dirPathResponses, IDatagramProto datagramProto)
         {
             _cancellationTokenSource = new CancellationTokenSource();
-            _networkServer = new DeviceNetworkServer(inputUdpPort, outputUdpPort, tcpPort, dirPathResponses, datagramProto, _cancellationTokenSource);
+            _networkServer = new DeviceNetworkServer(inputUdpPort, outputUdpPort, tcpPort, datagramProto, _cancellationTokenSource, dirPathResponses);
         }
 
         public Task Start()

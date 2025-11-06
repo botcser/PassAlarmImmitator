@@ -27,7 +27,7 @@ namespace PassAlarmSimulator.Device.Simulator
         private Task _tcpListener;
         private Task _udpListener;
         
-        public DeviceNetworkServer(int inputUdpPort, int outputUdpPort, int tcpPort, string dirPath, IDatagramProto datagramProto, CancellationTokenSource cancellationTokenSource)
+        public DeviceNetworkServer(int inputUdpPort, int outputUdpPort, int tcpPort, IDatagramProto datagramProto, CancellationTokenSource cancellationTokenSource, string dirPath = null)
         {
             _inputUdpPort = inputUdpPort;
             _outputUdpPort = outputUdpPort;
@@ -152,7 +152,7 @@ namespace PassAlarmSimulator.Device.Simulator
 
         private Task UDPSend(byte[] bytes)
         {
-            _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
+            _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(500).Milliseconds;
 
             return Task.Run(() =>
             {
