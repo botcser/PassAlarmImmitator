@@ -25,7 +25,7 @@ namespace Validator
             {
                 var networkServer = new Task(() =>
                 {
-                    _networkServer.Run();
+                    _networkServerMatreshka.Run();
                 });
 
                 networkServer.Start();
@@ -34,6 +34,11 @@ namespace Validator
             task.Start();
 
             return task;
+        }
+
+        public void Shutdown()
+        {
+            _networkServerMatreshka.Shutdown();
         }
     }
 }

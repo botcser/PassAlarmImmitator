@@ -165,6 +165,12 @@ namespace PassAlarmSimulator.Device.Simulator
             return _commandExtractor.ExtractCommand(code);
         }
 
+        public void Shutdown()
+        {
+            _cancellationTokenSource.Cancel();
+            Dispose();
+        }
+
         public void Dispose()
         {
             _udpInputClient?.Dispose();
