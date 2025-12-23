@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Device.Impulse
 {
@@ -19,17 +20,17 @@ namespace Device.Impulse
 
         public static (short code, int responseLenght, string name) SetNetworkParams = (0xC1, DatagramMetaInfoLength + ChecksumLength, "SetNetworkParams");
         public static (short code, int responseLenght, string name) SetWorkParams = (0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
-        public static (short code, int responseLenght, string name) ClearPassageCount = (0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
         public static (short code, int responseLenght, string name) SetWorkProgramScene = (0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
+        public static (short code, int responseLenght, string name) ClearPassageCount = (0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
 
-        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name)>()
+        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
         {
-            { PC600MKName, (0x0001, new List<short>{ 6 }, PC600MKName) },
-            { PC1800MKName, (0x0002, new List<short>{ 18, 12, 6 }, PC1800MKName) },
-            { PC4400MKName, (0x0004, new List<short>{ 33, 22, 11 }, PC4400MKName) },
-            { PC3300MName, (0x0006, new List<short>{ 33, 22, 11 }, PC3300MName) },
-            { UnknownName, (0x00ff, new List <short>{ 6 }, UnknownName) },
-        };
+            { PC600MKName, (0x0004, new List<short>{ 6 }, PC600MKName, new List<int> {3, 2}, 6) },
+            { PC1800MKName, (0x0002, new List<short>{ 18, 12, 6 }, PC1800MKName, new List < int > { 6, 3 }, 6) },
+            { PC4400MKName, (0x0001, new List<short>{ 33, 22, 11 }, PC4400MKName, new List < int > { 11, 3 }, 11) },
+            { PC3300MName, (0x0006, new List<short>{ 33, 22, 11 }, PC3300MName, new List < int > { 11, 3 }, 11) },
+            { UnknownName, (0x00ff, new List <short>{ 6 }, UnknownName, new List < int > { 6, 1 }, 6) },
+        };      
         
         public static List<(short, int, string)> GetCommands = new List<(short, int, string)>()
         {
@@ -57,10 +58,10 @@ namespace Device.Impulse
             x1800 = 32,
 
             PC600MKZ = 0,   //6-зонник
-            PC600MKX = 1,   //6-зонник
+            PC600MKX = 4,   //6-зонник
             PC1800MKZ = 2,  //18-зонник
             PC1800MKX = 3,   //18-зонник
-            PC4400MKZ = 4,  //33-зонник
+            PC4400MKZ = 1,  //33-зонник
             PC4400MKX = 5,  //33-зонник
             PC3300M = 10,  //33-зонник
             PC6300MKZ = 6,  //63-зонник
@@ -79,7 +80,7 @@ namespace Device.Impulse
         public override short PortTCP => 5012;
         public override short PortUDP => 5015;
         public override short PortUDPListen => 5016;
-
+        [JsonIgnore]
         public override List<string> WorkPrograms => _workPrograms;
 
         private static readonly List<string> _workPrograms = new List<string>() {
@@ -119,10 +120,10 @@ namespace Device.Impulse
             "34" };
         
         private const string PC600MKName = "PC 600MK (6)";
-        private const string PC1800MKName = "PC 1800MK (18|12|6)";
-        private const string PC4400MKName = "PC 4400MK (33|22|11)";
+        private const string PC1800MKName = "PC 1800MK (18/12/6)";
+        private const string PC4400MKName = "PC 4400MK (33/22/11)";
         private const string PC3300MName = "PC-3300M";
-        private const string UnknownName = "Unknown";
+        private const string UnknownName = "UnknownImpulse";
 
         public static string GetModelName(Model val)                 // Update MetalDetectorModelFromName
         {

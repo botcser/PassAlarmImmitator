@@ -7,7 +7,7 @@ namespace Device.Impulse
 {
     public class NetworkProtoImpulse : NetworkProtoCommonDual
     {
-        public NetworkProtoImpulse(string ip, int portTCP, int timeOut = 150) : base(ip, portTCP, timeOut)
+        public NetworkProtoImpulse(string ip, int portTCP, int timeOut = 15000) : base(ip, portTCP, timeOut)
         {
         }
 

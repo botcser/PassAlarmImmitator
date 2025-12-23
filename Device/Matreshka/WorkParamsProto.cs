@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using CommandTransmitter.Device;
 
@@ -12,7 +13,7 @@ namespace Device.Matreshka
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto
     {
-        private readonly int _requestDelay = TimeSpan.FromMilliseconds(100).Milliseconds;
+        private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
         
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
@@ -26,19 +27,28 @@ namespace Device.Matreshka
         {
             var workParams = new WorkParams
             {
-                ModelId = (byte)MetalDetectorModel.PCV900
+                ModelId = (byte)Constants.Model.UnknownMatreshka
             };
 
-            InitZonesSensitivity(workParams);
-            InitNetworkParams(workParams);            // TODO: PCV1800 broken proto
-            InitBaseSensitivity(workParams);
-            InitWorkFrequency(workParams);
-            InitAlarmParams(workParams);
-            InitWorkProgramScene(workParams);
-            InitZonesWorkMode(workParams);
-            InitPassageCount(workParams);
-
-            NetworkProto.Disconnect();
+            try
+            {
+                InitZonesSensitivity(workParams);
+                InitNetworkParams(workParams); // TODO: PCV1800 broken proto
+                InitBaseSensitivity(workParams);
+                InitWorkFrequency(workParams);
+                InitAlarmParams(workParams);
+                InitWorkProgramScene(workParams);
+                InitZonesWorkMode(workParams);
+                InitPassageCount(workParams);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
 
             return workParams;
         }
@@ -50,7 +60,7 @@ namespace Device.Matreshka
             
             SetZonesWorkMode(workParams);
             Thread.Sleep(_requestDelay);
-            
+
             SetZonesSensitivity(workParams);
             Thread.Sleep(_requestDelay);
             
@@ -120,6 +130,7 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void ZonesSensitivityTest()
             {
                 workParams.SensorsSensitivity = new[]
@@ -142,6 +153,7 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void BaseSensitivityTest()
             {
                 workParams.BaseSensitivity = testValue;
@@ -157,6 +169,7 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void WorkingFreqTest()
             {
                 byte workingFreq = 2;
@@ -177,6 +190,7 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void AlarmParamsTest()
             {
                 workParams.AlarmDuration = testValue;
@@ -195,14 +209,14 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void ClearPassageTest()
             {
                 ClearPassageCount();
                 Thread.Sleep(_requestDelay);
                 InitPassageCount(workParams);
 
-                if (workParams.ForwardAlarmsCount != 0 || workParams.ForwardPassageCount != 0 ||
-                    workParams.BackwardAlarmsCount != 0 || workParams.BackwardPassageCount != 0)
+                if (workParams.ForwardAlarmsCount != 0 || workParams.ForwardPassageCount != 0 || workParams.BackwardAlarmsCount != 0 || workParams.BackwardPassageCount != 0)
                 {
 #if DEBUG
                     Console.WriteLine($"SelfTest: {workParams.IP}:\t ClearPassage test fail!");
@@ -210,6 +224,7 @@ namespace Device.Matreshka
                     result = false;
                 }
             }
+
             void HandTest()
             {
                 testValue = 0x09;
@@ -249,7 +264,17 @@ namespace Device.Matreshka
                 ClearPassageCount();
             }
         }
-        
+
+        public void CallPassage()
+        {
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+        }
+
+        public void CallAlarm()
+        {
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+        }
+
         public void InitZonesSensitivity(WorkParams workParams)
         {
             var response = ExecuteGetCommand(Constants.GetZonesSensitivity11.code);
@@ -261,7 +286,7 @@ namespace Device.Matreshka
                 workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
             }
 
-            InitModelBySensorsSensitivity(workParams);
+            //InitModelBySensorsSensitivity(workParams);
         }
 
         public void InitNetworkParams(WorkParams workParams)

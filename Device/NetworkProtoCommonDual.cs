@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using Extensions;
+using IRAPROM.MyCore.Model;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Extensions;
 
 namespace Device
 {
@@ -20,7 +23,7 @@ namespace Device
         [JsonProperty]
         private readonly int _port;
         [JsonProperty]
-        private readonly int _timeOut = 150;
+        private readonly int _timeOut = 15000;
 
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);
@@ -30,13 +33,13 @@ namespace Device
             
         }
 
-        public NetworkProtoCommonDual(string ip, int portTCP, int timeOut = 150)
+        public NetworkProtoCommonDual(string ip, int portTCP, int timeOut = 0)
         {
             Ip = ip;
             _port = portTCP;
-            _timeOut = timeOut;
+            _timeOut = timeOut == 0 ? _timeOut : timeOut;
             Socket = new TcpClient();
-            Socket.SendTimeout = Socket.ReceiveTimeout = timeOut;
+            Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
         }
 
         public bool Connect()
@@ -49,14 +52,28 @@ namespace Device
 
                     if (Socket.Client == null || Socket.Client.IsBound)
                     {
+#if DEBUGG
+                        Console.WriteLine($"disposing socket {(Socket.Client == null ? "closed" : Socket.Client.Handle.ToString())} {Ip}:{_port}...");
+#endif
                         Socket.Dispose();
-                        Socket = new TcpClient();
                     }
                 } 
 
-                Socket ??= new TcpClient();
+                Socket = new TcpClient();
                 Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
-                Socket.Connect(IPEndPoint);
+
+#if DEBUGG
+                Console.WriteLine($"new socket {Socket.Client.Handle} connecting {Ip}:{_port} (timeout {5000}ms)...");
+#endif
+                
+                if (!Socket.BeginConnect(Ip, _port, null, null).AsyncWaitHandle.WaitOne(5000, false))
+                {
+                    Socket.Close();
+#if DEBUG
+                    Console.WriteLine($"Connection attempt timed out after {5000}ms.");
+#endif
+                    return false;
+                }
 
                 if (!Socket.Connected) return false;
 
@@ -74,7 +91,12 @@ namespace Device
 
         public void Disconnect()
         {
+            var socketHandle = Socket.Client.Handle;
+
             Socket.Close();
+#if DEBUGG
+            Console.WriteLine($"close socket {socketHandle} {Ip}:{_port}.");
+#endif
         }
 
         public bool Send(byte[] bytes)
@@ -92,6 +114,9 @@ namespace Device
 
                 try
                 {
+#if DEBUGG
+                    Console.WriteLine($"socket {Socket.Client.Handle} writing {Ip}:{_port} (timeout {Socket.SendTimeout}ms)...");
+#endif
                     Stream.Write(bytes, 0, bytes.Length);
                 }
                 catch (Exception e)
@@ -112,6 +137,11 @@ namespace Device
             if (Stream == null || !Stream.CanRead) return null;
             
             var bytes = new byte[count];
+
+#if DEBUGG
+            Console.WriteLine($"socket {Socket.Client.Handle} reading {Ip}:{_port} (timeout {Socket.ReceiveTimeout}ms)...");
+#endif
+
             var nRead = Stream.Read(bytes, 0, count);
 
 #if DEBUG

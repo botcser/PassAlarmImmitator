@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Device.Matreshka
 {
@@ -36,19 +37,21 @@ namespace Device.Matreshka
         public static (short code, int responseLenght, string name) SetAlarmParams = (0x0006, MetaInfoLength, "SetAlarmParams");
         public static (short code, int responseLenght, string name) SetTime = (0x0007, MetaInfoLength, "SetTime");
         public static (short code, int responseLenght, string name) SetSerialNumber = (0x0008, MetaInfoLength, "SetSerialNumber");
-        public static (short code, int responseLenght, string name) ClearPassageCount = (0x0009, MetaInfoLength, "ClearPassageCount");
         public static (short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, MetaInfoLength, "SetWorkProgramScene");
-
-        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name)>()
+        public static (short code, int responseLenght, string name) ClearPassageCount = (0x0009, MetaInfoLength, "ClearPassageCount");
+        public static (short code, int responseLenght, string name) CallPassage = (0x41, MetaInfoLength, "CallPassage");
+        public static (short code, int responseLenght, string name) CallAlarm = (0x42, MetaInfoLength, "CallAlarm");
+        
+        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
-                { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name) }, 
-                { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name) }, 
-                { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name) }, 
-                { PCVx1800Name, (0x0033, new List<short>{ 6, 12, 18 }, PCVx1800Name) }, 
-                { PCV3300Name, (0x003E, new List <short>{ 11, 22, 33 }, PCV3300Name) }, 
-                { MV6Name, (0x0064, new List <short>{ 6 }, MV6Name) }, 
-                { MVx6Name, (0x0065, new List <short>{ 6 }, MVx6Name) },
-                { UnknownName, (0x00ff, new List <short>{ 6 }, UnknownName) },
+                { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name, new List<int> {3, 3}, 6 )}, 
+                { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name, new List<int> {3, 3}, 6 ) }, 
+                { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name, new List<int> {6, 3}, 6 ) }, 
+                { PCVx1800Name, (0x0033, new List<short>{ 6, 12, 18 }, PCVx1800Name, new List<int> {6, 3}, 6 ) }, 
+                { PCV3300Name, (0x002A, new List <short>{ 11, 22, 33 }, PCV3300Name, new List<int> {11, 3}, 11 ) }, 
+                { MV6Name, (0x0064, new List <short>{ 6, 6, 6 }, MV6Name, new List<int> {6, 3}, 6 ) },                    // Монопанели передают режим ЗО = 2
+                { MVx6Name, (0x0065, new List <short>{ 6, 6, 6 }, MVx6Name, new List<int> {6, 3}, 6 ) },
+                { UnknownName, (0x00FE, new List <short>{ 6, 6, 6 }, UnknownName, new List<int> {6, 1}, 6 ) },
             };
 
         public const short PortTCPDefault = 5000;
@@ -58,16 +61,17 @@ namespace Device.Matreshka
         public override short PortTCP => 5000;
         public override short PortUDP => 9998;
         public override short PortUDPListen => 9999;
+        [JsonIgnore]
         public override List<string> WorkPrograms => _workPrograms;
-
+        
         private const string PCV900Name = "PC V 900 (9/6/3)";
         private const string PCVx900Name = "PC Vx 900 (9/6/3)";
         private const string PCV1800Name = "PC V 1800 (18/12/6)";
         private const string PCVx1800Name = "PC Vx 1800 (18/12/6)";
-        private const string PCV3300Name = "PC V 3300 (33|22|11)";
+        private const string PCV3300Name = "PC V 3300 (33/22/11)";
         private const string MV6Name = "M V 6";
         private const string MVx6Name = "M Vx 6";
-        private const string UnknownName = "Unknown";
+        private const string UnknownName = "Unknown Matreshka";
 
         public static List<(short, int, string)> GetCommands = new List<(short, int, string)>()
         {
@@ -78,7 +82,7 @@ namespace Device.Matreshka
         public static List<(short, int, string)> SetCommands = new List<(short, int, string)>()
         {
             SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetZonesWorkMode, SetNetworkParams, SetTime,
-            SetSerialNumber, SetWorkProgramScene, ClearPassageCount
+            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, CallPassage, CallAlarm
         }; 
 
         private static readonly List<string> _workPrograms = new List<string>() {
@@ -157,7 +161,7 @@ namespace Device.Matreshka
 
         public enum Model
         {
-            Unknown = -1,
+            UnknownMatreshka = 0xFE,
 
             MZ6MK = 20,
 
@@ -246,7 +250,7 @@ namespace Device.Matreshka
                 }
                 case Model.PCV3300:
                 {
-                    return "PC V 3300 (33/22/11) 6";
+                    return "PC V 3300 (33/22/11)";
                 }
                 case Model.PCV4800:
                 {
@@ -352,8 +356,8 @@ namespace Device.Matreshka
                 {
                     return "M Vx 16 new";
                 }
-                case Model.Unknown:
-                default: return "Unknown";
+                case Model.UnknownMatreshka:
+                default: return "Unknown Matreshka";
             }
         }
         

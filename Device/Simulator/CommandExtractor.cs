@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Extensions;
 
 namespace PassAlarmSimulator.Device.Simulator
 {
@@ -22,20 +21,12 @@ namespace PassAlarmSimulator.Device.Simulator
         {
             var file = FindFileCommand(code);
 
-            return file.IsNullOrEmpty() ? Array.Empty<byte>() : Convert.FromHexString(File.ReadAllText(file));
+            return file == null ? Array.Empty<byte>() : Convert.FromHexString(File.ReadAllText(file));
         }
 
         private string FindFileCommand(byte code)
         {
-            try
-            {
-                return Directory.GetFiles(_dirPath, $"{code:X2}.txt").FirstOrDefault(); ;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return string.Empty;;
-            }
+            return Directory.GetFiles(_dirPath, $"{code}.txt").FirstOrDefault();
         }
     }
 }

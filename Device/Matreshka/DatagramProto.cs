@@ -87,11 +87,6 @@ namespace Device.Matreshka
 
         public byte GetCodeFromDatagram(byte[] request)
         {
-            if (request.Length <= CommandCodePosition)
-            {
-                throw new Exception($"EX: GetCodeFromDatagram: {BitConverter.ToString(request)} array out of bound");
-            }
-
             return request[CommandCodePosition];
         }
 

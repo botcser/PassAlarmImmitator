@@ -4,6 +4,7 @@ using System.Linq;
 using IRAPROM.MyCore.Model.MD;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using CommandTransmitter.Device;
 using IRAPROM.MyCore.Model.WP;
 
@@ -34,10 +35,22 @@ namespace Device.Impulse
 
         public bool SetWorkParams(WorkParams workParams)
         {
-            SetWorkParamsDo();
-            SetNetworkParams();
-
-            NetworkProto.Disconnect();
+            try
+            {
+                SetWorkParamsDo();
+                Task.Delay(200);
+                SetWorkParamsDo();
+                Task.Delay(200);
+                SetNetworkParams();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
 
             return true;
             
@@ -112,7 +125,6 @@ namespace Device.Impulse
             }
         }
         
-        
         public void ClearPassageCount()
         {
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { });
@@ -121,66 +133,6 @@ namespace Device.Impulse
         public void SetWorkProgramScene(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
-        }
-
-        public WorkParams ParseWorkParams(byte[] response)
-        {
-            var workParams = new WorkParams();
-            var zoneSensitivityEndIndex = response.Length - Constants.AfterZonesSensitivityBytesCountSuppose;
-            
-            workParams.SensorsSensitivity = GetZonesSensitivity();
-
-            workParams.BaseSensitivity = (short)((response[zoneSensitivityEndIndex] << 8) + response[zoneSensitivityEndIndex + 1]);
-            workParams.WorkingFreq = response[zoneSensitivityEndIndex + 2];
-            workParams.AlarmDuration = response[zoneSensitivityEndIndex + 3];
-            workParams.WorkProgram = response[zoneSensitivityEndIndex + 4];
-            workParams.ModelId = response[zoneSensitivityEndIndex + 5];
-            workParams.AlarmVolume = response[zoneSensitivityEndIndex + 6];
-            workParams.AlarmTone = response[zoneSensitivityEndIndex + 7];
-            workParams.ExchangeFrontBack = response[zoneSensitivityEndIndex + 10] >> 4 != 0; //Infrared mode:
-                        //High 4 bits: Режим инфракрасных датчиков на направление прохода: - Реверс прохода, вперед или назад, 0x0 - прямой, 0x1 - обратный;
-                        //Low 4 bits: Режим инфракрасных датчиков на проходы: 0x04 считать оба направления прохода; 0x03 считать только проход вперед (хз, мб и наоборот);
-                        //0x02 считать только проход обратно (хз, мб и наоборот); 0x01 проходы выключены.
-            workParams.InfraredPassCounterMode = (byte)(response[zoneSensitivityEndIndex + 10] & 0x0F);
-       
-
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch ((MetalDetectorModel)workParams.ModelId)
-            {
-                case MetalDetectorModel.PC600MKX:
-                case MetalDetectorModel.PC1800MKZ:
-                case MetalDetectorModel.PC4400MK:
-                case MetalDetectorModel.PC600MKZ:
-                case MetalDetectorModel.PC4400MKZ:
-                case MetalDetectorModel.PC4400MKX:
-                case MetalDetectorModel.PC6300MKZ:
-                case MetalDetectorModel.PC6300MKX:
-                    ParseAlarmMode(workParams, response[zoneSensitivityEndIndex + 11]);
-                    break;
-            }
-
-            return workParams;
-
-
-            short[] GetZonesSensitivity()
-            {
-                var result = new short[(zoneSensitivityEndIndex - Constants.ZonesSensitivityStartIndex) / 2];
-                var i = 0;
-
-                for (i = 0; i < zoneSensitivityEndIndex - Constants.ZonesSensitivityStartIndex; i += 2)
-                {
-                    if (response[i + 9 + 1] != 0)
-                    {
-                        result[i / 2] = (short)((response[i + 9] << 8) + response[i + 9 + 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                return result.Take(i / 2).ToArray();
-            }
         }
 
         public bool SelfTest(WorkParams workParams)
@@ -290,6 +242,76 @@ namespace Device.Impulse
                 SetWorkProgramScene(workParams);
                 
                 ClearPassageCount();
+            }
+        }
+        
+        public void CallPassage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CallAlarm()
+        {
+            throw new NotImplementedException();
+        }
+
+        private WorkParams ParseWorkParams(byte[] response)
+        {
+            var workParams = new WorkParams();
+            var zoneSensitivityEndIndex = response.Length - Constants.AfterZonesSensitivityBytesCountSuppose;
+
+            workParams.SensorsSensitivity = GetZonesSensitivity();
+
+            workParams.BaseSensitivity = (short)((response[zoneSensitivityEndIndex] << 8) + response[zoneSensitivityEndIndex + 1]);
+            workParams.WorkingFreq = response[zoneSensitivityEndIndex + 2];
+            workParams.AlarmDuration = response[zoneSensitivityEndIndex + 3];
+            workParams.WorkProgram = response[zoneSensitivityEndIndex + 4];
+            workParams.ModelId = response[zoneSensitivityEndIndex + 5];
+            workParams.AlarmVolume = response[zoneSensitivityEndIndex + 6];
+            workParams.AlarmTone = response[zoneSensitivityEndIndex + 7];
+            workParams.ExchangeFrontBack = response[zoneSensitivityEndIndex + 10] >> 4 != 0; //Infrared mode:
+                                                                                             //High 4 bits: Режим инфракрасных датчиков на направление прохода: - Реверс прохода, вперед или назад, 0x0 - прямой, 0x1 - обратный;
+                                                                                             //Low 4 bits: Режим инфракрасных датчиков на проходы: 0x04 считать оба направления прохода; 0x03 считать только проход вперед (хз, мб и наоборот);
+                                                                                             //0x02 считать только проход обратно (хз, мб и наоборот); 0x01 проходы выключены.
+            workParams.InfraredPassCounterMode = (byte)(response[zoneSensitivityEndIndex + 10] & 0x0F);
+
+
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch ((MetalDetectorModel)workParams.ModelId)
+            {
+                case MetalDetectorModel.PC600MKX:
+                case MetalDetectorModel.PC1800MKZ:
+                case MetalDetectorModel.PC4400MK:
+                case MetalDetectorModel.PC600MKZ:
+                case MetalDetectorModel.PC4400MKZ:
+                case MetalDetectorModel.PC4400MKX:
+                case MetalDetectorModel.PC6300MKZ:
+                case MetalDetectorModel.PC6300MKX:
+                    ParseAlarmMode(workParams, response[zoneSensitivityEndIndex + 11]);
+                    break;
+            }
+
+            return workParams;
+
+
+            short[] GetZonesSensitivity()
+            {
+                var result = new short[(zoneSensitivityEndIndex - Constants.ZonesSensitivityStartIndex) / 2];
+                var i = 0;
+
+                for (i = 0; i < zoneSensitivityEndIndex - Constants.ZonesSensitivityStartIndex; i += 2)
+                {
+                    if (response[i + 9 + 1] != 0)
+                    {
+                        result[i / 2] = (short)((response[i + 9] << 8) + response[i + 9 + 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return result.Take(i / 2).ToArray();
             }
         }
 
