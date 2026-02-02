@@ -1,6 +1,6 @@
 ﻿using IRAPROM.MyCore.Model.WP;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
     public interface IWorkParamsProto
     {

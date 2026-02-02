@@ -1,10 +1,7 @@
 ﻿using IRAPROM.MyCore.MyNetwork;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Device.Matreshka
+namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class Constants : FamilyInfo
     {
@@ -44,6 +41,7 @@ namespace Device.Matreshka
         
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
+                { PCZ3300MKName, (0x0020, new List<short>{ 11, 22, 33 }, PCZ3300MKName, new List<int> {11, 3}, 6 )},
                 { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name, new List<int> {3, 3}, 6 )}, 
                 { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name, new List<int> {3, 3}, 6 ) }, 
                 { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name, new List<int> {6, 3}, 6 ) }, 
@@ -63,7 +61,8 @@ namespace Device.Matreshka
         public override short PortUDPListen => 9999;
         [JsonIgnore]
         public override List<string> WorkPrograms => _workPrograms;
-        
+
+        private const string PCZ3300MKName = "PC Z 3300 M K";
         private const string PCV900Name = "PC V 900 (9/6/3)";
         private const string PCVx900Name = "PC Vx 900 (9/6/3)";
         private const string PCV1800Name = "PC V 1800 (18/12/6)";
@@ -86,78 +85,78 @@ namespace Device.Matreshka
         }; 
 
         private static readonly List<string> _workPrograms = new List<string>() {
-            "МЧС",
-            "Склад",
-            "Ювелирная",
-            "Тех. Помещение",
-            "Спец бюро",
-            "Офисы",
-            "Комната отдыха",
-            "Клубы",
-            "Библиотека",
-            "Радио",
-            "Телевидение",
-            "Метеостанция",
-            "Пост",
-            "КПП 1",
-            "Военная база",
-            "Посольство",
-            "Электростанции",
-            "Гостиница",
-            "Бассейны",
-            "Бюро пропусков",
-            "Блок-пост",
-            "КПП 2",
-            "Диспансер",
-            "Комната Экзамена",
-            "Суды",
-            "Автокомбинат",
-            "Банк",
-            "Хранилище",
-            "СИЗО",
-            "Тюрьма",
-            "Прокуратура",
-            "Таможня",
-            "Правительство",
-            "Аэропорт",
-            "Ж/д станция",
-            "Ж/д Вокзал",
-            "Автостанция",
-            "Пристань",
-            "Трудовой лагерь",
-            "Типография",
-            "Фабрика",
-            "Завод",
-            "Производство",
-            "Шахта",
-            "Склад",
-            "НИИ",
-            "Архивы",
-            "Музей",
-            "Спец. Комната",
-            "Стадион",
-            "Парк",
-            "Центр отдыха",
-            "Концерт",
-            "Клуб",
-            "Бар",
-            "Торговый центр",
-            "Выставочный центр",
-            "Станция метро",
-            "Военный городок",
-            "Театр, Кинотеатр",
-            "Школа",
-            "Лаборатория",
-            "Галерея искусств",
-            "Бункер",
-            "Космодром",
-            "Ангар",
-            "Полигон",
-            "Спец. Пункт",
-            "Граница",
-            "Роддом",
-            "Клиника",
-            "Спортзал", };
+            "1 МЧС",
+            "2 Склад",
+            "3 Ювелирная",
+            "4 Тех. Помещение",
+            "5 Спец бюро",
+            "6 Офисы",
+            "7 Комната отдыха",
+            "8 Клубы",
+            "9 Библиотека",
+            "10 Радио",
+            "11 Телевидение",
+            "12 Метеостанция",
+            "13 Пост",
+            "14 КПП 1",
+            "15 Военная база",
+            "16 Посольство",
+            "17 Электростанции",
+            "18 Гостиница",
+            "19 Бассейны",
+            "20 Бюро пропусков",
+            "21 Блок-пост",
+            "22 КПП 2",
+            "23 Диспансер",
+            "24 Комната Экзамена",
+            "25 Суды",
+            "26 Автокомбинат",
+            "27 Банк",
+            "28 Хранилище",
+            "29 СИЗО",
+            "30 Тюрьма",
+            "31 Прокуратура",
+            "32 Таможня",
+            "33 Правительство",
+            "34 Аэропорт",
+            "35 Ж/д станция",
+            "36 Ж/д Вокзал",
+            "37 Автостанция",
+            "38 Пристань",
+            "39 Трудовой лагерь",
+            "40 Типография",
+            "41 Фабрика",
+            "42 Завод",
+            "43 Производство",
+            "44 Шахта",
+            "45 Склад",
+            "46 НИИ",
+            "47 Архивы",
+            "48 Музей",
+            "49 Спец. Комната",
+            "50 Стадион",
+            "51 Парк",
+            "52 Центр отдыха",
+            "53 Концерт",
+            "54 Клуб",
+            "55 Бар",
+            "56 Торговый центр",
+            "57 Выставочный центр",
+            "58 Станция метро",
+            "59 Военный городок",
+            "60 Театр, Кинотеатр",
+            "61 Школа",
+            "62 Лаборатория",
+            "63 Галерея искусств",
+            "64 Бункер",
+            "65 Космодром",
+            "66 Ангар",
+            "67 Полигон",
+            "68 Спец. Пункт",
+            "69 Граница",
+            "70 Роддом",
+            "71 Клиника",
+            "72 Спортзал", };
 
         public enum Model
         {
@@ -167,7 +166,8 @@ namespace Device.Matreshka
 
             PCV900 = 40,
             PCV1800 = 41,
-            PCV3300 = 42,
+            PCZ3300MK = 0x20,
+            PCV3300 = 0x2A,
             PCV4800 = 43,
             PCV6300 = 44,
             PCV9300 = 45,
@@ -251,6 +251,10 @@ namespace Device.Matreshka
                 case Model.PCV3300:
                 {
                     return "PC V 3300 (33/22/11)";
+                }
+                case Model.PCZ3300MK:
+                {
+                    return "PC Z 3300 M K";
                 }
                 case Model.PCV4800:
                 {
@@ -375,6 +379,7 @@ namespace Device.Matreshka
         {
             return name switch
             {
+                PCZ3300MKName => Models[PCZ3300MKName].ModelId,
                 PCV900Name => Models[PCV900Name].ModelId,
                 PCVx900Name => Models[PCVx900Name].ModelId,
                 PCV1800Name => Models[PCV1800Name].ModelId,

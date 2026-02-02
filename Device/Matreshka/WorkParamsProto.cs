@@ -1,15 +1,8 @@
-﻿using IRAPROM.MyCore.Model.MD;
-using IRAPROM.MyCore.Model.WP;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using CommandTransmitter.Device;
+using IRAPROM.MyCore.Model.WP;
 
-namespace Device.Matreshka
+namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto
     {
@@ -116,13 +109,13 @@ namespace Device.Matreshka
             void ZonesWorkModeTest()
             {
                 workParams.ZonesSensorMode = testValue;
-                workParams.SceneMode = testValue; // TODO: PCV1800 не работает
+                workParams.WorkProgram = testValue; // TODO: PCV1800 не работает
                 workParams.AlarmInfraMode = testValue;
                 SetZonesWorkMode(workParams);
                 Thread.Sleep(_requestDelay);
                 InitZonesWorkMode(workParams);
 
-                if (workParams.ZonesSensorMode != testValue || /*workParams.SceneMode != testValue ||*/workParams.AlarmInfraMode != testValue)
+                if (workParams.ZonesSensorMode != testValue || workParams.AlarmInfraMode != testValue)
                 {
 #if DEBUG
                     Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
@@ -339,7 +332,7 @@ namespace Device.Matreshka
             var response = ExecuteGetCommand(Constants.GetZonesWorkMode.code);
 
             workParams.ZonesSensorMode = response[0];
-            workParams.SceneMode = response[1];
+            workParams.WorkProgram = response[1];
             workParams.InfraredPassCounterMode = response[2];
         }
 
@@ -405,7 +398,7 @@ namespace Device.Matreshka
 
         private void SetZonesWorkMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetZonesWorkMode.code, new[] { workParams.ZonesSensorMode, workParams.SceneMode, workParams.InfraredPassCounterMode });
+            ExecuteSetCommandRaw(Constants.SetZonesWorkMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
         }
 
         private void InitModelBySensorsSensitivity(WorkParams workParams)

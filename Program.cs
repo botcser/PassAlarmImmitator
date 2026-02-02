@@ -1,6 +1,5 @@
 ﻿
 using Extensions;
-using PassAlarmSimulator;
 
 await App.Main();
 

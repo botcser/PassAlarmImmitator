@@ -1,14 +1,9 @@
-﻿using Casualbunker.Server.Common;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
+using Casualbunker.Server.Common;
 using Extensions;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
     public class NetworkProtoHttp: INetworkProtoDual
     {
@@ -84,7 +79,7 @@ namespace Device
             }
             catch (Exception e)
             {
-                Console.WriteLine($"NetworkProtoCommonDual: Send: write operation fail: {e.Message}!");
+                Console.WriteLine($"NetworkProtoHttp: Send: write operation fail: {e.Message}!");
 
                 return false;
             }
@@ -144,7 +139,7 @@ namespace Device
             }
             catch (Exception e)
             {
-                Console.WriteLine($"NetworkProtoCommonDual: Send: write operation fail: {e.Message}!");
+                Console.WriteLine($"NetworkProtoHttp: SendAndGet: write operation fail: {e.Message}!");
 
                 return Array.Empty<byte>();
             }

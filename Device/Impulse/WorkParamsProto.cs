@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
 using IRAPROM.MyCore.Model.MD;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using CommandTransmitter.Device;
 using IRAPROM.MyCore.Model.WP;
 
-namespace Device.Impulse
+namespace IRAPROM.MyCore.Device.Impulse
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto
     {
@@ -153,7 +147,6 @@ namespace Device.Impulse
                 workParams.AlarmVolume = testValue;
                 workParams.AlarmTone = testValue;
                 workParams.ZonesSensorMode = testValue;
-                workParams.SceneMode = testValue;
                 workParams.AlarmInfraMode = (byte)(testValue - testValue);      // TODO: PC1800 UNUSED;
                 workParams.SensorsSensitivity = new[]
                 {
@@ -205,7 +198,7 @@ namespace Device.Impulse
                     result = false;
                 }
 
-                if (workParams.ZonesSensorMode != testValue /*|| workParams.SceneMode != testValue || workParams.AlarmInfraMode != testValue*/)      // TODO: PC1800 UNUSED
+                if (workParams.ZonesSensorMode != testValue)      // TODO: PC1800 UNUSED
                 {
 #if DEBUG
                     Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
@@ -273,7 +266,8 @@ namespace Device.Impulse
                                                                                              //High 4 bits: Режим инфракрасных датчиков на направление прохода: - Реверс прохода, вперед или назад, 0x0 - прямой, 0x1 - обратный;
                                                                                              //Low 4 bits: Режим инфракрасных датчиков на проходы: 0x04 считать оба направления прохода; 0x03 считать только проход вперед (хз, мб и наоборот);
                                                                                              //0x02 считать только проход обратно (хз, мб и наоборот); 0x01 проходы выключены.
-            workParams.InfraredPassCounterMode = (byte)(response[zoneSensitivityEndIndex + 10] & 0x0F);
+
+            workParams.InfraredPassCounterMode = (byte)((response[zoneSensitivityEndIndex + 10] & 0x0F) - 1);
 
 
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault

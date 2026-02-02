@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Device.Matreshka
+﻿namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class DatagramProto : IDatagramProto
     {
@@ -46,7 +43,7 @@ namespace Device.Matreshka
 
             if (cmd != 0x21 && !ValidateChecksum(response))                         // TODO: Matreshka BUG Return Ethernet Parameters
             {
-                Console.WriteLine($"Matreshka: DatagramProto: GetResult: data checksum is not valid!");
+                Console.WriteLine($"Matreshka EX: DatagramProto: GetResult: data checksum is not valid!!!");
                 
                 return Array.Empty<byte>();
             }

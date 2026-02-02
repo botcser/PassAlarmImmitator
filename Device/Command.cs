@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using Extensions;
+using Newtonsoft.Json;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
     public class Command
     {

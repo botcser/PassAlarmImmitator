@@ -1,4 +1,4 @@
-﻿using CommandTransmitter.Device;
+﻿using IRAPROM.MyCore.Device;
 using PassAlarmSimulator.Network;
 
 namespace Extensions

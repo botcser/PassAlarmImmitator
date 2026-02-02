@@ -1,12 +1,4 @@
-﻿using Device;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PassAlarmSimulator.Device.Simulator
+﻿namespace PassAlarmSimulator.Device.Simulator
 {
     public class CommandExtractor
     {

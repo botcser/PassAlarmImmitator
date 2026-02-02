@@ -1,18 +1,10 @@
-﻿using DynamicData;
-using DynamicData.Binding;
-using IRAPROM.MyCore.Model;
+﻿using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
-namespace Device.Matreshka
+namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class Matreshka : DeviceMetalDetector, IMonopanel, INotifyPropertyChanged
     {
@@ -80,7 +72,7 @@ namespace Device.Matreshka
                 MAC = "123456789abcdef",
                 Mask = "255.255.255.0",
                 MaxZoneMode = 33,
-                SceneMode = 1,
+                WorkProgram = 1,
                 SensorsSensitivity = new short[]
                 {
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -127,7 +119,7 @@ namespace Device.Matreshka
             PortTCP = port;
         }
 #else
-        public Matreshka(string ip, short port) : base(new WorkParamsProto(new NetworkProtoCommonDual(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public Matreshka(string ip, short port) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = port;
@@ -193,7 +185,16 @@ namespace Device.Matreshka
                 _lastPassage.AlarmCells.Clear();
             }
 
-            ParseSensors(sensors, RowsCount, RealCoilsCount);
+            switch (Model)
+            {
+                case Constants.Model.PCZ3300MK:
+                case Constants.Model.PCV3300:
+                    ParseSensors33(sensors, RowsCount, RealCoilsCount);
+                    break;
+                default:
+                    ParseSensors(sensors, RowsCount, RealCoilsCount);
+                    break;
+            }
         }
 
         private void ParseSensors(byte[] sensors, int rowsCount, int realCoilsCount)
@@ -241,7 +242,54 @@ namespace Device.Matreshka
                 }
             }
         }
-        
+
+        private void ParseSensors33(byte[] sensors, int rowsCount, int realCoilsCount)
+        {
+            using (var memoryStream = new MemoryStream(sensors))
+            {
+                using (var binaryReader = new BinaryReader(memoryStream))
+                {
+                    var rightAlarmCells = new List<bool>();
+                    var centerAlarmCells = new List<bool>();
+                    var leftAlarmCells = new List<bool>();
+                    var metalContent = binaryReader.ReadBytes(2).ToArray();
+                    var leftPanelSensors = binaryReader.ReadBytes(2).ToArray();
+                    var bitsArray = new BitArray(leftPanelSensors);
+
+                    for (var i = 0; i < 11; i ++)
+                    {
+                        leftAlarmCells.Add(bitsArray[i]);
+                    }
+
+                    leftAlarmCells.Reverse();
+
+                    if (binaryReader.BaseStream.CanRead)
+                    {
+                        var rightPanelSensors = binaryReader.ReadBytes(2).ToArray();
+                        
+                        bitsArray = new BitArray(rightPanelSensors);
+
+                        for (var i = 0; i < 11; i ++)
+                        {
+                            rightAlarmCells.Add(bitsArray[i]);
+                        }
+
+                        rightAlarmCells.Reverse();
+
+                        for (var i = 0; i < 11; i++)
+                        {
+                            centerAlarmCells.Add(rightAlarmCells[i] && rightAlarmCells[i] == leftAlarmCells[i]);
+                        }
+                    }
+
+                    _lastPassage.AlarmCells.Clear();
+                    _lastPassage.AlarmCells.Add(leftAlarmCells);
+                    _lastPassage.AlarmCells.Add(centerAlarmCells);
+                    _lastPassage.AlarmCells.Add(rightAlarmCells);
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

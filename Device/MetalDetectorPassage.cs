@@ -1,14 +1,8 @@
-﻿using DynamicData.Binding;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
     [Serializable]
     public class MetalDetectorPassage : INotifyPropertyChanged, INotifyCollectionChanged
@@ -84,6 +78,28 @@ namespace Device
         public void Clean()
         {
             EnterPassagesCount = EnterAlarmCount = ExitPassagesCount = ExitAlarmCount = 0;
+
+            if (Sensors != null)
+            {
+                for (var i = 0; i < Sensors.Length; i++)
+                {
+                    Sensors[i] = 0;
+                }
+            }
+
+            AlarmCells?.ForEach(list =>
+            {
+                if (list == null) return;
+
+                for (var i = 0; i < list.Count; i++)
+                {
+                    list[i] = false;
+                }
+            });
+
+            Time = default;
+            LastPassageTime = LastAlarmTime = Time.ToString("dd.MM.yy HH:mm:ss");
+            IsAlarm = false;
         }
     }
 }

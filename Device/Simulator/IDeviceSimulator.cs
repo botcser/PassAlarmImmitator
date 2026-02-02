@@ -1,9 +1,4 @@
-﻿using System;
-using Device;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using IRAPROM.MyCore.Device;
 
 namespace PassAlarmSimulator.Device.Simulator
 {

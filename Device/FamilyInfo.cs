@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using IRAPROM.MyCore.MyNetwork;
+﻿using IRAPROM.MyCore.MyNetwork;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
     public abstract class FamilyInfo
     {

@@ -1,4 +1,4 @@
-﻿namespace Device
+﻿namespace IRAPROM.MyCore.Device
 {
     public interface INetworkProto
     {

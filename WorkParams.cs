@@ -7,7 +7,7 @@ namespace IRAPROM.MyCore.Model.WP
     public class WorkParams
     {
         public byte AlarmMode; // 86 байт данных
-        public byte ZonesSensorMode { get; set; } = 0; // Определяет кол-во зон
+        public byte ZonesSensorMode { get; set; } = 0; // кол-во зон
         public byte InfraredPassCounterMode { get; set; } = 0; //Режим работы счетчика проходов
         public byte AlarmDuration { get; set; } //Длительность сигнала
         public byte AlarmVolume { get; set; } //Громкость сигнала
@@ -18,10 +18,9 @@ namespace IRAPROM.MyCore.Model.WP
         public byte ModelId { get; set; } = 0; //Модель
 
         public bool ExchangeFrontBack { get; set; }     // 85 byte Infrared Mode 8 7 6 5 bits
-        public short[] SensorsSensitivity { get; set; } = new short[32];//Базовая чувствительность
-        public string ZoneMode { get; set; }          // 86 byte Alarm Mode 7,6 bits: 00(33/24/18) 01(22/16/12) 10(11/8/6)
-        public byte SceneMode { get; set; }
-        public byte AlarmInfraMode { get; set; }         // 86 byte Alarm Mode 5,4 bits: Matreshka: off front rear Both | Impulse: Alarm any OR Alarm largest only UNUSED
+        public short[] SensorsSensitivity { get; set; }//Базовая чувствительность
+        public string ZoneMode { get; set; }          // 86 byte Alarm Mode 7,6 bits: 00(33/24/18) 01(22/16/12) 10(11/8/6) || Matreshka: 2(33/24/18) 1(22/16/12) 0(11/8/6)
+        public byte AlarmInfraMode { get; set; }         // 86 byte Alarm Mode 5,4 bits: Matreshka: UNUSABLE | Impulse: Alarm any OR Alarm largest only UNUSED
         public byte MaxZoneMode { get; set; }              // 86 byte Alarm Mode 3,2 bits: 00(33) 01(24) 10(18)
         public byte AlarmLampSwapMode { get; set; }     // 86 byte Alarm Mode 1,0 bits
         public string IP { get; set; }
@@ -29,10 +28,10 @@ namespace IRAPROM.MyCore.Model.WP
         public string Gateway { get; set; }
         public int PortTCP { get; set; }
         public int PortUDP { get; set; }
-        public long ForwardPassageCount { get; set; }
-        public long BackwardPassageCount { get; set; }
-        public long ForwardAlarmsCount { get; set; }
-        public long BackwardAlarmsCount { get; set; }
+        public int ForwardPassageCount { get; set; }
+        public int BackwardPassageCount { get; set; }
+        public int ForwardAlarmsCount { get; set; }
+        public int BackwardAlarmsCount { get; set; }
         public long Password { get; set; }
         public string MAC { get; set; }
 

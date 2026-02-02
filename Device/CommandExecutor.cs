@@ -1,14 +1,9 @@
-﻿using Device;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿#nullable disable
+
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using Newtonsoft.Json;
 
-#nullable disable
-
-namespace CommandTransmitter.Device
+namespace IRAPROM.MyCore.Device
 {
     public class CommandExecutor
     {

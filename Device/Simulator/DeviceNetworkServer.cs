@@ -1,11 +1,6 @@
-﻿using Assets.Common;
-using Device;
-using System;
-using System.Collections.Generic;
+﻿using IRAPROM.MyCore.Device;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 
 // ReSharper disable All
 
@@ -14,7 +9,7 @@ namespace PassAlarmSimulator.Device.Simulator
     public class DeviceNetworkServer : IDisposable
     {
         private static List<IPAddress> _localAddresses;
-        
+
         private readonly UdpClient _udpInputClient;
         private readonly TcpListener _tcpServer;
         private readonly int _inputUdpPort;
@@ -26,7 +21,7 @@ namespace PassAlarmSimulator.Device.Simulator
 
         private Task _tcpListener;
         private Task _udpListener;
-        
+
         public DeviceNetworkServer(int inputUdpPort, int outputUdpPort, int tcpPort, IDatagramProto datagramProto, CancellationTokenSource cancellationTokenSource, string dirPath = null)
         {
             _inputUdpPort = inputUdpPort;
@@ -58,7 +53,7 @@ namespace PassAlarmSimulator.Device.Simulator
                 return false;
             }
 
-            return true; 
+            return true;
         }
 
         private async Task StartUdpListener()
@@ -109,9 +104,9 @@ namespace PassAlarmSimulator.Device.Simulator
                         while (client != null && client.Client != null && client.Connected)
                         {
                             var requestLen = await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
-                            
+
                             if (requestLen == 0) break;
-                            
+
                             var request = new byte[requestLen];
 
                             Array.Copy(buffer, 0, request, 0, requestLen);
@@ -122,8 +117,8 @@ namespace PassAlarmSimulator.Device.Simulator
 
                             var bytesCommand = FindResponse(buffer, code);
 
-                            Console.WriteLine($"Response: {BitConverter.ToString(bytesCommand)}"); 
-                            
+                            Console.WriteLine($"Response: {BitConverter.ToString(bytesCommand)}");
+
                             if (bytesCommand == Array.Empty<byte>()) continue;
 
                             if (code == 0x41 || code == 0x42)                    //TODO

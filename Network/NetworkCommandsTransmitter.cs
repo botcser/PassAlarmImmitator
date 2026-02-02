@@ -1,6 +1,6 @@
 ﻿using Casualbunker.Server.Common;
-using Device;
 using Extensions;
+using IRAPROM.MyCore.Device;
 
 namespace PassAlarmSimulator.Network
 {

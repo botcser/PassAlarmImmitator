@@ -1,8 +1,8 @@
 ﻿using IRAPROM.MyCore.Model.MD;
 using System.ComponentModel;
-using Device;
-using Device.Impulse;
-using Device.Matreshka;
+using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Device.Impulse;
+using IRAPROM.MyCore.Device.Matreshka;
 
 namespace IRAPROM.MyCore.DBModel
 {
@@ -736,7 +736,6 @@ namespace IRAPROM.MyCore.DBModel
             BackwardPassageCount = workParams.BackwardPassageCount;
             ForwardPassageCount = workParams.ForwardPassageCount;
             ForwardAlarmsCount = workParams.ForwardAlarmsCount;
-            SceneMode = workParams.SceneMode;
             MAC = workParams.MAC;
             GetMetSensorsFieldsFromArray(workParams);
         }

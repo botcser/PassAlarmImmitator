@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Device.Impulse
+﻿namespace IRAPROM.MyCore.Device.Impulse
 {
     public class DatagramProto : IDatagramProto
     {

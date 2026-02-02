@@ -1,20 +1,18 @@
-﻿using Google.Protobuf.Compiler;
+﻿using System.Collections.ObjectModel;
+using IRAPROM.MyCore.Device.Impulse;
+using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using ReactiveUI.Fody.Helpers;
 
-namespace Device
+namespace IRAPROM.MyCore.Device
 {
-    public abstract class DeviceMetalDetector: IEquatable<DeviceMetalDetector>
+    public abstract class DeviceMetalDetector: CardViewItem, IEquatable<DeviceMetalDetector>
     {
         [JsonIgnore]
-        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new Matreshka.Constants(), new Impulse.Constants() };
+        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new IRAPROM.MyCore.Device.Matreshka.Constants(), new Constants() };
         
         [JsonIgnore]
-        public static DeviceMetalDetector DefaultDeviceMetalDetector = Matreshka.Matreshka.DefaultMatreshka;
+        public static DeviceMetalDetector DefaultDeviceMetalDetector = IRAPROM.MyCore.Device.Matreshka.Matreshka.DefaultMatreshka;
         
         [JsonIgnore]
         public static ObservableCollection<DeviceMetalDetector> DefaultDevicesMetalDetector = new ObservableCollection<DeviceMetalDetector>()
@@ -48,7 +46,6 @@ namespace Device
         public abstract string ModelName { get; }
 
         [JsonProperty]
-        [Reactive]
         public abstract MetalDetectorPassage LastPassage { get; set; }
 
         public abstract void CleanStatistics();
@@ -80,22 +77,35 @@ namespace Device
 
         public virtual WorkParams GetWorkParams()
         {
-            var res = WorkParams = WorkParamsProto.GetWorkParams();
+            var bufModelId = WorkParams?.ModelId ?? (byte)0xfe;
 
-            if (WorkParams != null && WorkParams.ModelId != 0 && WorkParams.ModelId != 0xFF)
+            WorkParams = WorkParamsProto.GetWorkParams();
+
+            if (WorkParams != null)
             {
-                res.ModelId = WorkParams.ModelId;
-            }
+                if (WorkParams.ModelId == 0 || WorkParams.ModelId == 0xFF || WorkParams.ModelId == 0xFE)
+                {
+                    WorkParams.ModelId = bufModelId;
+                }
 
-            WorkParams.IP ??= _ip;
-            WorkParams.Mask ??= _mask;
-            WorkParams.Gateway ??= _gateway;
-            WorkParams.MAC ??= _mac;
+                WorkParams.IP ??= _ip;
+                WorkParams.Mask ??= _mask;
+                WorkParams.Gateway ??= _gateway;
+                WorkParams.MAC ??= _mac;
+                
+                if (WorkParams.ForwardAlarmsCount > 0 || WorkParams.ForwardPassageCount > 0 || WorkParams.BackwardAlarmsCount > 0 || WorkParams.BackwardPassageCount > 0)
+                {
+                    var unknownTime = LastPassage?.Time ?? default;
+                    var unknownSensorMode = unknownTime == default ? WorkParams.InfraredPassCounterMode : LastPassage!.SensorMode;
+                    
+                    LastPassage = new MetalDetectorPassage(MAC, unknownTime, unknownSensorMode, WorkParams.ForwardPassageCount, WorkParams.ForwardAlarmsCount, WorkParams.BackwardPassageCount, WorkParams.BackwardAlarmsCount);
+                }
+            }
 
 #if DEBUG
             Console.WriteLine($"GetWorkParams: complete {_ip}:{MAC}:{ModelName}");
 #endif
-            return res;
+            return WorkParams;
         }
 
         public virtual bool SetWorkParams()
@@ -137,7 +147,7 @@ namespace Device
 
         public bool Equals(DeviceMetalDetector other)
         {
-            return other != null && MAC == other.MAC && UID == other.UID && IP == other.IP && ZonesCount == other.ZonesCount && ModelName == other.ModelName && WorkParams == other.WorkParams;
+            return other != null && MAC == other.MAC && UID == other.UID && IP == other.IP && ZonesCount == other.ZonesCount && ModelName == other.ModelName && WorkParams.Equals(other.WorkParams);
         }
     }
 }

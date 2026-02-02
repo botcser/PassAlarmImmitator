@@ -1,14 +1,8 @@
-﻿using IRAPROM.MyCore.Model.MD;
-using IRAPROM.MyCore.Model.WP;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
-namespace Device.Impulse
+namespace IRAPROM.MyCore.Device.Impulse
 {
     public class Impulse : DeviceMetalDetector, INotifyPropertyChanged
     {
@@ -146,7 +140,7 @@ namespace Device.Impulse
                 }
             }
 
-            ParseSensors(sensors, RowsCount, RealCoilsCount);
+            //ParseSensors(sensors, RowsCount, RealCoilsCount);
         }
 
         private void ParseSensors(byte[] sensors, int rowsCount, int realCoilsCount)

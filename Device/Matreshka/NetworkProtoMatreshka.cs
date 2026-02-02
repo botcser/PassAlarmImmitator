@@ -3,16 +3,18 @@ using System.Net.Sockets;
 using Extensions;
 using Newtonsoft.Json;
 
-namespace IRAPROM.MyCore.Device
+namespace IRAPROM.MyCore.Device.Matreshka
 {
-    public class NetworkProtoCommonDual : INetworkProtoDual, IDisposable
+    public class NetworkProtoMatreshka : INetworkProtoDual, IDisposable
     {
+        private const int HeaderSize = 8;
+
         [JsonProperty]
         public string Ip { get; set; }
 
         internal TcpClient Socket;
         internal NetworkStream Stream;
-        
+
         [JsonProperty]
         private readonly int _port;
         [JsonProperty]
@@ -21,12 +23,9 @@ namespace IRAPROM.MyCore.Device
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);
 
-        public NetworkProtoCommonDual()
-        {
-            
-        }
+        public NetworkProtoMatreshka() { }
 
-        public NetworkProtoCommonDual(string ip, int portTCP, int timeOut = 0)
+        public NetworkProtoMatreshka(string ip, int portTCP, int timeOut = 0)
         {
             Ip = ip;
             _port = portTCP;
@@ -50,7 +49,7 @@ namespace IRAPROM.MyCore.Device
 #endif
                         Socket.Dispose();
                     }
-                } 
+                }
 
                 Socket = new TcpClient();
                 Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
@@ -58,7 +57,7 @@ namespace IRAPROM.MyCore.Device
 #if DEBUGG
                 Console.Write($"new socket {Socket.Client.Handle} connecting {Ip}:{_port} (timeout {5000}ms)...");
 #endif
-                
+
                 if (!Socket.BeginConnect(Ip, _port, null, null).AsyncWaitHandle.WaitOne(5000, false))
                 {
                     Socket.Close();
@@ -80,7 +79,7 @@ namespace IRAPROM.MyCore.Device
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"EX: NetworkProtoCommonDual: Connect: {IPEndPoint.Address}:{IPEndPoint.Port} - {ex.Message}");
+                Console.WriteLine($"EX: NetworkProtoMatreshka: Connect: {IPEndPoint.Address}:{IPEndPoint.Port} - {ex.Message}");
 
                 return false;
             }
@@ -88,16 +87,12 @@ namespace IRAPROM.MyCore.Device
 
         public void Disconnect()
         {
-            if (Socket.Client != null)
-            {
-                var socketHandle = Socket.Client.Handle;
-
-#if DEBUGG
-                Console.WriteLine($"close socket {socketHandle} {Ip}:{_port}.");
-#endif
-            }
+            var socketHandle = Socket.Client.Handle;
 
             Socket.Close();
+#if DEBUGG
+            Console.WriteLine($"close socket {socketHandle} {Ip}:{_port}.");
+#endif
         }
 
         public bool Send(byte[] bytes)
@@ -118,6 +113,7 @@ namespace IRAPROM.MyCore.Device
 #if DEBUGG
                     Console.Write($"socket {Socket.Client.Handle} writing {Ip}:{_port} (timeout {Socket.SendTimeout}ms)...");
 #endif
+
                     Stream.Write(bytes, 0, bytes.Length);
 
 #if DEBUGG
@@ -126,7 +122,7 @@ namespace IRAPROM.MyCore.Device
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"NetworkProtoCommonDual: Send: write operation fail: {e.Message}!");
+                    Console.WriteLine($"NetworkProtoMatreshka: Send: write operation fail: {e.Message}!");
 
                     return false;
                 }
@@ -135,29 +131,41 @@ namespace IRAPROM.MyCore.Device
             return true;
         }
 
-        public byte[] Get(int count)
+        public byte[] Get(int _)
         {
             if (!Connect()) return null;
 
             if (Stream == null || !Stream.CanRead) return null;
-            
-            var bytes = new byte[count];
 
+            var headerBytes = new byte[HeaderSize];
+            var nRead = Stream.Read(headerBytes, 0, HeaderSize);
+
+            if (nRead != HeaderSize)
+            {
 #if DEBUGG
-            Console.Write($"socket {Socket.Client.Handle} reading {Ip}:{_port} (timeout {Socket.ReceiveTimeout}ms)...");
+                Console.WriteLine($"socket {Socket.Client.Handle} reading {Ip}:{_port} Matreshka header first 8 bytes error!!!");
 #endif
+                return Array.Empty<byte>();
+            }
 
-            var nRead = Stream.Read(bytes, 0, count);
+            var frameLength = headerBytes[4];
+            var bytes = new byte[frameLength];
 
+            nRead = Stream.Read(bytes, 0, frameLength);
+
+            if (nRead != frameLength)
+            {
 #if DEBUGG
-            Console.Write("success\n");
+                Console.WriteLine($"socket {Socket.Client.Handle} reading {Ip}:{_port} frameLength bytes error!!!");
 #endif
+                return Array.Empty<byte>();
+            }
 
 #if DEBUG
             Console.WriteLine($"Response: {BitConverter.ToString(bytes, 0, nRead)}\n");
 #endif
 
-            return nRead != count ? bytes.Take(nRead).ToArray() : bytes;
+            return headerBytes.Concat(bytes).ToArray();
         }
 
         public virtual byte[] SendAndGet(byte[] outputBytes, int getCount)
@@ -166,7 +174,7 @@ namespace IRAPROM.MyCore.Device
 
             try
             {
-                return Get(getCount);
+                return Get(0);
             }
             catch (TimeoutException e)
             {
@@ -183,60 +191,7 @@ namespace IRAPROM.MyCore.Device
 
             return Array.Empty<byte>();
         }
-
-        public virtual byte[] SendAndGetMany(byte[] outputBytes, int getCount)
-        {
-            if (!Send(outputBytes)) return null;
-
-            var _try = 5;
-            var readCounterSum = 0;
-            var readCounter = 0;
-            var inputBytes = new byte[getCount];
-
-            while (_try > 0)
-            {
-                _try--;
-
-                try
-                {
-                    var resultBuffer = Get(getCount - readCounter);
-
-                    resultBuffer.CopyTo(inputBytes, readCounter);
-                    readCounter = resultBuffer.Length;
-
-                    readCounterSum += readCounter;
-
-                    if (readCounterSum >= getCount)
-                    {
-                        break;
-                    }
-
-                    inputBytes = readCounterSum >= getCount ? inputBytes : inputBytes.Take(readCounterSum).ToArray();
-
-                }
-                catch (TimeoutException e)
-                {
-                    Console.WriteLine($"Response: timeout!\n");
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine($"Response: timeout!\n");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"EX: SendAndGet:{e.Message}!\n");
-                }
-
-                Thread.Sleep(150);
-            }
-
-#if DEBUG
-            Console.WriteLine($"Response: {BitConverter.ToString(inputBytes)}\n");
-#endif
-
-            return inputBytes;
-        }
-
+        
         public void Dispose()
         {
             Stream?.Dispose();
