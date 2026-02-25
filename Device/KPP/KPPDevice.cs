@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace IRAPROM.MyCore.Device.KPP
@@ -7,17 +8,23 @@ namespace IRAPROM.MyCore.Device.KPP
     {
         public IReadOnlyList<DeviceMetalDetector> Devices => _devices;
 
+        public bool HaveDevices
+        {
+            get { return Devices.Count > 0; }
+        }
+
         public override string SeriesName { get; }
         public override string ModelName { get; }
         public override MetalDetectorPassage LastPassage { get; set; }
         public override int ZonesCount { get; set; }
         public override List<short> AvailableZonesCount { get; }
 
-        public SortedList<DateTime, MetalDetectorPassage> LastAlarmPassage =  new SortedList<DateTime, MetalDetectorPassage>();
+        public SortedList<DateTime, MetalDetectorPassage> ActiveAlarms =  new SortedList<DateTime, MetalDetectorPassage>();
 
         private object _lock = new object();
-        private List<DeviceMetalDetector> _devices = new List<DeviceMetalDetector>();
-
+        private readonly List<DeviceMetalDetector> _devices = new List<DeviceMetalDetector>();
+        private bool _prevOnlineStatus;
+        
         public KPPDevice() : base(new WorkParamsProto(), null) { }
 
         public bool TryAddDevice(DeviceMetalDetector device, DeviceMetalDetector oldDevice = null)
@@ -34,17 +41,20 @@ namespace IRAPROM.MyCore.Device.KPP
 
             lock (_lock)
             {
-                LeftFirstNumber += device.LastPassage.EnterPassagesCount - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterPassagesCount);
-                LeftSecondNumber += device.LastPassage.EnterAlarmCount - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterAlarmCount); 
-                RightFirstNumber += device.LastPassage.ExitPassagesCount - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitPassagesCount); 
-                RightSecondNumber += device.LastPassage.ExitAlarmCount - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitAlarmCount); 
-
-                UpdateAlarm(device);
+                LeftFirstNumber += device.LastPassage.EnterPassagesCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterPassagesCount);
+                LeftSecondNumber += device.LastPassage.EnterAlarmCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterAlarmCount); 
+                RightFirstNumber += device.LastPassage.ExitPassagesCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitPassagesCount); 
+                RightSecondNumber += device.LastPassage.ExitAlarmCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitAlarmCount);
 
                 LastPassage = device.LastPassage;
 
+                UpdateAlarm(device);
+                UpdateCenterBottomText();
+
                 _devices.Remove(_devices.FirstOrDefault(i => i.MAC == device.MAC));
                 _devices.Add(device);
+
+                UpdateOnline();
             }
 
             return true;
@@ -52,32 +62,28 @@ namespace IRAPROM.MyCore.Device.KPP
 
         private void UpdateAlarm(DeviceMetalDetector device)
         {
-            var lastAlarm = LastAlarmPassage.Values.FirstOrDefault(i => i.MAC == device.MAC);
+            var lastDeviceAlarm = ActiveAlarms.Values.FirstOrDefault(i => i.MAC == device.MAC);
 
             if (device.LastPassage.IsAlarm)
             {
-                if (lastAlarm == null)
+                if (lastDeviceAlarm != null)
                 {
-                    LastAlarmPassage.Add(device.LastPassage.Time, device.LastPassage);
-                }
-                else //если тревога уже была
-                {
-                    if (lastAlarm.Time > device.LastPassage.Time) return;
+                    if (lastDeviceAlarm.Time > device.LastPassage.Time) return;
 
-                    LastAlarmPassage.Remove(lastAlarm.Time);
-                    LastAlarmPassage.Add(device.LastPassage.Time, device.LastPassage);
+                    ActiveAlarms.Remove(lastDeviceAlarm.Time);
                 }
+
+                ActiveAlarms.Add(device.LastPassage.Time, device.LastPassage);
             }
-            else //если это не тревога
+            else
             {
-                if (lastAlarm == null) return;
+                if (lastDeviceAlarm != null)
+                {
+                    if (lastDeviceAlarm.Time > device.LastPassage.Time) return;
 
-                if (lastAlarm.Time > device.LastPassage.Time) return;
-
-                LastAlarmPassage.Remove(lastAlarm.Time);
+                    ActiveAlarms.Remove(lastDeviceAlarm.Time);
+                }
             }
-
-            UpdateAlarmText();
         }
 
         public void RemoveDevice(DeviceMetalDetector device)
@@ -89,21 +95,21 @@ namespace IRAPROM.MyCore.Device.KPP
                 RightFirstNumber -= device.LastPassage.ExitPassagesCount;
                 RightSecondNumber -= device.LastPassage.ExitAlarmCount;
 
-                LastAlarmPassage.Remove(device.LastPassage.Time);
+                ActiveAlarms.Remove(device.LastPassage.Time);
                 
-                LastPassage = _devices.Select(i => i.LastPassage).Max();
-                
-                _devices.Remove(Devices.FirstOrDefault(i => i.MAC == device.MAC));
-                _devices.Add(device);
+                _devices.Remove(_devices.FirstOrDefault(i => i.MAC == device.MAC));
 
-                UpdateAlarmText();
+                LastPassage = _devices.Select(i => i.LastPassage).Max();
+
+                UpdateCenterBottomText();
+                UpdateOnline();
             }
         }
 
-        private void UpdateAlarmText()
+        private void UpdateCenterBottomText()
         {
-            CenterBottomText = LastAlarmPassage.Count > 0 ? LastAlarmPassage.LastOrDefault().Value.ToString() : "";
-            Trigger = LastAlarmPassage.Count > 0;
+            CenterBottomText = ActiveAlarms.Count > 0 ? ActiveAlarms.LastOrDefault().Key.ToString(CultureInfo.CurrentCulture) : LastPassage?.Time.ToString(CultureInfo.CurrentCulture);
+            Trigger = ActiveAlarms.Count > 0;
         }
 
         public override void CleanStatistics()
@@ -111,8 +117,45 @@ namespace IRAPROM.MyCore.Device.KPP
             throw new NotImplementedException();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public void CleanStatistics(DeviceMetalDetector device)
+        {
+            lock (_lock)
+            {
+                LeftFirstNumber -= device.LastPassage.EnterPassagesCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterPassagesCount);
+                LeftSecondNumber -= device.LastPassage.EnterAlarmCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.EnterAlarmCount); 
+                RightFirstNumber -= device.LastPassage.ExitPassagesCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitPassagesCount); 
+                RightSecondNumber -= device.LastPassage.ExitAlarmCount;// - (oldDevice == null ? 0 : oldDevice.LastPassage.ExitAlarmCount);
 
+                if (LastPassage.Time == device.LastPassage.Time)
+                {
+                    LastPassage.Time = default;
+                    LastPassage.LastPassageTime = "";
+                }
+
+                ActiveAlarms.Remove(device.LastPassage.Time);
+                UpdateCenterBottomText();
+                UpdateOnline();
+            }
+        }
+
+        public void UpdateOnline()
+        {
+            var someOffline = _devices.Count == 0 || _devices.Any(d => !d.OnlineStatus);
+
+            OnlineStatus = !someOffline;
+
+            if (_prevOnlineStatus != OnlineStatus)
+            {
+                _prevOnlineStatus = OnlineStatus;
+                //MyARM.Instance.CallBindKpp(this);           // avalonia не хочет биндить поэтому кастыль
+            }
+        }
+        
+
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

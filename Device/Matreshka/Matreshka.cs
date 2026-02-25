@@ -1,15 +1,19 @@
-﻿using System.Collections;
+﻿using IRAPROM.MyCore.Model.WP;
+using Newtonsoft.Json;
+using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using IRAPROM.MyCore.Model.WP;
-using Newtonsoft.Json;
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class Matreshka : DeviceMetalDetector, IMonopanel, INotifyPropertyChanged
     {
+#if OLDPCV
+        public bool PrevPackageIsAlarm;
+#endif
+
         public override string SeriesName => "Матрешка";
-        public override string ModelName => Constants.GetModelName(Model);
+        public override string ModelName => WorkParams == null ? "Unknown Matreshka" : Constants.GetModelName(Model);
 
         public Constants.Model Model => (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
@@ -24,8 +28,13 @@ namespace IRAPROM.MyCore.Device.Matreshka
             set
             {
                 if (value?.MAC == null) return;
-                
+
+#if OLDPCV
+                RegisterPassage(value);
+#else
                 ProcessAlarm(value);
+#endif
+
                 OnPropertyChanged();
             }
         }
@@ -137,39 +146,73 @@ namespace IRAPROM.MyCore.Device.Matreshka
             return (int)Model >= 100;
         }
 
-
-        private void ProcessAlarm(MetalDetectorPassage value)
+#if OLDPCV
+        public void RegisterPassage(MetalDetectorPassage newPassage)
         {
-            _lastPassage.SensorMode = WorkParams.ZonesSensorMode;
-            _lastPassage.AlarmInf = value.AlarmInf;
-            _lastPassage.LogId = value.LogId;
-            _lastPassage.MAC = value.MAC;
-            _lastPassage.LastPassageTime = value.LastPassageTime;
-            _lastPassage.IsAlarm = value.IsAlarm;
-            _lastPassage.Time = value.Time;
-
-            _lastPassage.SensorsProcessed = value.SensorsProcessed;
-            _lastPassage.Sensors = value.Sensors;
-            _lastPassage.AlarmCells = value.AlarmCells;
-
-            if (value.IsAlarm)
+            if (newPassage.IsAlarm)
             {
-                _lastPassage.LastAlarmTime = value.LastAlarmTime;
-
-                UpdateAlarmCells(value.Sensors);
-
-                if (value.EnterPassagesCount > 0) _lastPassage.EnterPassagesCount = value.EnterPassagesCount;
-                if (value.EnterAlarmCount > 0) _lastPassage.EnterAlarmCount = value.EnterAlarmCount;
-                if (value.ExitPassagesCount > 0) _lastPassage.ExitPassagesCount = value.ExitPassagesCount;
-                if (value.ExitAlarmCount > 0) _lastPassage.ExitAlarmCount = value.ExitAlarmCount;
+                ProcessAlarm(newPassage);
             }
             else
             {
-                _lastPassage.EnterPassagesCount = value.EnterPassagesCount;
-                _lastPassage.EnterAlarmCount = value.EnterAlarmCount;
-                _lastPassage.ExitPassagesCount = value.ExitPassagesCount;
-                _lastPassage.ExitAlarmCount = value.ExitAlarmCount;
+                _lastPassage.AlarmInf = newPassage.AlarmInf;
+                _lastPassage.LogId = newPassage.LogId;
+                _lastPassage.MAC = newPassage.MAC;
+
+                if (LastPassage.IsAlarm && !PrevPackageIsAlarm)
+                {
+                    CleanAlarm();
+                }
+                
+                UpdatePassageCounters(newPassage);
             }
+
+            PrevPackageIsAlarm = newPassage.IsAlarm;
+        }
+
+        private void CleanAlarm()
+        {
+            LastPassage.IsAlarm = false;
+            LastPassage.SensorsProcessed = _lastPassage.Sensors = Array.Empty<byte>();
+            LastPassage.AlarmCells.Clear();
+            UpdateAlarmCells(LastPassage.Sensors);
+        }
+#endif
+
+        private void ProcessAlarm(MetalDetectorPassage newPassage)
+        {
+            _lastPassage.AlarmInf = newPassage.AlarmInf;
+            _lastPassage.LogId = newPassage.LogId;
+            _lastPassage.MAC = newPassage.MAC;
+
+            _lastPassage.IsAlarm = newPassage.IsAlarm;
+            _lastPassage.SensorsProcessed = newPassage.SensorsProcessed;
+            _lastPassage.Sensors = newPassage.Sensors;
+            _lastPassage.AlarmCells = newPassage.AlarmCells;
+
+            UpdatePassageCounters(newPassage);
+
+            if (newPassage.IsAlarm)
+            {
+                _lastPassage.LastAlarmTime = newPassage.LastAlarmTime;
+
+                UpdateAlarmCells(newPassage.Sensors);
+            }
+        }
+
+        private void UpdatePassageCounters(MetalDetectorPassage newPassage)
+        {
+            if (!newPassage.IsAlarm)
+            {
+                _lastPassage.EnterPassagesCount = newPassage.EnterPassagesCount;
+                _lastPassage.EnterAlarmCount = newPassage.EnterAlarmCount;
+                _lastPassage.ExitPassagesCount = newPassage.ExitPassagesCount;
+                _lastPassage.ExitAlarmCount = newPassage.ExitAlarmCount;
+            }
+
+            _lastPassage.Time = newPassage.Time;
+            _lastPassage.LastPassageTime = newPassage.LastPassageTime;
+            _lastPassage.SensorMode = WorkParams.ZonesSensorMode;
         }
 
         private void UpdateAlarmCells(byte[] sensors)                   // TODO

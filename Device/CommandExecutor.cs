@@ -65,7 +65,7 @@ namespace IRAPROM.MyCore.Device
             }
             catch (Exception e)
             {
-                Console.WriteLine($"EX: ExecuteGetCommand: parse by command {_commands.GetCommandsList.FirstOrDefault(i => i.CommandCode == commandCode)?.Name}: {e.Message}!");
+                Console.WriteLine($"EX: ExecuteGetCommand: parse by command {_commands.GetCommandsList.FirstOrDefault(i => i.DeviceCommandCode == commandCode)?.Name}: {e.Message}!");
             }
 
             return Array.Empty<byte>();
@@ -73,14 +73,14 @@ namespace IRAPROM.MyCore.Device
 
         public byte[] ExecuteSetCommandRaw(short commandCode, byte[] args)
         {
-            var command = _commands.SetCommandsList.FirstOrDefault(i => i.CommandCode == commandCode) ?? new Command(commandCode);
+            var command = _commands.SetCommandsList.FirstOrDefault(i => i.DeviceCommandCode == commandCode) ?? new Command(commandCode);
 
             return ExecuteCommand(command, args);
         }
 
         public byte[] ExecuteGetCommandRaw(short commandCode, byte[] args = null)
         {
-            var command = _commands.GetCommandsList.FirstOrDefault(i => i.CommandCode == commandCode) ?? new Command(commandCode);
+            var command = _commands.GetCommandsList.FirstOrDefault(i => i.Code == commandCode) ?? new Command(commandCode);
 
             return ExecuteCommand(command, args);
         }
@@ -94,12 +94,12 @@ namespace IRAPROM.MyCore.Device
 
             if (args != null)
             {
-                command.DatagramRequest = DatagramProto.MakeRequestDatagram(command.CommandCode, args);
+                command.DatagramRequest = DatagramProto.MakeRequestDatagram(command.DeviceCommandCode, args);
             }
 
             if (command?.DatagramRequest == null || command.DatagramRequest.Length == 0)
             {
-                throw new Exception($"EX: ExecuteCommand: I haven't datagram to do {(command?.Name ?? $"unknown command {command.CommandCode}")}!");
+                throw new Exception($"EX: ExecuteCommand: I haven't datagram to do {(command?.Name ?? $"unknown command {command.DeviceCommandCode}")}!");
             }
 
             if (command.NeedResponse)

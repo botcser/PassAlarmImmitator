@@ -1,10 +1,12 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using IRAPROM.MyCore.Model.WP;
+using PassAlarmSimulator.Device;
+using PassAlarmSimulator.Validator;
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
-    public class WorkParamsProto : CommandExecutor, IWorkParamsProto
+    public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
         
@@ -26,6 +28,9 @@ namespace IRAPROM.MyCore.Device.Matreshka
             try
             {
                 InitZonesSensitivity(workParams);
+
+                InitModelBySensorsSensitivity(workParams);
+
                 InitNetworkParams(workParams); // TODO: PCV1800 broken proto
                 InitBaseSensitivity(workParams);
                 InitWorkFrequency(workParams);
@@ -73,189 +78,112 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
             return true;
         }
-
-        public bool SelfTest(WorkParams workParams)
+        
+        public bool StaticTest(WorkParams workParams)
         {
-            byte testValue = 0x02;
-            var result = true;
+            const byte testValue = 0x02;
 
-            WorkProgramTest();
-            ZonesWorkModeTest();
-            ZonesSensitivityTest();
-            BaseSensitivityTest();
-            WorkingFreqTest();
-            AlarmParamsTest();
-            ClearPassageTest();
-            HandTest();
+            return WorkProgramTest(workParams, testValue) && ZonesWorkModeTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) &&
+                   BaseSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) && AlarmParamsTest(workParams, testValue) && ClearPassageTest(workParams);
+        }
+        
+        public void HandTest(WorkParams workParams)
+        {
+            byte testValue = 0x09;
 
-            return result;
+            workParams.WorkProgram = testValue;
+            SetWorkProgramScene(workParams);
+            Thread.Sleep(_requestDelay);
 
-
-            void WorkProgramTest()
+            workParams.SensorsSensitivity = new[]
             {
-                workParams.WorkProgram = testValue;
-                SetWorkProgramScene(workParams);
-                Thread.Sleep(_requestDelay);
-                InitWorkProgramScene(workParams);
+                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                (short)testValue,
+                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                (short)testValue,
+            };
+            SetZonesSensitivity(workParams);
+            Thread.Sleep(_requestDelay);
 
-                if (workParams.WorkProgram != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkProgram test fail!");
-#endif
-                    result = false;
-                }
-            }
-            void ZonesWorkModeTest()
+            workParams.BaseSensitivity = testValue;
+            SetBaseSensitivity(workParams);
+            Thread.Sleep(_requestDelay);
+
+            do
             {
-                workParams.ZonesSensorMode = testValue;
-                workParams.WorkProgram = testValue; // TODO: PCV1800 не работает
-                workParams.AlarmInfraMode = testValue;
-                SetZonesWorkMode(workParams);
-                Thread.Sleep(_requestDelay);
-                InitZonesWorkMode(workParams);
+                workParams.WorkingFreq = (byte)new Random().Next(51);
+            } while (workParams.WorkingFreq % 3 != 0);
 
-                if (workParams.ZonesSensorMode != testValue || workParams.AlarmInfraMode != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
-#endif
-                    result = false;
-                }
-            }
+            SetWorkFrequency(workParams);
+            Thread.Sleep(_requestDelay);
 
-            void ZonesSensitivityTest()
+            workParams.AlarmDuration = testValue;
+            workParams.AlarmVolume = testValue;
+            workParams.AlarmTone = testValue;
+            SetAlarmParams(workParams);
+            Thread.Sleep(_requestDelay);
+
+            ClearPassageCount();
+        }
+
+        public async Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout)
+        {
+            Console.WriteLine($"\nYou must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
+
+            var timer = milliSecondsTimeout;
+            MetalDetectorPassage alarmPassage;
+
+            do
             {
-                workParams.SensorsSensitivity = new[]
-                {
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                };
-                SetZonesSensitivity(workParams);
-                Thread.Sleep(_requestDelay);
-                InitZonesSensitivity(workParams);
+                timer -= 1000;
 
-                if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue ||
-                    workParams.SensorsSensitivity[06] != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
-#endif
-                    result = false;
-                }
-            }
+                await Task.Delay(1000);
 
-            void BaseSensitivityTest()
+                alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+
+                if (alarmPassage != null) break;
+
+            } while (timer > 0);
+
+            if (alarmPassage == null)
             {
-                workParams.BaseSensitivity = testValue;
-                SetBaseSensitivity(workParams);
-                Thread.Sleep(_requestDelay);
-                InitBaseSensitivity(workParams);
+                Console.WriteLine($"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
 
-                if (workParams.BaseSensitivity != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t BaseSensitivity test fail!");
-#endif
-                    result = false;
-                }
+                return false;
             }
 
-            void WorkingFreqTest()
-            {
-                byte workingFreq = 2;
-                do
-                {
-                    workingFreq = (byte)new Random().Next(51);
-                } while (workingFreq % 2 != 0);
+            alarmPassage = alarmPassage.Clone();
+            timer = milliSecondsTimeout;
+            MetalDetectorPassage lastPassage;
 
-                workParams.WorkingFreq = workingFreq;
-                SetWorkFrequency(workParams);
-                Thread.Sleep(_requestDelay);
-                InitWorkFrequency(workParams);
-                if (workParams.WorkingFreq != workingFreq)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkingFreq test fail!");
-#endif
-                    result = false;
-                }
+            Console.WriteLine($"\nOK. Now you must make a passage (clean) through all devices at once. You have 20 seconds to do this!");
+            Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
+
+            do
+            {
+                timer -= 1000;
+
+                await Task.Delay(1000);
+
+                lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+
+                if (lastPassage != null) break;
+
+            } while (timer > 0);
+
+            if (lastPassage == null)
+            {
+                Console.WriteLine($"DynamicTest: Error: No Clean Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
+
+                return false;
             }
 
-            void AlarmParamsTest()
-            {
-                workParams.AlarmDuration = testValue;
-                workParams.AlarmVolume = testValue;
-                workParams.AlarmTone = testValue;
-                SetAlarmParams(workParams);
-                Thread.Sleep(_requestDelay);
-                InitAlarmParams(workParams);
+            return ValidatePassages(alarmPassage, lastPassage);
+        }
 
-                if (workParams.AlarmDuration != testValue || workParams.AlarmVolume != testValue ||
-                    workParams.AlarmTone != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t AlarmParams test fail!");
-#endif
-                    result = false;
-                }
-            }
-
-            void ClearPassageTest()
-            {
-                ClearPassageCount();
-                Thread.Sleep(_requestDelay);
-                InitPassageCount(workParams);
-
-                if (workParams.ForwardAlarmsCount != 0 || workParams.ForwardPassageCount != 0 || workParams.BackwardAlarmsCount != 0 || workParams.BackwardPassageCount != 0)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t ClearPassage test fail!");
-#endif
-                    result = false;
-                }
-            }
-
-            void HandTest()
-            {
-                testValue = 0x09;
-
-                workParams.WorkProgram = testValue;
-                SetWorkProgramScene(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams.SensorsSensitivity = new[]
-                {
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                };
-                SetZonesSensitivity(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams.BaseSensitivity = testValue;
-                SetBaseSensitivity(workParams);
-                Thread.Sleep(_requestDelay);
-
-                do
-                {
-                    workParams.WorkingFreq = (byte)new Random().Next(51);
-                } while (workParams.WorkingFreq % 2 != 0);
-
-                SetWorkFrequency(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams.AlarmDuration = testValue;
-                workParams.AlarmVolume = testValue;
-                workParams.AlarmTone = testValue;
-                SetAlarmParams(workParams);
-                Thread.Sleep(_requestDelay);
-
-                ClearPassageCount();
-            }
+        private bool ValidatePassages(MetalDetectorPassage alarmPassage, MetalDetectorPassage lastPassage)
+        {
+            throw new NotImplementedException();
         }
 
         public void CallPassage()
@@ -270,16 +198,53 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void InitZonesSensitivity(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetZonesSensitivity11.code);
-            
-            workParams.SensorsSensitivity ??= new short[response.Length / 2];
-
-            for (byte i = 0; i < response.Length; i += 2)
+            try
             {
-                workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
-            }
+                var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
 
-            //InitModelBySensorsSensitivity(workParams);
+                workParams.SensorsSensitivity = null;
+                workParams.SensorsSensitivity ??= new short[response.Length / 2];
+
+                for (byte i = 0; i < response.Length; i += 2)
+                {
+                    workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                }
+            }
+            catch (Exception _)
+            {
+                try
+                {
+                    var response = ExecuteGetCommand(Constants.GetZonesSensitivity6.code);
+
+                    workParams.SensorsSensitivity = null;
+                    workParams.SensorsSensitivity ??= new short[response.Length / 2];
+
+                    for (byte i = 0; i < response.Length; i += 2)
+                    {
+                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                    }
+                }
+                catch (Exception __)
+                {
+                    try
+                    {
+                        var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
+
+                        workParams.SensorsSensitivity = null;
+                        workParams.SensorsSensitivity ??= new short[response.Length / 2];
+
+                        for (byte i = 0; i < response.Length; i += 2)
+                        {
+                            workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                        }
+                    }
+                    catch (Exception ___)
+                    {
+                        Console.WriteLine($"ERROR: InitZonesSensitivity: unknown coils count of device {workParams.IP}:{workParams.MAC}!");
+                        return;
+                    }
+                }
+            }
         }
 
         public void InitNetworkParams(WorkParams workParams)
@@ -396,6 +361,148 @@ namespace IRAPROM.MyCore.Device.Matreshka
             NetworkProto.Ip = workParams.IP;
         }
 
+        private bool WorkProgramTest(WorkParams workParams, byte testValue)
+        {
+            workParams.WorkProgram = testValue;
+            SetWorkProgramScene(workParams);
+            Thread.Sleep(_requestDelay);
+            InitWorkProgramScene(workParams);
+
+            if (workParams.WorkProgram != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkProgram test fail!");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ZonesWorkModeTest(WorkParams workParams, byte testValue)
+        {
+            workParams.ZonesSensorMode = testValue;
+            workParams.WorkProgram = testValue; // TODO: PCV1800 не работает
+            workParams.AlarmInfraMode = testValue;
+            SetZonesWorkMode(workParams);
+            Thread.Sleep(_requestDelay);
+            InitZonesWorkMode(workParams);
+
+            if (workParams.ZonesSensorMode != testValue || workParams.AlarmInfraMode != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
+#endif
+                return false;
+            }
+            return true;
+        }
+
+        private bool ZonesSensitivityTest(WorkParams workParams, byte testValue)
+        {
+            workParams.SensorsSensitivity = new[]
+            {
+                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                (short)testValue,
+                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                (short)testValue,
+            };
+            SetZonesSensitivity(workParams);
+            Thread.Sleep(_requestDelay);
+            InitZonesSensitivity(workParams);
+
+            if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue ||
+                workParams.SensorsSensitivity[06] != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
+#endif
+                return false;
+            }
+            return true;
+        }
+
+        private bool BaseSensitivityTest(WorkParams workParams, byte testValue)
+        {
+            workParams.BaseSensitivity = testValue;
+            SetBaseSensitivity(workParams);
+            Thread.Sleep(_requestDelay);
+            InitBaseSensitivity(workParams);
+
+            if (workParams.BaseSensitivity != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t BaseSensitivity test fail!");
+#endif
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool WorkingFreqTest(WorkParams workParams)
+        {
+            byte workingFreq;
+
+            do
+            {
+                workingFreq = (byte)new Random().Next(1, 51);
+            } while (workingFreq % 3 != 0);
+
+            workParams.WorkingFreq = workingFreq;
+            SetWorkFrequency(workParams);
+            Thread.Sleep(_requestDelay);
+            InitWorkFrequency(workParams);
+
+            if (workParams.WorkingFreq != workingFreq)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkingFreq test fail!");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool AlarmParamsTest(WorkParams workParams, byte testValue)
+        {
+            workParams.AlarmDuration = testValue;
+            workParams.AlarmVolume = testValue;
+            workParams.AlarmTone = testValue;
+            SetAlarmParams(workParams);
+            Thread.Sleep(_requestDelay);
+            InitAlarmParams(workParams);
+
+            if (workParams.AlarmDuration != testValue || workParams.AlarmVolume != testValue || workParams.AlarmTone != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t AlarmParams sound test fail!");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ClearPassageTest(WorkParams workParams)
+        {
+            ClearPassageCount();
+            Thread.Sleep(_requestDelay);
+            InitPassageCount(workParams);
+
+            if (workParams.ForwardAlarmsCount != 0 || workParams.ForwardPassageCount != 0 || workParams.BackwardAlarmsCount != 0 || workParams.BackwardPassageCount != 0)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t ClearPassage test fail!");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
         private void SetZonesWorkMode(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetZonesWorkMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
@@ -409,6 +516,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             {
                 workParams.ModelId = (byte)model.Value.ModelId;
 
+                Console.Write($"ModelBySensors: guess device is {model.Value.Name}");
                 return;
             }
 

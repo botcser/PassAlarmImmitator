@@ -36,7 +36,7 @@ namespace IRAPROM.MyCore.Device
         }
         private static void SendAndGetTcp(Command command)
         {
-#if DEBUG
+#if DEBUGG
             Console.WriteLine($"\nSendAndGetTcp: Send: {command.Ip}:{command.Port} :\n" +
                               $"Request:  {BitConverter.ToString(command.DatagramRequest)}");
 #endif
@@ -184,7 +184,7 @@ namespace IRAPROM.MyCore.Device
 
                         if (IsSentByServer(remoteIpEndPoint)) return;
 
-#if DEBUG
+#if DEBUGG
                         Console.WriteLine($"ListenUdp: UDP: Response: {BitConverter.ToString(bytes)}");
 #endif
 

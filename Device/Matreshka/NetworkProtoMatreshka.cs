@@ -97,7 +97,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public bool Send(byte[] bytes)
         {
-#if DEBUG
+#if DEBUGG
             Console.WriteLine($"\nNetworkProtoCommonDual: Send: {IPEndPoint.Address}:{IPEndPoint.Port} :\n" +
                               $"Request:  {BitConverter.ToString(bytes)}...");
 #endif
@@ -161,7 +161,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 return Array.Empty<byte>();
             }
 
-#if DEBUG
+#if DEBUGG
             Console.WriteLine($"Response: {BitConverter.ToString(bytes, 0, nRead)}\n");
 #endif
 

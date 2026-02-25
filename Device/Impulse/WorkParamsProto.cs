@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.Model.WP;
+using PassAlarmSimulator.Device;
 
 namespace IRAPROM.MyCore.Device.Impulse
 {
-    public class WorkParamsProto : CommandExecutor, IWorkParamsProto
+    public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private int WorkParamsLength11 = 82; 
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
@@ -23,6 +24,8 @@ namespace IRAPROM.MyCore.Device.Impulse
         {
             _responseWorkParamsDatagram = ExecuteGetCommandRaw(Constants.GetWorkParams.code);
             NetworkProto.Disconnect();
+
+            if (_responseWorkParamsDatagram == null) throw new Exception($"GetWorkParams: Устройство не вернуло настройки! (Импульс) {NetworkProto.Ip}");
 
             return ParseWorkParams(_responseWorkParamsDatagram);
         }
@@ -129,115 +132,34 @@ namespace IRAPROM.MyCore.Device.Impulse
             ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
         }
 
-        public bool SelfTest(WorkParams workParams)
+        public bool StaticTest(WorkParams workParams)
         {
-            byte testValue = 0x02;
-            var result = true;
-            
-            WorkParamsTest();
-            HandTest();
-
-            return result;
-
-
-            void WorkParamsTest()
-            {
-                workParams.BaseSensitivity = testValue;
-                workParams.AlarmDuration = testValue;
-                workParams.AlarmVolume = testValue;
-                workParams.AlarmTone = testValue;
-                workParams.ZonesSensorMode = testValue;
-                workParams.AlarmInfraMode = (byte)(testValue - testValue);      // TODO: PC1800 UNUSED;
-                workParams.SensorsSensitivity = new[]
-                {
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                };
-                byte workingFreq = 2;
-                do
-                {
-                    workingFreq = (byte)new Random().Next(51);
-                } while (workingFreq % 2 != 0);
-                workParams.WorkingFreq = workingFreq;
-
-                SetWorkParams(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams = GetWorkParams();
-
-                if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue ||
-                    workParams.SensorsSensitivity[06] != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
-#endif
-                    result = false;
-                }
-
-                if (workParams.BaseSensitivity != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t BaseSensitivity test fail!");
-#endif
-                    result = false;
-                }
-
-                workParams.WorkProgram = testValue;
-                SetWorkProgramScene(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams = GetWorkParams();
-                
-                if (workParams.WorkProgram != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkProgram test fail!");
-#endif
-                    result = false;
-                }
-
-                if (workParams.ZonesSensorMode != testValue)      // TODO: PC1800 UNUSED
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
-#endif
-                    result = false;
-                }
-
-                if (workParams.WorkingFreq != workingFreq)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkingFreq test fail!");
-#endif
-                    result = false;
-                }
-
-                if (workParams.AlarmDuration != testValue || workParams.AlarmVolume != testValue ||
-                    workParams.AlarmTone != testValue)
-                {
-#if DEBUG
-                    Console.WriteLine($"SelfTest: {workParams.IP}:\t AlarmParams test fail!");
-#endif
-                    result = false;
-                }
-            }
-            
-            void HandTest()
-            {
-                testValue = 0x09;
-                
-                SetWorkParams(workParams);
-                Thread.Sleep(_requestDelay);
-
-                workParams.WorkProgram = testValue;
-                SetWorkProgramScene(workParams);
-                
-                ClearPassageCount();
-            }
+            return WorkParamsTest(workParams, 0x02);
         }
-        
+
+        public bool DynamicTest(WorkParams workParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void HandTest(WorkParams workParams)
+        {
+            byte testValue = 0x09;
+
+            SetWorkParams(workParams);
+            Thread.Sleep(_requestDelay);
+
+            workParams.WorkProgram = testValue;
+            SetWorkProgramScene(workParams);
+
+            ClearPassageCount();
+        }
+
+        public Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CallPassage()
         {
             throw new NotImplementedException();
@@ -246,6 +168,96 @@ namespace IRAPROM.MyCore.Device.Impulse
         public void CallAlarm()
         {
             throw new NotImplementedException();
+        }
+
+        private bool WorkParamsTest(WorkParams workParams, byte testValue)
+        {
+            var result = true;
+
+            workParams.BaseSensitivity = testValue;
+            workParams.AlarmDuration = testValue;
+            workParams.AlarmVolume = testValue;
+            workParams.AlarmTone = testValue;
+            workParams.ZonesSensorMode = testValue;
+            workParams.AlarmInfraMode = (byte)(testValue - testValue);      // TODO: PC1800 UNUSED;
+            workParams.SensorsSensitivity = new[]
+            {
+                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                    (short)testValue,
+                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                    (short)testValue,
+            };
+
+            byte workingFreq = 2;
+
+            do
+            {
+                workingFreq = (byte)new Random().Next(51);
+            } while (workingFreq % 2 != 0);
+
+            workParams.WorkingFreq = workingFreq;
+
+            SetWorkParams(workParams);
+            Thread.Sleep(_requestDelay);
+
+            workParams = GetWorkParams();
+
+            if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue || workParams.SensorsSensitivity[06] != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
+#endif
+                result = false;
+            }
+
+            if (workParams.BaseSensitivity != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t BaseSensitivity test fail!");
+#endif
+                result = false;
+            }
+
+            workParams.WorkProgram = testValue;
+            SetWorkProgramScene(workParams);
+            Thread.Sleep(_requestDelay);
+
+            workParams = GetWorkParams();
+
+            if (workParams.WorkProgram != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkProgram test fail!");
+#endif
+                result = false;
+            }
+
+            if (workParams.ZonesSensorMode != testValue)      // TODO: PC1800 UNUSED
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
+#endif
+                result = false;
+            }
+
+            if (workParams.WorkingFreq != workingFreq)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkingFreq test fail!");
+#endif
+                result = false;
+            }
+
+            if (workParams.AlarmDuration != testValue || workParams.AlarmVolume != testValue ||
+                workParams.AlarmTone != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t AlarmParams test fail!");
+#endif
+                result = false;
+            }
+
+            return result;
         }
 
         private WorkParams ParseWorkParams(byte[] response)

@@ -3,10 +3,11 @@ using IRAPROM.MyCore.Device.Impulse;
 using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
+using PassAlarmSimulator.Device;
 
 namespace IRAPROM.MyCore.Device
 {
-    public abstract class DeviceMetalDetector: CardViewItem, IEquatable<DeviceMetalDetector>
+    public abstract class DeviceMetalDetector: CardItem, IEquatable<DeviceMetalDetector>
     {
         [JsonIgnore]
         public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new IRAPROM.MyCore.Device.Matreshka.Constants(), new Constants() };
@@ -21,7 +22,8 @@ namespace IRAPROM.MyCore.Device
             };
 
         public Guid UID { get; set; }
-        public string Name { get; set; }
+        public string Name { get => _name; set { _name = value; TitleName = value; } }
+
         public WorkParams WorkParams { get; set; }
 
         [JsonProperty]
@@ -31,8 +33,8 @@ namespace IRAPROM.MyCore.Device
         public virtual string Mask { get => _mask; set { _mask = value; if (WorkParams != null) WorkParams.Mask = value; } }
         public virtual string Gateway { get => _gateway; set { _gateway = value; if (WorkParams != null) WorkParams.Gateway = value; } }
         public virtual string MAC { get => _mac; set { _mac = value; if (WorkParams != null) WorkParams.MAC = value; } }
-        public virtual short PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set { _portTCP = value; if (WorkParams != null) WorkParams.PortTCP = value; } }
-        public virtual short PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set { _portUDP = value; if (WorkParams != null) WorkParams.PortUDP = value; } }
+        public virtual short PortTCP { get => _portTCP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portTCP; set { _portTCP = value; if (WorkParams != null) WorkParams.PortTCP = value; } }
+        public virtual short PortUDP { get => _portUDP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portUDP; set { _portUDP = value; if (WorkParams != null) WorkParams.PortUDP = value; } }
         [JsonIgnore]
         public virtual List<int> GridCellDefinitions { get; set; }
         [JsonIgnore]
@@ -62,6 +64,7 @@ namespace IRAPROM.MyCore.Device
         private string _mask;
         private string _gateway;
 
+        public string _name;
 
         protected DeviceMetalDetector()
         {
@@ -125,9 +128,32 @@ namespace IRAPROM.MyCore.Device
 #endif
         }
 
-        public virtual bool SelfTest()
+        public virtual bool StaticTest()
         {
-            return WorkParamsProto.SelfTest(WorkParams);
+#if DEBUG
+            Console.Write($"StaticTest: GetWorkParams {_ip}:{MAC}... ");
+#endif
+
+            WorkParams = WorkParamsProto.GetWorkParams();
+            WorkParams.MAC = MAC;
+            WorkParams.IP = IP;
+
+            var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
+#if DEBUG
+            Console.WriteLine($"{(result ? " OK." : "FAIL!")}");
+#endif
+
+            return result;
+        }
+
+        public virtual void HandTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<bool> DynamicTest(int milliSecondsTimeout)
+        {
+            return ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout);
         }
 
         public virtual void SimulatePassage()

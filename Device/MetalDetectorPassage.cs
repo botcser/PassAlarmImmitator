@@ -1,11 +1,10 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace IRAPROM.MyCore.Device
 {
     [Serializable]
-    public class MetalDetectorPassage : INotifyPropertyChanged, INotifyCollectionChanged
+    public class MetalDetectorPassage : INotifyPropertyChanged
     {            
         public byte[] Sensors;
         public byte[] SensorsProcessed;
@@ -17,7 +16,13 @@ namespace IRAPROM.MyCore.Device
         public string LogId { get; set; }
         public string MAC { get; set; }
         public string LastAlarmTime { get; set; }
-        public string LastPassageTime { get => _lastPassageTime; set { _lastPassageTime = value; OnPropertyChanged(); } }
+
+        public string LastPassageTime
+        {
+            get => Time.ToString("dd.MM.yy HH:mm:ss");
+            //set { _lastPassageTime = value; OnPropertyChanged(); }
+            set { OnPropertyChanged(); }
+        }
         public bool IsAlarm { get => _isAlarm; set { _isAlarm = value; OnPropertyChanged(); } }
         public DateTime Time { get; set; }
 
@@ -32,7 +37,6 @@ namespace IRAPROM.MyCore.Device
         private int _exitPassagesCount;
         private int _exitAlarmCount;
         private bool _isAlarm;
-        private string _lastPassageTime;
         private List<List<bool>> _alarmCells;
 
         public MetalDetectorPassage() { }
@@ -61,20 +65,6 @@ namespace IRAPROM.MyCore.Device
             ExitAlarmCount = exitAlarmCount;
         }
         
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            CollectionChanged?.Invoke(this, e);
-        }
-
         public void Clean()
         {
             EnterPassagesCount = EnterAlarmCount = ExitPassagesCount = ExitAlarmCount = 0;
@@ -100,6 +90,19 @@ namespace IRAPROM.MyCore.Device
             Time = default;
             LastPassageTime = LastAlarmTime = Time.ToString("dd.MM.yy HH:mm:ss");
             IsAlarm = false;
+        }
+
+        public virtual MetalDetectorPassage Clone()
+        {
+            return (MetalDetectorPassage)MemberwiseClone();
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

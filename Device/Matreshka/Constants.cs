@@ -6,47 +6,47 @@ namespace IRAPROM.MyCore.Device.Matreshka
     public class Constants : FamilyInfo
     {
         public static byte[] RequestMagicNumber = { 0x40, 0x23, 0x24 }; // @#$
-        public static byte[] ResponseMagicNumber = { 0x41, 0x50, 0x3E }; // AY>
+        public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
         public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
         public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x30, 0x30, 0x0D, 0x0A };
         public static int MetaInfoLength = 19;
         
-        public static (short code, int responseLenght, string name) GetNetworkParams = (0x0021, MetaInfoLength + 16, "GetNetworkParams");
-        public static (short code, int responseLenght, string name) GetBaseSensitivity = (0x0022, MetaInfoLength + 1, "GetBaseSensitivity");
-        public static (short code, int responseLenght, string name) GetZonesSensitivity3 = (0x0023, MetaInfoLength + 12, "GetZonesSensitivity3");
-        public static (short code, int responseLenght, string name) GetZonesSensitivity6 = (0x0023, MetaInfoLength + 24, "GetZonesSensitivity6");
-        public static (short code, int responseLenght, string name) GetZonesSensitivity11 = (0x0023, MetaInfoLength + 44, "GetZonesSensitivity11");
-        public static (short code, int responseLenght, string name) GetWorkFrequency = (0x0024, MetaInfoLength + 1, "GetWorkFrequency");
-        public static (short code, int responseLenght, string name) GetZonesWorkMode = (0x0025, MetaInfoLength + 3, "GetZonesWorkMode");
-        public static (short code, int responseLenght, string name) GetZonesWorkModeV33 = (0x0025, MetaInfoLength + 4, "GetZonesWorkMode");
-        public static (short code, int responseLenght, string name) GetAlarmParams = (0x0026, MetaInfoLength + 3, "GetAlarmParams");
-        public static (short code, int responseLenght, string name) GetTime = (0x0027, MetaInfoLength + 7, "GetTime");
-        public static (short code, int responseLenght, string name) GetSerialNumber = (0x0028, MetaInfoLength + 12, "GetSerialNumber");
-        public static (short code, int responseLenght, string name) GetPassageCount = (0x0029, MetaInfoLength + 5, "GetPassageCount");
-        public static (short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, MetaInfoLength + 1, "GetWorkProgramScene");
-        public static (short code, int responseLenght, string name) GetAlarmLogs = (0x002B, 0, "GetAlarmLogs");
+        public static (short deviceCode, short code, int responseLenght, string name) GetNetworkParams = (0x0021, 0x0021, MetaInfoLength + 16, "GetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) GetBaseSensitivity = (0x0022, 0x0022, MetaInfoLength + 1, "GetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity3 = (0x023, 0x00233, MetaInfoLength + 12, "GetZonesSensitivity3");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity6 = (0x023, 0x00236, MetaInfoLength + 24, "GetZonesSensitivity6");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity11 = (0x023, 0x00239, MetaInfoLength + 44, "GetZonesSensitivity11");
+        public static (short deviceCode, short code, int responseLenght, string name) GetWorkFrequency = (0x0024, 0x0024, MetaInfoLength + 1, "GetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkMode = (0x0025, 0x0025, MetaInfoLength + 3, "GetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkModeV33 = (0x0025, 0x00255, MetaInfoLength + 4, "GetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) GetAlarmParams = (0x0026, 0x0026, MetaInfoLength + 3, "GetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) GetTime = (0x0027, 0x0027, MetaInfoLength + 7, "GetTime");
+        public static (short deviceCode, short code, int responseLenght, string name) GetSerialNumber = (0x0028, 0x0028, MetaInfoLength + 12, "GetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) GetPassageCount = (0x0029, 0x0029, MetaInfoLength + 5, "GetPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, 0x002A, MetaInfoLength + 1, "GetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) GetAlarmLogs = (0x002B, 0x002B, 0, "GetAlarmLogs");
 
-        public static (short code, int responseLenght, string name) SetNetworkParams = (0x0001, MetaInfoLength, "SetNetworkParams");
-        public static (short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, MetaInfoLength, "SetBaseSensitivity");
-        public static (short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, MetaInfoLength, "SetZonesSensitivity");
-        public static (short code, int responseLenght, string name) SetWorkFrequency = (0x0004, MetaInfoLength, "SetWorkFrequency");
-        public static (short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, MetaInfoLength, "SetZonesWorkMode");
-        public static (short code, int responseLenght, string name) SetAlarmParams = (0x0006, MetaInfoLength, "SetAlarmParams");
-        public static (short code, int responseLenght, string name) SetTime = (0x0007, MetaInfoLength, "SetTime");
-        public static (short code, int responseLenght, string name) SetSerialNumber = (0x0008, MetaInfoLength, "SetSerialNumber");
-        public static (short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, MetaInfoLength, "SetWorkProgramScene");
-        public static (short code, int responseLenght, string name) ClearPassageCount = (0x0009, MetaInfoLength, "ClearPassageCount");
-        public static (short code, int responseLenght, string name) CallPassage = (0x41, MetaInfoLength, "CallPassage");
-        public static (short code, int responseLenght, string name) CallAlarm = (0x42, MetaInfoLength, "CallAlarm");
+        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, MetaInfoLength, "SetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, MetaInfoLength, "SetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, MetaInfoLength, "SetZonesSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, MetaInfoLength, "SetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, 0x0005, MetaInfoLength, "SetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, MetaInfoLength, "SetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, MetaInfoLength, "SetTime");
+        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, MetaInfoLength, "SetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, MetaInfoLength, "SetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, MetaInfoLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, MetaInfoLength, "CallPassage");
+        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, MetaInfoLength, "CallAlarm");
         
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
+                { PCV3300Name, (0x002A, new List <short>{ 11, 22, 33 }, PCV3300Name, new List<int> {11, 3}, 11 ) },
                 { PCZ3300MKName, (0x0020, new List<short>{ 11, 22, 33 }, PCZ3300MKName, new List<int> {11, 3}, 6 )},
                 { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name, new List<int> {3, 3}, 6 )}, 
                 { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name, new List<int> {3, 3}, 6 ) }, 
                 { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name, new List<int> {6, 3}, 6 ) }, 
                 { PCVx1800Name, (0x0033, new List<short>{ 6, 12, 18 }, PCVx1800Name, new List<int> {6, 3}, 6 ) }, 
-                { PCV3300Name, (0x002A, new List <short>{ 11, 22, 33 }, PCV3300Name, new List<int> {11, 3}, 11 ) }, 
                 { MV6Name, (0x0064, new List <short>{ 6, 6, 6 }, MV6Name, new List<int> {6, 3}, 6 ) },                    // Монопанели передают режим ЗО = 2
                 { MVx6Name, (0x0065, new List <short>{ 6, 6, 6 }, MVx6Name, new List<int> {6, 3}, 6 ) },
                 { UnknownName, (0x00FE, new List <short>{ 6, 6, 6 }, UnknownName, new List<int> {6, 1}, 6 ) },
@@ -72,13 +72,13 @@ namespace IRAPROM.MyCore.Device.Matreshka
         private const string MVx6Name = "M Vx 6";
         private const string UnknownName = "Unknown Matreshka";
 
-        public static List<(short, int, string)> GetCommands = new List<(short, int, string)>()
+        public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
             GetBaseSensitivity, GetWorkFrequency, GetAlarmParams, GetZonesWorkMode, GetPassageCount, GetNetworkParams, GetTime,
             GetSerialNumber, GetWorkProgramScene, GetAlarmLogs, GetZonesSensitivity11, GetZonesSensitivity6, GetZonesSensitivity3,
         };
 
-        public static List<(short, int, string)> SetCommands = new List<(short, int, string)>()
+        public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
             SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetZonesWorkMode, SetNetworkParams, SetTime,
             SetSerialNumber, SetWorkProgramScene, ClearPassageCount, CallPassage, CallAlarm

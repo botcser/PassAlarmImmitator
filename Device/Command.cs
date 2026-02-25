@@ -6,7 +6,8 @@ namespace IRAPROM.MyCore.Device
 {
     public class Command
     {
-        public short CommandCode;
+        public short Code;
+        public short DeviceCommandCode;
         public DateTime RequestDateTime;
         public DateTime ResponseDateTime;
         public ProtocolType Protocol;
@@ -50,34 +51,38 @@ namespace IRAPROM.MyCore.Device
 
         public Command() { }
 
-        public Command(byte[] datagramRequest, string ip, string port, ProtocolType protocol)
+        public Command(byte[] datagramRequest, short code, string ip, string port, ProtocolType protocol)
         {
+            Code = code;
             Ip = ip;
             Port = port;
             DatagramRequest = datagramRequest;
             Protocol = protocol;
         }
 
-        public Command(short commandCode, string name = "")
+        public Command(short deviceCommandCode, short code, string name = "")
         {
-            CommandCode = commandCode;
-            Name = name.IsNullOrEmpty() ? commandCode.ToString() : name;
+            Code = code;
+            DeviceCommandCode = deviceCommandCode;
+            Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
         }
 
-        public Command(byte[] datagramRequest, short commandCode, string name = "")
+        public Command(byte[] datagramRequest, short deviceCommandCode, short code, string name = "")
         {
+            Code = code;
             DatagramRequest = datagramRequest;
-            CommandCode = commandCode;
-            Name = name.IsNullOrEmpty() ? commandCode.ToString() : name;
+            DeviceCommandCode = deviceCommandCode;
+            Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
         }
 
-        public Command(byte[] datagramRequest, int responseLength, short commandCode, string name = "")
+        public Command(byte[] datagramRequest, int responseLength, short deviceCommandCode, short code, string name = "")
         {
+            Code = code;
             DatagramRequest = datagramRequest;
             ResponseLength = responseLength;
             NeedResponse = responseLength > 0;
-            CommandCode = commandCode;
-            Name = name.IsNullOrEmpty() ? commandCode.ToString() : name;
+            DeviceCommandCode = deviceCommandCode;
+            Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
         }
 
         public void AddResponse(byte[] response, string portReceived)

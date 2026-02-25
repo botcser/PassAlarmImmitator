@@ -10,15 +10,16 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static int AfterZonesSensitivityBytesCountSuppose = 13;
         public static int ZonesSensitivityStartIndex = 9;
         public static byte[] FindDatagram = { 0x5B, 0xaa, 0x40 };
+        public static byte[] HeaderMagicNumber = { 0x5C, 0x17, 0xAE };
 
-        public static (short code, int responseLenght, string name) GetWorkParams = (0xA1, 123, "GetWorkParams");
-        public static (short code, int responseLenght, string name) GetPassageCountD = (0xAD, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountD");
-        public static (short code, int responseLenght, string name) GetPassageCountE = (0xAE, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountE");
+        public static (short deviceCode, short code, int responseLenght, string name) GetWorkParams = (0xA1, 0xA1, 123, "GetWorkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) GetPassageCountD = (0xAD, 0xAD, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountD");
+        public static (short deviceCode, short code, int responseLenght, string name) GetPassageCountE = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountE");
 
-        public static (short code, int responseLenght, string name) SetNetworkParams = (0xC1, DatagramMetaInfoLength + ChecksumLength, "SetNetworkParams");
-        public static (short code, int responseLenght, string name) SetWorkParams = (0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
-        public static (short code, int responseLenght, string name) SetWorkProgramScene = (0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
-        public static (short code, int responseLenght, string name) ClearPassageCount = (0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0xC1, 0xC1, DatagramMetaInfoLength + ChecksumLength, "SetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkParams = (0xA5, 0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x14, 0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
 
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
         {
@@ -29,12 +30,12 @@ namespace IRAPROM.MyCore.Device.Impulse
             { UnknownName, (0x00ff, new List <short>{ 6 }, UnknownName, new List < int > { 6, 1 }, 6) },
         };      
         
-        public static List<(short, int, string)> GetCommands = new List<(short, int, string)>()
+        public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
             GetWorkParams, GetPassageCountD, GetPassageCountE
         };
 
-        public static List<(short, int, string)> SetCommands = new List<(short, int, string)>()
+        public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
             SetWorkParams,ClearPassageCount,SetWorkProgramScene
         }; 

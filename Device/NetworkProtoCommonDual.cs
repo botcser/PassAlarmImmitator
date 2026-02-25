@@ -102,7 +102,7 @@ namespace IRAPROM.MyCore.Device
 
         public bool Send(byte[] bytes)
         {
-#if DEBUG
+#if DEBUGG
             Console.WriteLine($"\nNetworkProtoCommonDual: Send: {IPEndPoint.Address}:{IPEndPoint.Port} :\n" +
                               $"Request:  {BitConverter.ToString(bytes)}...");
 #endif

@@ -1,34 +1,63 @@
 ﻿using Extensions;
-using IRAPROM.MyCore.Device.Matreshka;
+using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
+using System.Diagnostics;
 
-namespace Validator
+namespace PassAlarmSimulator.Validator
 {
     public class Validator : IStart
     {
+        public static List<DeviceMetalDetector> FoundDevices = new List<DeviceMetalDetector>();
+
         private readonly DeviceNetworkServer _networkServerMatreshka;
         private readonly DeviceNetworkServer _networkServerImpulse;
         private CancellationTokenSource _cancellationTokenSource;
+        private readonly string _ip;
 
-        public Validator()
+        private Stopwatch _watchdog = new Stopwatch();
+
+        public Validator(string ip)
         {
+            _ip = ip;
             _cancellationTokenSource = new CancellationTokenSource();
-            _networkServerMatreshka = new DeviceNetworkServer(Constants.PortUDPDefault, Constants.PortUDPListenDefault, Constants.PortTCPDefault, new DatagramProto(), _cancellationTokenSource);
-            _networkServerImpulse = new DeviceNetworkServer(Constants.PortUDPDefault, Constants.PortUDPListenDefault, Constants.PortTCPDefault, new DatagramProto(), _cancellationTokenSource);
+
+            _networkServerMatreshka = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPDefault, 
+                IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault,
+                IRAPROM.MyCore.Device.Matreshka.Constants.PortTCPDefault,
+                $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator",
+                new IRAPROM.MyCore.Device.Matreshka.DatagramProto(),
+                _cancellationTokenSource);
+
+            _networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
+                IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
+                IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault, 
+                $"{Directory.GetCurrentDirectory()}/ImpulseSimulator",
+                new IRAPROM.MyCore.Device.Impulse.DatagramProto(), 
+                _cancellationTokenSource);
         }
 
         public Task Start()
         {
             Console.WriteLine($"Validator: started");
 
-            var task = new Task(() =>
+            var task = new Task(async void () =>
             {
-                var networkServer = new Task(() =>
+                try
                 {
-                    _networkServerMatreshka.Run();
-                });
+                    StartListeners();
+                    FindDevices(_ip);
 
-                networkServer.Start();
+                    await Validate();
+
+                    Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
+                    Console.ReadLine();
+                    System.Environment.Exit(0);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"\nValidator: EX: {e.Message}!");
+                }
             });
 
             task.Start();
@@ -36,9 +65,109 @@ namespace Validator
             return task;
         }
 
+        private void StartListeners()
+        {
+            Console.WriteLine($"Validator: listening ports: {IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault}, {IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault}...");
+
+            new UdpListenerServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, null)?.StartListening();
+            new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault, null)?.StartListening();
+
+            Thread.Sleep(1000);
+        }
+
         public void Shutdown()
         {
             _networkServerMatreshka.Shutdown();
         }
+
+        private void FindDevices(string ip)
+        {
+            DeviceMetalDetector.FamilyInfoVariants[0].Find(_ip, UDPSender.Instance);
+
+            WaitForSeconds(4);
+
+            PrintFoundDevices();
+        }
+
+        private void PrintFoundDevices()
+        {
+            if (FoundDevices.Count == 0)
+            {
+                Console.WriteLine("No suitable devices were found!");
+
+                return;
+            }
+
+            Console.WriteLine($"\nFound {FoundDevices.Count} devices:");
+
+            FoundDevices.ForEach(PrintInfo);
+        }
+
+        private void PrintInfo(DeviceMetalDetector device)
+        {
+            Console.WriteLine($"\tSeries: {device.SeriesName} \tModel: {device.ModelName} \tIP: {device.IP} \tMAC: {device.MAC}");
+        }
+
+        private void WaitForSeconds(int seconds)
+        {
+            foreach (var second in Enumerable.Range(1, seconds))
+            {
+                Thread.Sleep(1000);
+
+                Console.WriteLine($"... wait for {second}");
+            }
+        }
+
+        private async Task Validate()
+        {
+            if (FoundDevices.Count == 0) return;
+
+            if (!StaticTests()) return;
+
+            //if (!await DynamicTests()) return;
+        }
+
+        private async Task<bool> DynamicTests()                             // assume to start after Static tests!
+        {
+            Console.WriteLine($"\n____________Starting Dynamic Tests...");
+
+            var testTasks = FoundDevices.Select(x => x.DynamicTest(20000));
+
+            var results = await Task.WhenAll(testTasks);
+
+            var success = results.All(result => result);
+
+            Console.WriteLine($"{(success ? "...Dynamic Tests OK." : "...Dynamic Tests FAIL!")}");
+
+            Console.WriteLine($"\nDynamic Tests done____________");
+
+            return success;
+        }
+
+
+        private bool StaticTests()
+        {
+            Console.WriteLine($"\n____________Starting Static Tests...");
+
+            _watchdog.Start();
+
+            var success = FoundDevices.All(device => device.StaticTest());
+
+            _watchdog.Stop();
+
+            Console.WriteLine("Have all device's pass counters been reset? (press 'y' if yes)");
+
+            if (Console.ReadLine() != "y")
+            {
+                success = false;
+            }
+
+            Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
+            
+            Console.WriteLine($"\nStatic Tests done____________");
+
+            return success;
+        }
+
     }
 }

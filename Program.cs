@@ -1,5 +1,7 @@
 ﻿
 using Extensions;
+using IRAPROM.MyCore.Device;
+using PassAlarmSimulator.Validator;
 
 await App.Main();
 
@@ -25,7 +27,8 @@ public class App
                     task = new PassAlarmSimulator.PassAlarmSimulator();
                     break;
                 case "2":
-                    task = new Validator.Validator();
+                    Console.WriteLine($"Testing in 192.168.16.255 network...");
+                    task = new Validator("192.168.16.255");
                     break;
                 case "0":
                     task?.Shutdown();

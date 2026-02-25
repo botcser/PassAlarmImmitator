@@ -1,10 +1,13 @@
-﻿using IRAPROM.MyCore.DBModel;
+﻿using Casualbunker.Server.Common;
+using IRAPROM.MyCore.DBModel;
 using IRAPROM.MyCore.Model.MD;
+using System.Net.Sockets;
+using IRAPROM.MyCore.Device;
 
 namespace IRAPROM.MyCore.Model.WP
 {
     [Serializable]
-    public class WorkParams
+    public class WorkParams : IEquatable<WorkParams>
     {
         public byte AlarmMode; // 86 байт данных
         public byte ZonesSensorMode { get; set; } = 0; // кол-во зон
@@ -34,7 +37,7 @@ namespace IRAPROM.MyCore.Model.WP
         public int BackwardAlarmsCount { get; set; }
         public long Password { get; set; }
         public string MAC { get; set; }
-
+        
         public WorkParams() { }
 
         public WorkParams(MetDetector rec)
@@ -104,6 +107,7 @@ namespace IRAPROM.MyCore.Model.WP
             }
 
         }
+
         public void GetMetSensorsFieldsFromArray(MetDetector rec)
         {
             rec.Sens01 = SensorsSensitivity[0];
@@ -113,12 +117,16 @@ namespace IRAPROM.MyCore.Model.WP
             rec.Sens05 = SensorsSensitivity[4];
             rec.Sens06 = SensorsSensitivity[5];
 
-            rec.Sens07 = SensorsSensitivity[6];
-            rec.Sens08 = SensorsSensitivity[7];
-            rec.Sens09 = SensorsSensitivity[8];
-            rec.Sens10 = SensorsSensitivity[9];
-            rec.Sens11 = SensorsSensitivity[10];
-            rec.Sens12 = SensorsSensitivity[11];
+            if (rec.ModelId != (short)MetalDetectorModel.PCVx900)
+            {
+
+                rec.Sens07 = SensorsSensitivity[6];
+                rec.Sens08 = SensorsSensitivity[7];
+                rec.Sens09 = SensorsSensitivity[8];
+                rec.Sens10 = SensorsSensitivity[9];
+                rec.Sens11 = SensorsSensitivity[10];
+                rec.Sens12 = SensorsSensitivity[11];
+            }
         }
 
         public void SetSensorsFieldsToArray(MetDetector rec)
@@ -180,19 +188,130 @@ namespace IRAPROM.MyCore.Model.WP
 
             }
         }
-
-        public void InitMetDetector(MetDetector rec)
+        
+        private static WorkParams ParseImpulseResponse(byte[] response, MetalDetectorModel model, MetalDetectorSeries series)
         {
-            rec.ZonesSensorMode = ZonesSensorMode;
-            rec.InfraredPassCounterMode = InfraredPassCounterMode;
-            rec.AlarmTimeLen = AlarmDuration;
-            rec.AlarmVol = AlarmVolume;
-            rec.AlarmTone = AlarmTone;
-            rec.BaseSensitivity = BaseSensitivity;
-            rec.WorkingFreq = WorkingFreq;
-            rec.WorkProgram = WorkProgram;
-            rec.Model = (MetalDetectorModel)ModelId;
-            GetMetSensorsFieldsFromArray(rec);
+            var resultWorkParams = new WorkParams();
+            var zonesCount = (byte)((response[86] >> 2) & 0x03); //Кол-во зон
+            
+            if (model == MetalDetectorModel.Unknown)
+            {
+                switch (series)
+                {
+                    case MetalDetectorSeries.Impulse:
+                        model = (MetalDetectorModel)response[80];
+                        break;
+                    case MetalDetectorSeries.Unknown:
+                    case MetalDetectorSeries.BlockPost:
+                    case MetalDetectorSeries.Matryoshka:
+                    default:
+                        break;
+                }
+            }
+
+            //Режим счетчика проходов
+            switch (model)
+            {
+                case MetalDetectorModel.PC600MKX:
+                case MetalDetectorModel.PC1800MKZ:
+                case MetalDetectorModel.PC4400MK:
+                case MetalDetectorModel.PC600MKZ:
+                case MetalDetectorModel.PC4400MKZ:
+                case MetalDetectorModel.PC4400MKX:
+                case MetalDetectorModel.PC6300MKZ:
+                case MetalDetectorModel.PC6300MKX:
+                    resultWorkParams.AlarmMode = response[86];
+                    resultWorkParams.InfraredPassCounterMode = (byte)(response[85] & 0x0f);
+                    resultWorkParams.ZonesSensorMode = (byte)(response[86] >> 6);
+                    break;
+                case MetalDetectorModel.PCVx900:
+                case MetalDetectorModel.Unknown:
+                case MetalDetectorModel.z400:
+                case MetalDetectorModel.x400:
+                case MetalDetectorModel.z600:
+                case MetalDetectorModel.x600:
+                case MetalDetectorModel.MZ6MK:
+                case MetalDetectorModel.z1200:
+                case MetalDetectorModel.x1200:
+                case MetalDetectorModel.z1800:
+                case MetalDetectorModel.x1800:
+                case MetalDetectorModel.PCV900:
+                case MetalDetectorModel.PCV1800:
+                case MetalDetectorModel.PCV33006:
+                case MetalDetectorModel.PCV4800:
+                case MetalDetectorModel.PCV6300:
+                case MetalDetectorModel.PCV9300:
+                case MetalDetectorModel.PCVx1800:
+                case MetalDetectorModel.PCVx3300:
+                case MetalDetectorModel.PCVx4800_MZmb:
+                case MetalDetectorModel.PCVx6300_MZmb:
+                case MetalDetectorModel.PCVx9300_MZ6MK:
+                case MetalDetectorModel.PCV90011:
+                case MetalDetectorModel.PCV180011:
+                case MetalDetectorModel.PCV3300:
+                case MetalDetectorModel.PCV480011:
+                case MetalDetectorModel.PCV630011_MV6mb:
+                case MetalDetectorModel.PCV930011:
+                case MetalDetectorModel.PCVx90011:
+                case MetalDetectorModel.PCVx180011:
+                case MetalDetectorModel.PCVx330011:
+                case MetalDetectorModel.PCVx480011:
+                case MetalDetectorModel.PCVx630011:
+                case MetalDetectorModel.PCVx930011:
+                case MetalDetectorModel.PCV480016_PCVi1800mb:
+                case MetalDetectorModel.PCV630016:
+                case MetalDetectorModel.PCV930016:
+                case MetalDetectorModel.PCVx480016_PCVi3300mb:
+                case MetalDetectorModel.PCVx630016:
+                case MetalDetectorModel.PCVx930016:
+                case MetalDetectorModel.MV6:
+                case MetalDetectorModel.MVx6:
+                case MetalDetectorModel.MV11_hz:
+                case MetalDetectorModel.MVx11_hz:
+                case MetalDetectorModel.MV16_hz:
+                case MetalDetectorModel.MVx16_hz:
+                default:
+                    var passCounterMode = (byte)(response[85] & 0x0f);              // WTF!!!
+                    //resultWorkParams.InfraredPassCounterMode = (byte)MDInfraredModeMonopanel.enItems.On;
+                    //resultWorkParams.ZonesSensorMode = (byte)MDSensorMode.enItems.Zones_0;
+                    break;
+            }
+
+            resultWorkParams.BaseSensitivity = response[76];
+            resultWorkParams.WorkingFreq = response[77];
+            resultWorkParams.AlarmDuration = response[78];
+            resultWorkParams.WorkProgram = response[79];
+            resultWorkParams.ModelId = response[80];
+            resultWorkParams.AlarmVolume = response[81];
+            resultWorkParams.AlarmTone = response[82];
+
+            var nSens = new int[12];
+
+            for (var i = 0; i < 6; i++)
+            {
+                nSens[i] = (response[2 * i + 9] << 8) + response[2 * i + 10];
+                resultWorkParams.SensorsSensitivity[i] = (short)nSens[i];
+            }
+
+            for (var i = 0; i < 6; i++)
+            {
+                //nSens[6+i] = (response[2 * i + 31] << 8) + response[2 * i + 32];
+                nSens[6 + i] = (response[2 * i + 21] << 8) + response[2 * i + 22];
+                resultWorkParams.SensorsSensitivity[6+i] = (short)nSens[6 + i];
+            }
+
+            return resultWorkParams;
+        }
+        
+        //-----------------------------------------------
+        
+
+        public bool Equals(WorkParams other)
+        {
+            return other != null && WorkProgram == other.WorkProgram && WorkingFreq == other.WorkingFreq && ExchangeFrontBack == other.ExchangeFrontBack && IP == other.IP &&
+                   InfraredPassCounterMode == other.InfraredPassCounterMode && AlarmTone == other.AlarmTone && AlarmInfraMode == other.AlarmInfraMode && AlarmLampSwapMode == other.AlarmLampSwapMode &&
+                   AlarmDuration == other.AlarmDuration && AlarmMode == other.AlarmMode && AlarmVolume == other.AlarmVolume && ForwardAlarmsCount == other.ForwardAlarmsCount && 
+                   ForwardPassageCount == other.ForwardPassageCount && ZoneMode == other.ZoneMode && ZonesSensorMode == other.ZonesSensorMode && MAC == other.MAC && ModelId == other.ModelId;
         }
     } //class WorkParams
 }

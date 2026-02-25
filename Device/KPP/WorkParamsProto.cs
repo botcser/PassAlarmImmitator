@@ -23,12 +23,7 @@ namespace IRAPROM.MyCore.Device.KPP
         {
             throw new NotImplementedException();
         }
-
-        public bool SelfTest(WorkParams workParams)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void ScanCommands(byte startCode, byte endCode)
         {
             throw new NotImplementedException();

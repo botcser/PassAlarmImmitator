@@ -5,16 +5,16 @@
         public List<Command> GetCommandsList = new List<Command>();
         public List<Command> SetCommandsList = new List<Command>();
 
-        public Commands(IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands)
+        public Commands(IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, int, string)> setCommands)
         {
             getCommands.ForEach(cmd =>
             {
-                GetCommandsList.Add(new Command(datagramProto.MakeRequestDatagram(cmd.Item1), cmd.Item2, cmd.Item1, cmd.Item3));
+                GetCommandsList.Add(new Command(datagramProto.MakeRequestDatagram(cmd.Item1), cmd.Item2, cmd.Item1, cmd.Item3, cmd.Item4));
             });
 
             setCommands.ForEach(cmd =>
             {
-                SetCommandsList.Add(new Command(cmd.Item1, cmd.Item3));
+                SetCommandsList.Add(new Command(cmd.Item1, cmd.Item4));
             });
         }
     }
