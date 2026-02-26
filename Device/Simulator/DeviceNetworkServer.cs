@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using IRAPROM.MyCore.Device;
+using System;
+using System.IO;
+using System.Net;
 using System.Net.Sockets;
-using IRAPROM.MyCore.Device;
 
 // ReSharper disable All
 
@@ -9,7 +11,7 @@ namespace PassAlarmSimulator.Device.Simulator
     public class DeviceNetworkServer : IDisposable
     {
         private static List<IPAddress> _localAddresses;
-        
+
         private readonly UdpClient _udpInputClient;
         private readonly TcpListener _tcpServer;
         private readonly int _inputUdpPort;
@@ -21,14 +23,16 @@ namespace PassAlarmSimulator.Device.Simulator
 
         private Task _tcpListener;
         private Task _udpListener;
-        
-        public DeviceNetworkServer(int inputUdpPort, int outputUdpPort, int tcpPort, string dirPath, IDatagramProto datagramProto, CancellationTokenSource cancellationTokenSource)
+        private bool _oldPC;
+
+        public DeviceNetworkServer(int inputUdpPort, int outputUdpPort, int tcpPort, IDatagramProto datagramProto, CancellationTokenSource cancellationTokenSource, string dirPath = null, bool oldPC = false)
         {
             _inputUdpPort = inputUdpPort;
             _outputUdpPort = outputUdpPort;
             _tcpPort = tcpPort;
             _datagramProto = datagramProto;
             _cancellationTokenSource = cancellationTokenSource;
+            _oldPC = oldPC;
 
             _commandExtractor = new CommandExtractor(dirPath);
             _tcpServer = new TcpListener(IPAddress.Any, _tcpPort);
@@ -39,7 +43,7 @@ namespace PassAlarmSimulator.Device.Simulator
         {
             try
             {
-                _tcpListener = StartTcpListener();
+                _tcpListener = StartTcpListener(_oldPC);
                 _udpListener = StartUdpListener();
 
                 Task.WaitAny(_tcpListener, _udpListener);
@@ -53,62 +57,134 @@ namespace PassAlarmSimulator.Device.Simulator
                 return false;
             }
 
-            return true; 
+            return true;
         }
 
         private async Task StartUdpListener()
         {
             Console.WriteLine($"UDP Listener started on port {_inputUdpPort}");
 
-            while (true)
+            try
             {
-                var result = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
-                var bytesCommand = FindResponse(result.Buffer, out var code);
-
-                Console.WriteLine($"Received UDP request from {result.RemoteEndPoint}: {BitConverter.ToString(result.Buffer)}: code {code}");
-                
-                using (var udpOutputClient = new UdpClient(_outputUdpPort))
+                while (true)
                 {
-                    udpOutputClient.Client.SendTimeout = TimeSpan.FromSeconds(5).Milliseconds;
+                    var request = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
+                    var code = _datagramProto.GetCodeFromDatagram(request.Buffer);
 
-                    await udpOutputClient.SendAsync(bytesCommand, bytesCommand.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+                    Console.WriteLine($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}: code {code:X2}");
+
+                    await SendAnswer(request.Buffer, code);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task SendAnswer(byte[] request, byte code, NetworkStream stream = null)
+        {
+            var bytesCommand = FindResponse(request, code);
+
+            Console.WriteLine($"Response: {BitConverter.ToString(bytesCommand)}");
+
+            if (bytesCommand == Array.Empty<byte>()) return;
+
+            if (stream == null)
+            {
+                await UDPSend(bytesCommand);
+            }
+            else
+            {
+                if (code == 0x41 || code == 0x42)                    //TODO
+                {
+                    await UDPSend(bytesCommand);
+                }
+                else
+                {
+                    await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
                 }
             }
         }
 
-        private async Task StartTcpListener()
+        private async Task StartTcpListener(bool oldPC = false)
         {
             _tcpServer.Start();
 
             Console.WriteLine($"TCP Listener started on port {_tcpPort}");
-
-            while (true)
+            try
             {
-                var client = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
-
-                Console.WriteLine("TCP Client connected!");
-
-                using (var stream = client.GetStream())
+                while (true)
                 {
+                    var client = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
                     var buffer = new byte[1024];
 
-                    await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
+                    Console.WriteLine("TCP Client connected!");
 
-                    var bytesCommand = FindResponse(buffer, out var code);
+                    using (var stream = client.GetStream())
+                    {
+                        while (client != null && client.Client != null && client.Connected)
+                        {
+                            var requestLen = await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
 
-                    Console.WriteLine($"Received TCP request from {client.Client.RemoteEndPoint}: {BitConverter.ToString(buffer)}: code {code}");
+                            if (requestLen == 0) break;
 
-                    await stream.WriteAsync(bytesCommand, 0, bytesCommand.Length, _cancellationTokenSource.Token);
+                            var request = new byte[requestLen];
+
+                            Array.Copy(buffer, 0, request, 0, requestLen);
+
+                            var code = _datagramProto.GetCodeFromDatagram(request);
+
+                            Console.WriteLine($"Received TCP request from {client.Client.RemoteEndPoint}: {BitConverter.ToString(request)}: code {code:X2}");
+
+                            switch (code)
+                            {
+                                case 0x42:
+                                    if (oldPC)
+                                    {
+                                        await SendAnswer(request, 0x41);
+                                        await SendAnswer(request, 0x42);
+                                        await SendAnswer(request, 0x41);
+                                    }
+                                    else
+                                    {
+                                        await SendAnswer(request, 0x41);
+                                        await SendAnswer(request, 0x42);
+                                    }
+                                    break;
+                                default:
+                                    await SendAnswer(request, code, stream);
+                                    break;
+                            }
+                        }
+                    }
+
+                    Console.WriteLine($"TCP Client closed!");
+
+                    client.Close();
+                    client.Dispose();
                 }
-
-                if (client == null || client.Client == null || !client.Connected) break;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
-        private byte[] FindResponse(byte[] request, out byte code)
+        private Task UDPSend(byte[] bytes)
         {
-            code = _datagramProto.GetCodeFromDatagram(request);
-            
+            _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(500).Milliseconds;
+
+            return Task.Run(() =>
+            {
+                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+            });
+        }
+
+        private byte[] FindResponse(byte[] request, byte code)          // TODO request
+        {
             return _commandExtractor.ExtractCommand(code);
         }
 

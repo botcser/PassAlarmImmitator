@@ -4,7 +4,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.MatreshkaSimulator
 {
     public class MatreshkaSimulator : DeviceSimulator
     {
-        public MatreshkaSimulator() : base(Constants.PortUDPDefault, Constants.PortUDPListenDefault, Constants.PortTCPDefault, $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator", new DatagramProto())
+        public MatreshkaSimulator(bool oldPC = false) : base(Constants.PortUDPDefault, Constants.PortUDPListenDefault, Constants.PortTCPDefault, $"{Directory.GetCurrentDirectory()}\\MatreshkaSimulator", new DatagramProto(), oldPC)
         {
 
         }

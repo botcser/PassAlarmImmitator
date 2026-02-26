@@ -18,7 +18,7 @@
 
         private string FindFileCommand(byte code)
         {
-            return Directory.GetFiles(_dirPath, $"{code}.txt").FirstOrDefault();
+            return Directory.GetFiles(_dirPath, $"{code:X2}.txt").FirstOrDefault();
         }
     }
 }

@@ -6,6 +6,12 @@ namespace PassAlarmSimulator
     public class PassAlarmSimulator : IStart
     {
         private MatreshkaSimulator _matreshkaSimulator;
+        private readonly bool _oldPC;
+
+        public PassAlarmSimulator(bool oldPC = false)
+        {
+            _oldPC = oldPC;
+        }
 
         public Task Start()
         {
@@ -13,7 +19,7 @@ namespace PassAlarmSimulator
 
             var task = new Task(() =>
             {
-                _matreshkaSimulator = new MatreshkaSimulator();
+                _matreshkaSimulator = new MatreshkaSimulator(_oldPC);
                 _matreshkaSimulator.Start();
             });
 
