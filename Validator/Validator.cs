@@ -25,16 +25,16 @@ namespace PassAlarmSimulator.Validator
             _networkServerMatreshka = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPDefault, 
                 IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault,
                 IRAPROM.MyCore.Device.Matreshka.Constants.PortTCPDefault,
-                $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator",
                 new IRAPROM.MyCore.Device.Matreshka.DatagramProto(),
-                _cancellationTokenSource);
+                _cancellationTokenSource,
+                $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator");
 
             _networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
                 IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
-                IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault, 
-                $"{Directory.GetCurrentDirectory()}/ImpulseSimulator",
+                IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault,
                 new IRAPROM.MyCore.Device.Impulse.DatagramProto(), 
-                _cancellationTokenSource);
+                _cancellationTokenSource,
+                $"{Directory.GetCurrentDirectory()}/ImpulseSimulator");
         }
 
         public Task Start()

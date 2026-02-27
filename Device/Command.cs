@@ -1,6 +1,7 @@
-﻿using System.Net.Sockets;
-using Extensions;
+﻿using Extensions;
 using Newtonsoft.Json;
+using System.Net.Sockets;
+using System.Xml.Linq;
 
 namespace IRAPROM.MyCore.Device
 {
@@ -60,6 +61,20 @@ namespace IRAPROM.MyCore.Device
             Protocol = protocol;
         }
 
+        public Command(short code, string name = "")
+        {
+            Code = DeviceCommandCode = code;
+            Name = name.IsNullOrEmpty() ? DeviceCommandCode.ToString() : name;
+        }
+
+        public Command(byte[] datagramRequest, string ip, string port, ProtocolType protocol)
+        {
+            Ip = ip;
+            Port = port;
+            DatagramRequest = datagramRequest;
+            Protocol = protocol;
+        }
+
         public Command(short deviceCommandCode, short code, string name = "")
         {
             Code = code;
@@ -75,7 +90,7 @@ namespace IRAPROM.MyCore.Device
             Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
         }
 
-        public Command(byte[] datagramRequest, int responseLength, short deviceCommandCode, short code, string name = "")
+        public Command(byte[] datagramRequest, short deviceCommandCode, short code, int responseLength, string name = "")
         {
             Code = code;
             DatagramRequest = datagramRequest;

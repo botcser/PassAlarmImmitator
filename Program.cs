@@ -1,5 +1,7 @@
 ﻿
 using Extensions;
+using IRAPROM.MyCore.Device;
+using PassAlarmSimulator.Validator;
 
 await App.Main();
 
@@ -10,7 +12,7 @@ public class App
     public static async Task Main()
     {
         Console.WriteLine("Hello, World!");
-        Console.WriteLine($"Choose the program, press number:\n\t 1 = PC Pass Alarm Simulator\n\t 2 = OLD PC Pass Alarm Simulator\n\t 3 = PC Validator\n\t 0 = Exit\n");
+        Console.WriteLine($"Choose the program, press number:\n\t 1 = PC Pass Alarm Simulator\n\t 2 = PC Validator\n\t 0 = Exit\n");
         
         var programNumber = "?";
         IStart task = null;
@@ -25,10 +27,8 @@ public class App
                     task = new PassAlarmSimulator.PassAlarmSimulator();
                     break;
                 case "2":
-                    task = new PassAlarmSimulator.PassAlarmSimulator(true);
-                    break;
-                case "3":
-                    task = new Validator.Validator();
+                    Console.WriteLine($"Testing in 192.168.16.255 network...");
+                    task = new Validator("192.168.16.255");
                     break;
                 case "0":
                     task?.Shutdown();

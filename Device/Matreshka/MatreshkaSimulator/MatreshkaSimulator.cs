@@ -1,6 +1,7 @@
-﻿using PassAlarmSimulator.Device.Simulator;
+﻿using IRAPROM.MyCore.Device.Matreshka;
+using PassAlarmSimulator.Device.Simulator;
 
-namespace IRAPROM.MyCore.Device.Matreshka.MatreshkaSimulator
+namespace PassAlarmSimulator.Device.Matreshka.MatreshkaSimulator
 {
     public class MatreshkaSimulator : DeviceSimulator
     {

@@ -10,11 +10,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
     {
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
         
-        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
+        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
         }
 
-        public WorkParamsProto(IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
+        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
         {
         }
 
@@ -188,12 +188,12 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void CallPassage()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void CallAlarm()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void InitZonesSensitivity(WorkParams workParams)

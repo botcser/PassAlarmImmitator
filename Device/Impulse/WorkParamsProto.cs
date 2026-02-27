@@ -12,11 +12,11 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         private byte[] _responseWorkParamsDatagram { get; set; }
         
-        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
+        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
         }
         
-        public WorkParamsProto(IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
+        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
         {
         }
 

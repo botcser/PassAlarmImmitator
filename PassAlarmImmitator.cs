@@ -1,17 +1,13 @@
 ﻿using Extensions;
-using IRAPROM.MyCore.Device.Matreshka.MatreshkaSimulator;
+using PassAlarmSimulator.Device.Impulse.ImpulseSimulator;
+using PassAlarmSimulator.Device.Matreshka.MatreshkaSimulator;
+using PassAlarmSimulator.Device.Simulator;
 
 namespace PassAlarmSimulator
 {
     public class PassAlarmSimulator : IStart
     {
-        private MatreshkaSimulator _matreshkaSimulator;
-        private readonly bool _oldPC;
-
-        public PassAlarmSimulator(bool oldPC = false)
-        {
-            _oldPC = oldPC;
-        }
+        private DeviceSimulator _simulator;
 
         public Task Start()
         {
@@ -19,8 +15,21 @@ namespace PassAlarmSimulator
 
             var task = new Task(() =>
             {
-                _matreshkaSimulator = new MatreshkaSimulator(_oldPC);
-                _matreshkaSimulator.Start();
+                Console.WriteLine("\t1 - Matreshka\n\t2 - Impulse");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        _simulator = new MatreshkaSimulator();
+                        _simulator.Start();
+                        break;
+                    case "2":
+                        _simulator = new ImpulseSimulator();
+                        _simulator.Start();
+                        break;
+                    default:
+                        break;
+                }
             });
 
             task.Start();
@@ -30,7 +39,7 @@ namespace PassAlarmSimulator
 
         public void Shutdown()
         {
-            _matreshkaSimulator.Shutdown();
+            _simulator.Shutdown();
         }
     }
 }

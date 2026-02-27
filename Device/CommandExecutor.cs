@@ -17,13 +17,13 @@ namespace IRAPROM.MyCore.Device
 
         private readonly Commands _commands;
 
-        public CommandExecutor(IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands)
+        public CommandExecutor(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
         {
             DatagramProto = datagramProto;
             _commands = new Commands(datagramProto, getCommands, setCommands);
         }
 
-        public CommandExecutor(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, int, string)> getCommands, List<(short, int, string)> setCommands)
+        public CommandExecutor(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
         {
             NetworkProto = networkProto;
             DatagramProto = datagramProto;
