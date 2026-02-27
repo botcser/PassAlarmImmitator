@@ -79,7 +79,6 @@ namespace PassAlarmSimulator.Device.Simulator
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
         }
 
@@ -97,7 +96,7 @@ namespace PassAlarmSimulator.Device.Simulator
             }
             else
             {
-                if (code == 0x41 || code == 0x42)                    //TODO
+                if (code == 0x41 || code == 0x42 || code == 0xAE)                    //TODO
                 {
                     await UDPSend(bytesCommand);
                 }
@@ -153,6 +152,10 @@ namespace PassAlarmSimulator.Device.Simulator
                                         await SendAnswer(request, 0x42);
                                     }
                                     break;
+                            case 0xae:
+                                    await SendAnswer(request, 0xae);
+                                    break;
+
                                 default:
                                     await SendAnswer(request, code, stream);
                                     break;
@@ -169,7 +172,6 @@ namespace PassAlarmSimulator.Device.Simulator
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
         }
 
