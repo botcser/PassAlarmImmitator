@@ -5,6 +5,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class Constants : FamilyInfo
     {
+        public static readonly short[] FindAnswerCodes = [0x1040, 0x2DE1];
         public static byte[] RequestMagicNumber = { 0x40, 0x23, 0x24 }; // @#$
         public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
         public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
@@ -55,10 +56,33 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public const short PortTCPDefault = 5000;
         public const short PortUDPDefault = 9998;
         public const short PortUDPListenDefault = 9999;
+        private short _portUDPListenAdditional = 1021;
+        private short _portUDPAdditional = 1021;
 
         public override short PortTCP => 5000;
         public override short PortUDP => 9998;
+        public override short PortUDPAdditional
+        {
+            get => _portUDPAdditional;
+            set
+            {
+                if (value == 0) return;
+
+                _portUDPAdditional = value;
+            }
+        }
         public override short PortUDPListen => 9999;
+        public override short PortUDPListenAdditional
+        {
+            get => _portUDPListenAdditional;
+            set
+            {
+                if (value == 0) return;
+
+                _portUDPListenAdditional = value;
+            }
+        }
+
         [JsonIgnore]
         public override List<string> WorkPrograms => _workPrograms;
 
@@ -395,7 +419,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             var taskCompletionSource = new TaskCompletionSource();
 
-            sender.Send(FindDatagram, PortUDP, ip, taskCompletionSource);
+            sender.Send(FindDatagram, PortUDP, ip);
+
+            if (PortUDPAdditional != 0) sender.Send(FindDatagram, PortUDPAdditional, ip);
+
+            taskCompletionSource.SetResult();
 
             return taskCompletionSource.Task; 
         }

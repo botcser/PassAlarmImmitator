@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <!-- Ваши настройки здесь, например, общая версия пакетов -->
+    <Company>MyCompany</Company>
+    <Authors>AuthorName</Authors>
+    <Version>1.0.0</Version>
+    <DefineConstants>
+      DEBUGG;
+      USE_DEVICE_SIMULATOR0;
+      REMOTE_DEBUG;
+    </DefineConstants>
+  </PropertyGroup>
+</Project>

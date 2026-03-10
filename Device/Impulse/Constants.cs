@@ -74,10 +74,19 @@ namespace IRAPROM.MyCore.Device.Impulse
         public const short PortTCPDefault = 5012;
         public const short PortUDPDefault = 5015;
         public const short PortUDPListenDefault = 5016;
+        private short _portUDPListenAdditional;
 
         public override short PortTCP => 5012;
         public override short PortUDP => 5015;
+        public override short PortUDPAdditional { get; set; }
         public override short PortUDPListen => 5016;
+
+        public override short PortUDPListenAdditional
+        {
+            get => _portUDPListenAdditional; 
+            set => _portUDPListenAdditional = value;
+        }
+
         [JsonIgnore]
         public override List<string> WorkPrograms => _workPrograms;
 
@@ -216,6 +225,8 @@ namespace IRAPROM.MyCore.Device.Impulse
 
             sender.Send(FindDatagram, PortUDP, ip, taskCompletionSource);
 
+            if (PortUDPAdditional != 0) sender.Send(FindDatagram, PortUDPAdditional, ip, taskCompletionSource);
+
             return taskCompletionSource.Task;
         }
 
@@ -235,5 +246,17 @@ namespace IRAPROM.MyCore.Device.Impulse
         {
             return GetModelName((Model)id);
         }
+
+        public static bool CheckImpulseHeader(byte[] arr)
+        {
+            if ((arr[0] == Device.Impulse.Constants.HeaderMagicNumber[0]) && (arr[1] == Device.Impulse.Constants.HeaderMagicNumber[1]) && (arr[2] == Device.Impulse.Constants.HeaderMagicNumber[2]))
+                return true;
+
+            if ((arr[0] == Device.Impulse.Constants.HeaderMagicNumberOld[0]) && (arr[1] == Device.Impulse.Constants.HeaderMagicNumberOld[1]) && (arr[2] == Device.Impulse.Constants.HeaderMagicNumberOld[2]))
+                return true;
+
+            return false;
+        }
+
     }
 }

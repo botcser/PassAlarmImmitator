@@ -6,7 +6,9 @@ namespace IRAPROM.MyCore.Device
     {
         public abstract short PortTCP { get; }
         public abstract short PortUDP { get; }
+        public abstract short PortUDPAdditional { get; set; }
         public abstract short PortUDPListen { get; }
+        public abstract short PortUDPListenAdditional { get; set; }
 
         public abstract List<string> WorkPrograms { get; }
 

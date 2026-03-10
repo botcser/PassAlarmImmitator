@@ -3,6 +3,7 @@ using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
 using System.Diagnostics;
+using IRAPROM.MyCore.Device.Matreshka;
 
 namespace PassAlarmSimulator.Validator
 {
@@ -17,7 +18,7 @@ namespace PassAlarmSimulator.Validator
 
         private Stopwatch _watchdog = new Stopwatch();
 
-        public Validator(string ip)
+        public Validator(string ip, int port = 0, int listenPort = 0)
         {
             _ip = ip;
             _cancellationTokenSource = new CancellationTokenSource();
@@ -28,6 +29,9 @@ namespace PassAlarmSimulator.Validator
                 new IRAPROM.MyCore.Device.Matreshka.DatagramProto(),
                 _cancellationTokenSource,
                 $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator");
+
+            DeviceMetalDetector.FamilyInfoVariants[0].PortUDPAdditional = (short)port;
+            DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional = (short)listenPort;
 
             _networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
                 IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
@@ -67,10 +71,13 @@ namespace PassAlarmSimulator.Validator
 
         private void StartListeners()
         {
-            Console.WriteLine($"Validator: listening ports: {IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault}, {IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault}...");
-
             new UdpListenerServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, null)?.StartListening();
-            new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault, null)?.StartListening();
+            new UdpListenerServer(Constants.PortUDPListenDefault, null)?.StartListening();
+
+            if (DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional != 0)
+            {
+                new UdpListenerServer(DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional, null)?.StartListening();
+            }
 
             Thread.Sleep(1000);
         }
@@ -83,6 +90,7 @@ namespace PassAlarmSimulator.Validator
         private void FindDevices(string ip)
         {
             DeviceMetalDetector.FamilyInfoVariants[0].Find(_ip, UDPSender.Instance);
+            DeviceMetalDetector.FamilyInfoVariants[1].Find(_ip, UDPSender.Instance);
 
             WaitForSeconds(4);
 

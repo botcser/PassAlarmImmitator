@@ -1,10 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace IRAPROM.MyCore.Device
 {
     [Serializable]
-    public class MetalDetectorPassage : INotifyPropertyChanged
+    public class MetalDetectorPassage : INotifyPropertyChanged, IComparable
     {            
         public byte[] Sensors;
         public byte[] SensorsProcessed;
@@ -91,18 +94,28 @@ namespace IRAPROM.MyCore.Device
             LastPassageTime = LastAlarmTime = Time.ToString("dd.MM.yy HH:mm:ss");
             IsAlarm = false;
         }
-
-        public virtual MetalDetectorPassage Clone()
-        {
-            return (MetalDetectorPassage)MemberwiseClone();
-        }
-
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public int CompareTo(MetalDetectorPassage other)
+        {
+            return (int)(Time - other.Time).TotalSeconds;
+        }
+
+        public int CompareTo(object other)
+        {
+            return (int)(Time - ((MetalDetectorPassage)other).Time).TotalSeconds;
+        }
+
+        public virtual MetalDetectorPassage Clone()
+        {
+            return (MetalDetectorPassage)MemberwiseClone();
+        }
+
     }
 }

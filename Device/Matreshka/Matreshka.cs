@@ -1,7 +1,11 @@
 ﻿using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace IRAPROM.MyCore.Device.Matreshka
@@ -15,7 +19,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public override string SeriesName => "Матрешка";
         public override string ModelName => WorkParams == null ? "Unknown Matreshka" : Constants.GetModelName(Model);
 
-        public Constants.Model Model => (Constants.Model)WorkParams.ModelId;
+        public Constants.Model Model => WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
         public override short PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
         public override short PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }

@@ -1,12 +1,14 @@
-﻿using IRAPROM.MyCore.DBModel;
+﻿using IRAPROM.MyCore.Auxiliary;
+using IRAPROM.MyCore.DBModel;
+using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.MD;
+using PassAlarmSimulator.Validator;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Sockets;
-using IRAPROM.MyCore.Auxiliary;
-using IRAPROM.MyCore.Device;
-using IRAPROM.MyCore.Model;
-using PassAlarmSimulator.Validator;
+using IRAPROM.MyCore.Device.Matreshka;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IRAPROM.MyCore.MyNetwork
 {
@@ -24,17 +26,70 @@ namespace IRAPROM.MyCore.MyNetwork
             _lgMsg = lgMessages ?? new ObservableCollection<string>();
             _port = port;
             _udpClient = new UdpClient(port);
+            _udpClient.EnableBroadcast = true;
+
+            Console.WriteLine($"Validator: listening ports: {_port}...");
         }
-        
+
         public void StartListening()
         {
 #if USE_COMMAND_CENTER
             return;
 #endif
 
+            var error = false;
+//            Task.Run(() =>
+//            {
+//                do
+//                {
+//                    try
+//                    {
+//                        var remoteIPEndPoint = new IPEndPoint(IPAddress.Any, _port);
+//#if DEBUGG
+//                        Console.WriteLine($"Listening from {remoteIPEndPoint.Address}:{remoteIPEndPoint.Port}!\n");
+//#endif
+//                        var bytes = _udpClient.Receive(ref remoteIPEndPoint);
+
+
+//#if DEBUGG
+//                        Console.WriteLine($"Received: response from {remoteIPEndPoint.Address}:{remoteIPEndPoint.Port}!\n" +
+//                                          $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+//#endif
+
+//                        if (IsSentByServer(remoteIPEndPoint)) continue;
+
+//                        ParseResponse(bytes, remoteIPEndPoint);
+//                    }
+//                    catch (SocketException ex)
+//                    {
+//                        Console.WriteLine($"StartListening EX: specific SocketException {ex.Message}");
+//                        error = true;
+//                    }
+//                    catch (IOException ex)
+//                    {
+//                        if (ex.InnerException is SocketException innerEx && innerEx.ErrorCode == 10060)
+//                        {
+//                            Console.WriteLine($"Receive timeout occurred {ex.Message}.");
+//                        }
+//                        else
+//                        {
+//                            Console.WriteLine($"Receive unknown IOExceptions {ex.Message}.");
+//                        }
+//                        error = true;
+//                    }
+//                    catch (Exception ex)
+//                    {
+//                        Console.WriteLine($"StartListening EX: {ex.Message}");
+//                        error = true;
+//                    }
+//                } while (!error);
+//            });
+//           return;
+
             try
             {
                 //_timeoutTimer = new Timer(BeginReceiveTimeout, null, 5000, 5000);
+                
                 _udpClient.BeginReceive(RequestCallback, new object());
             }
             catch (SocketException ex)
@@ -63,16 +118,16 @@ namespace IRAPROM.MyCore.MyNetwork
             //---------- ответы поиска ---------------
             if (MatreshkaResponse(response, remoteIpEndPoint, out var rec))
             {
-                DebugResponse();
+                DebugResponse("MatreshkaResponse");
             }
             else if (ImpulseNewPackage(response))           // TODO: MB! TEST!
             {
-                DebugResponse();
+                DebugResponse("ImpulseNewResponse");
             }
             //---------- проходы ----------------
             else if (ImpulseOrCommonResponse(response, rec))
             {
-                DebugResponse();
+                DebugResponse("ImpulseOrCommonResponse");
             }
             else if (response.Length == 22)
             {
@@ -101,7 +156,7 @@ namespace IRAPROM.MyCore.MyNetwork
                     }
 
 #if DEBUGG
-                    Console.WriteLine($"Received: Response: {series}\n" +
+                    Console.WriteLine($"Received: old Response: {series}\n" +
                                       $"\tresponse bytes: {BitConverter.ToString(response)}\n" +
                                       $"\tIdModel = {responseMonopanel.Model},\n" +
                                       $"\tMAC = {responseMonopanel.MAC},\n" +
@@ -116,16 +171,12 @@ namespace IRAPROM.MyCore.MyNetwork
                 }
             }
 
-#if DEBUGG
-            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-                              $"\tresponse bytes: {BitConverter.ToString(response)}\n");
-#endif
 
 
-            void DebugResponse()
+            void DebugResponse(string sourceName)
             {
 #if DEBUGG
-                Console.WriteLine($"Received: MatreshkaResponse:\n" +
+                Console.WriteLine($"Received: {sourceName}:\n" +
                                   $"\tresponse bytes: {BitConverter.ToString(response)}\n" +
                                   $"\tIdModel = {rec?.IdModel},\n" +
                                   $"\tMAC = {rec?.MAC},\n" +
@@ -142,6 +193,9 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             try
             {
+#if DEBUGG
+                Console.WriteLine($"Received: something on port {_port}...");
+#endif
                 Receive(result);
             }
             catch (Exception e)
@@ -158,10 +212,16 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
+            
+#if DEBUGG
+            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
+                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+#endif
 
-#if !USE_DEVICE_SIMULATOR            
+#if !USE_DEVICE_SIMULATOR
             if (IsSentByServer(remoteIpEndPoint)) return;
 #endif
+
             ParseResponse(bytes, remoteIpEndPoint);
         }
 
@@ -193,6 +253,17 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             _localAddresses ??= Dns.GetHostEntry(Dns.GetHostName()).AddressList.ToList();
             _localAddresses.Add(IPAddress.Parse("127.0.0.1"));
+
+//#if REMOTE_DEBUG
+//            Console.WriteLine($"_localAddresses :\n");
+//            _localAddresses.ForEach(i =>
+//            {
+//                Console.WriteLine($"\t{i}!\n");
+//            });
+
+//            Console.WriteLine($"\tremoteIpEndPoint.AddressFamily {remoteIpEndPoint.AddressFamily}!\n");
+//            Console.WriteLine($"\tremoteIpEndPoint.Address {remoteIpEndPoint.Address}!\n");
+//#endif
 
             return _localAddresses.Any(i => remoteIpEndPoint.AddressFamily == i.AddressFamily && remoteIpEndPoint.Address.Equals(i))
                    && remoteIpEndPoint.Port != App.Loader_UDPPortRetransmission;
@@ -226,43 +297,34 @@ namespace IRAPROM.MyCore.MyNetwork
 
             if (rec == null) return false;
             
-            var message = "";
+            var message = $"rec.command = {rec.command}\n";
 
             try
             {
-                switch (rec.command)
+                if (Constants.FindAnswerCodes.Contains(rec.command))
                 {
-                    case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                    message += $"FindAnswer -> MAC:{rec.MAC}  -  IP: {rec.deviceFindAnswerNetworkInf.IP}" +
+                               $"  Mask: {rec.deviceFindAnswerNetworkInf.Mask}" +
+                               $"  TCP-port: {rec.deviceFindAnswerNetworkInf.PortTCP}" +
+                               $"  UDP-port: {rec.deviceFindAnswerNetworkInf.PortUDP}" +
+                               $"  Gateway: {rec.deviceFindAnswerNetworkInf.IPGateway}";
+
+                    message += $"  Модель: {rec.deviceFindAnswerNetworkInf.Model}  Версия: {rec.deviceFindAnswerNetworkInf.Version}";
+
+                    DeviceMetalDetector device;
+
+                    if (Constants.PortUDPDefault == ip.Port || DeviceMetalDetector.FamilyInfoVariants[0].PortUDPAdditional == ip.Port)
                     {
-                        Console.WriteLine($"METDET_CMD_NORMAL_GET_PASSAGES: {BitConverter.ToString(bytes)}");
-
-                        message = $"WorkInf -> MAC:{rec.MAC}  -  {rec.NormalInfName}";
-
-                        break;
+                        device = MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
                     }
-                    case MDCommands.METDET_CMD_ALARM:
+                    else
                     {
-                        Console.WriteLine($"METDET_CMD_ALARM: {BitConverter.ToString(bytes)}");
-
-                        message = $"ALARM -> MAC:{rec.MAC} ({rec.SensorModeName}) - ({rec.SensorsStrMsg.Trim()})";
-
-                        break;
-                    }
-                    case MDCommands.METDET_CMD_FINDANSWER:
-                    {
-                        message = $"FindAnswer -> MAC:{rec.MAC}  -  IP: {rec.deviceFindAnswerNetworkInf.IP}" +
-                                  $"  Mask: {rec.deviceFindAnswerNetworkInf.Mask}" +
-                                  $"  TCP-port: {rec.deviceFindAnswerNetworkInf.PortTCP}" +
-                                  $"  UDP-port: {rec.deviceFindAnswerNetworkInf.PortUDP}" +
-                                  $"  Gateway: {rec.deviceFindAnswerNetworkInf.IPGateway}";
-
-                        message += $"  Модель: {rec.deviceFindAnswerNetworkInf.Model}  Версия: {rec.deviceFindAnswerNetworkInf.Version}";
-
-                        DeviceMetalDetector device;
-
                         switch (+ip.Port)
                         {
                             case 9998:
+                                device = MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
+                                break;
+                            case 1021:
                                 device = MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
                                 break;
 
@@ -270,17 +332,38 @@ namespace IRAPROM.MyCore.MyNetwork
                                 device = MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.BlockPost);
                                 break;
                         }
+                    }
 
-                        if (device == null)
+                    if (device == null)
+                    {
+                        Console.WriteLine("MatreshkaResponse: EX: Unknow device or device answer parsing error!");
+                    }
+                    else
+                    {
+                        Validator.FoundDevices.Add(device);
+                    }
+                }
+                else
+                {
+                    switch (rec.command)
+                    {
+                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
                         {
-                            Console.WriteLine("MatreshkaResponse: EX: Unknow device or device answer parsing error!");
+                            Console.WriteLine($"METDET_CMD_NORMAL_GET_PASSAGES: {BitConverter.ToString(bytes)}");
+
+                            message += $"WorkInf -> MAC:{rec.MAC}  -  {rec.NormalInfName}";
+
+                            break;
                         }
-                        else
+                        case MDCommands.METDET_CMD_ALARM:
                         {
-                            Validator.FoundDevices.Add(device);
+                            Console.WriteLine($"METDET_CMD_ALARM: {BitConverter.ToString(bytes)}");
+
+                            message += $"ALARM -> MAC:{rec.MAC} ({rec.SensorModeName}) - ({rec.SensorsStrMsg.Trim()})";
+
+                            break;
                         }
 
-                        break;
                     }
                 }
             }
@@ -290,21 +373,21 @@ namespace IRAPROM.MyCore.MyNetwork
                 throw;
             }
 
-            //if (App.Loader_UDPPortRetransmission > 0)
-            //{
-            //    if (MetalDetectPacketInfo.CheckMatreshkaHeader(bytes))
-            //    {
-            //        switch (rec.command)
-            //        {
-            //            case MDCommands.METDET_CMD_ALARM:
-            //            case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
-            //            case MDCommands.METDET_CMD_FINDANSWER:
-            //                UDPSender.Instance.Send(bytes, App.Loader_UDPPortRetransmission);
-            //                break;
-            //        }
-            //    }
-            //}
-            
+            if (App.Loader_UDPPortRetransmission > 0)
+            {
+                if (MetalDetectPacketInfo.CheckMatreshkaHeader(bytes))
+                {
+                    switch (rec.command)
+                    {
+                        case MDCommands.METDET_CMD_ALARM:
+                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                        case MDCommands.METDET_CMD_FINDANSWER:
+                            UDPSender.Instance.Send(bytes, App.Loader_UDPPortRetransmission);
+                            break;
+                    }
+                }
+            }
+
             return true;
         }
     }

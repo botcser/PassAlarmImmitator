@@ -157,24 +157,50 @@ namespace IRAPROM.MyCore.Model
                     rec.logTime = DateTime.Now;
                     rec.head = br.ReadBytes(4); //4
                     rec.deviceAdress = rec.head[3];
-                    
-                    rec.frameLen = br.ReadInt32(); //4
-                    rec.msgNum = br.ReadInt32(); //4
-                    rec.command = br.ReadInt16(); //2
 
-                    rec.body = br.ReadBytes(arr.Length - 14);
-
-                    if (rec.command == MDCommands.METDET_CMD_FINDANSWER)
+                    if (arr.Length == 0x14) // PC V X PRO
                     {
-                        var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
+                        rec.body = br.ReadBytes(arr.Length - 6);
 
-                        if (devInf == null)
-                            return null;
+                        if (Constants.FindAnswerCodes.Contains(rec.command))
+                        {
+                            var devInf = new DeviceFindAnswerNetworkInf();
 
-                        rec.deviceFindAnswerNetworkInf = devInf;
-                        rec.mac = devInf.mac;
+                            using (var ms2 = new MemoryStream(arr))
+                            {
+                                using (var br2 = new BinaryReader(ms))
+                                {
+                                    devInf.Model = Convert.ToHexString(br2.ReadBytes(6));
+                                    devInf.mac = br2.ReadBytes(6);
+                                }
+                            }
 
-                        return rec;
+                            rec.deviceFindAnswerNetworkInf = devInf;
+                            rec.mac = devInf.mac;
+
+                            return rec;
+                        }
+                    }
+                    else // old PC V
+                    {
+                        rec.frameLen = br.ReadInt32(); //4
+                        rec.msgNum = br.ReadInt32(); //4
+                        rec.command = br.ReadInt16(); //2
+
+                        rec.body = br.ReadBytes(arr.Length - 14);
+
+                        if (Constants.FindAnswerCodes.Contains(rec.command))
+                        {
+                            var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
+
+                            if (devInf == null)
+                                return null;
+
+                            rec.deviceFindAnswerNetworkInf = devInf;
+                            rec.mac = devInf.mac;
+
+                            return rec;
+                        }
                     }
                 }
             }

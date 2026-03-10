@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
@@ -7,8 +10,8 @@ namespace IRAPROM.MyCore.Device.Impulse
     public class Impulse : DeviceMetalDetector, INotifyPropertyChanged
     {
         public override string SeriesName => "Импульс";
-        public override string ModelName => Constants.GetModelName(Model);
-        public Constants.Model Model => (Constants.Model)WorkParams.ModelId; 
+        public override string ModelName => WorkParams == null ? "Unknown Impulse" : Constants.GetModelName(Model);
+        public Constants.Model Model => WorkParams == null ? Constants.Model.Unknown : (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
         public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
@@ -31,7 +34,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             get => _lastPassage;
             set
             {
-                if (value == null) return;
+                if (value?.MAC == null) return;
                 
                 ProcessAlarm(value);
                 OnPropertyChanged();

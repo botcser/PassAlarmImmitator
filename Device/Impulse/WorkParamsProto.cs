@@ -1,6 +1,12 @@
-﻿using System.Net;
-using IRAPROM.MyCore.Model.MD;
+﻿using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.Model.WP;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using PassAlarmSimulator.Device;
 
 namespace IRAPROM.MyCore.Device.Impulse
@@ -11,11 +17,11 @@ namespace IRAPROM.MyCore.Device.Impulse
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
 
         private byte[] _responseWorkParamsDatagram { get; set; }
-        
+
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
         }
-        
+
         public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
         {
         }
@@ -162,12 +168,12 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         public void CallPassage()
         {
-            throw new NotImplementedException();
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void CallAlarm()
         {
-            throw new NotImplementedException();
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         private bool WorkParamsTest(WorkParams workParams, byte testValue)

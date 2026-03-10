@@ -7,6 +7,20 @@ namespace Extensions
 {
     public static class Extensions
     {
+        public static bool TryAdd<T>(this List<T> list, T item)
+        {
+            if (list == null)
+            {
+                return false;
+            }
+
+            if (list.Contains(item)) return false;
+
+            list.Add(item);
+
+            return true;
+        }
+
         public static bool IsAlive(this TcpClient socket)
         {
             return socket.Client != null && socket.Client.Connected && (!socket.Client.Poll(1000, SelectMode.SelectRead) || socket.Client.Available != 0);
