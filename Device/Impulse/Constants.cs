@@ -11,6 +11,7 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static int ZonesSensitivityStartIndex = 9;
         public static byte[] FindDatagram = { 0x5B, 0xaa, 0x40 };
         public static byte[] HeaderMagicNumber = { 0x5C, 0x17, 0xAE };
+        public static byte[] HeaderMagicNumberOld = { 0x5C, 0x15, 0xAE };
 
         public static (short deviceCode, short code, int responseLenght, string name) GetWorkParams = (0xA1, 0xA1, 123, "GetWorkParams");
         public static (short deviceCode, short code, int responseLenght, string name) GetPassageCountD = (0xAD, 0xAD, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountD");
@@ -20,6 +21,8 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static (short deviceCode, short code, int responseLenght, string name) SetWorkParams = (0xA5, 0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
         public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x14, 0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
         public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallPassage");
+        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0xAEE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallAlarm");
 
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
         {
