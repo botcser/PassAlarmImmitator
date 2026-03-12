@@ -10,7 +10,7 @@ namespace IRAPROM.MyCore.Device
     public abstract class DeviceMetalDetector: CardItem, IEquatable<DeviceMetalDetector>
     {
         [JsonIgnore]
-        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new IRAPROM.MyCore.Device.Matreshka.Constants(), new Constants() };
+        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new Matreshka.Constants(), new Constants(), new Matreshka.XGOST.Constants() };
         
         [JsonIgnore]
         public static DeviceMetalDetector DefaultDeviceMetalDetector = IRAPROM.MyCore.Device.Matreshka.Matreshka.DefaultMatreshka;

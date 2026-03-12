@@ -261,6 +261,132 @@ namespace IRAPROM.MyCore.Model
             return rec;
         }
 
+        public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr)
+        {
+            if (arr.Length != Device.Matreshka.XGOST.Constants.FindResponseLength)
+            {
+#if DEBUG
+                Console.WriteLine($"MetalDetectPacketInfo: ParseXGOSTMatreshkaMessageUDP: Error: response length = {arr.Length} != {Device.Matreshka.XGOST.Constants.FindResponseLength}");
+#endif
+                return null;
+            }
+
+            if (!CheckMatreshkaHeader(arr)) return null;
+
+            MetalDetectPacketInfo rec = null;
+
+            using (var ms = new MemoryStream(arr))
+            {
+                using (var br = new BinaryReader(ms))
+                {
+                    rec = new MetalDetectPacketInfo();
+                    rec.logTime = DateTime.Now;
+                    rec.head = br.ReadBytes(4); //4
+                    rec.deviceAdress = rec.head[3];
+
+                    if (arr.Length == 0x14) // PC V X PRO
+                    {
+                        rec.body = br.ReadBytes(arr.Length - 6);
+
+                        if (Constants.FindAnswerCodes.Contains(rec.command))
+                        {
+                            var devInf = new DeviceFindAnswerNetworkInf();
+
+                            using (var ms2 = new MemoryStream(arr))
+                            {
+                                using (var br2 = new BinaryReader(ms))
+                                {
+                                    devInf.Model = Convert.ToHexString(br2.ReadBytes(6));
+                                    devInf.mac = br2.ReadBytes(6);
+                                }
+                            }
+
+                            rec.deviceFindAnswerNetworkInf = devInf;
+                            rec.mac = devInf.mac;
+
+                            return rec;
+                        }
+                    }
+                    else // old PC V
+                    {
+                        rec.frameLen = br.ReadInt32(); //4
+                        rec.msgNum = br.ReadInt32(); //4
+                        rec.command = br.ReadInt16(); //2
+
+                        rec.body = br.ReadBytes(arr.Length - 14);
+
+                        if (Constants.FindAnswerCodes.Contains(rec.command))
+                        {
+                            var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
+
+                            if (devInf == null)
+                                return null;
+
+                            rec.deviceFindAnswerNetworkInf = devInf;
+                            rec.mac = devInf.mac;
+
+                            return rec;
+                        }
+                    }
+                }
+            }
+
+            //С 15 байта
+            using (var ms = new MemoryStream(rec.body))
+            {
+                using (var br = new BinaryReader(ms))
+                {
+                    //с 15 байта
+                    if (rec.body.Length >= 6)
+                    {
+                        rec.mac = br.ReadBytes(6);
+                    }
+
+                    if (arr.Length < 36)
+                    {
+                        return rec;
+                    }
+
+
+                    MetDetector md = null;
+                    short modelId = 0;
+                    var MAC = Convert.ToHexString(rec.mac);
+
+                    switch (rec.command)
+                    {
+                        case MDCommands.METDET_CMD_ALARM:
+                            rec.timeStamp = br.ReadBytes(7); //с 21 байта
+                            rec.ZonesSensorMode = br.ReadByte(); //28 байт
+                            rec.sensors = br.ReadBytes(18); //с 29 байта    // 6 байт у PC Z 3300 MK
+
+                            if (md != null)
+                            {
+                                md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                            }
+                            break;
+
+                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                            rec.NormalPassNum = br.ReadInt32(); // с 21 байта
+                            rec.NormalReturnNum = br.ReadInt32(); //с 25 байта
+                            rec.AlarmPassNum = br.ReadInt32(); //с 29 байта
+                            rec.AlarmReturnNum = br.ReadInt32(); //с 33 байта
+
+                            if (md != null)
+                            {
+                                md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+
+            return rec;
+        }
+
         public static DeviceMetalDetector MakeMetalDeviceFromPacketInfo(MetalDetectPacketInfo rec, MetalDetectorSeries series)
         {
             var dev = new MetDetector

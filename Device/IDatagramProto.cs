@@ -8,6 +8,6 @@
 
         bool ValidateRequestResult(byte result, byte commandCode = 0);
         
-        byte GetCodeFromDatagram(byte[] request);
+        short GetCodeFromDatagram(byte[] request);
     }
 }

@@ -3,7 +3,6 @@ using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
 using System.Diagnostics;
-using IRAPROM.MyCore.Device.Matreshka;
 
 namespace PassAlarmSimulator.Validator
 {
@@ -12,6 +11,7 @@ namespace PassAlarmSimulator.Validator
         public static List<DeviceMetalDetector> FoundDevices = new List<DeviceMetalDetector>();
 
         private readonly DeviceNetworkServer _networkServerMatreshka;
+        private readonly DeviceNetworkServer _networkServerMatreshkaXPROGOST;
         private readonly DeviceNetworkServer _networkServerImpulse;
         private CancellationTokenSource _cancellationTokenSource;
         private readonly string _ip;
@@ -23,22 +23,32 @@ namespace PassAlarmSimulator.Validator
             _ip = ip;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _networkServerMatreshka = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPDefault, 
-                IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault,
-                IRAPROM.MyCore.Device.Matreshka.Constants.PortTCPDefault,
-                new IRAPROM.MyCore.Device.Matreshka.DatagramProto(),
-                _cancellationTokenSource,
-                $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator");
+            //_networkServerMatreshka = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPDefault, 
+            //    IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault,
+            //    IRAPROM.MyCore.Device.Matreshka.Constants.PortTCPDefault,
+            //    new IRAPROM.MyCore.Device.Matreshka.DatagramProto(), _cancellationTokenSource,
+            //    $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator");
 
-            DeviceMetalDetector.FamilyInfoVariants[0].PortUDPAdditional = (short)port;
-            DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional = (short)listenPort;
+            //DeviceMetalDetector.FamilyInfoVariants[0].PortUDPAdditional = (short)port;
+            //DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional = (short)listenPort;
 
-            _networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
-                IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
-                IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault,
-                new IRAPROM.MyCore.Device.Impulse.DatagramProto(), 
-                _cancellationTokenSource,
-                $"{Directory.GetCurrentDirectory()}/ImpulseSimulator");
+            //_networkServerMatreshkaXPROGOST = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPDefault,
+            //    IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPListenDefault,
+            //    IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortTCPDefault,
+            //    new IRAPROM.MyCore.Device.Matreshka.XGOST.DatagramProto(), _cancellationTokenSource,
+            //    $"{Directory.GetCurrentDirectory()}/XPROGOSTSimulator");
+
+            //DeviceMetalDetector.FamilyInfoVariants[2].PortUDPAdditional = (short)port;
+            //DeviceMetalDetector.FamilyInfoVariants[2].PortUDPListenAdditional = (short)listenPort;
+
+            //_networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
+            //    IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
+            //    IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault,
+            //    new IRAPROM.MyCore.Device.Impulse.DatagramProto(), _cancellationTokenSource,
+            //    $"{Directory.GetCurrentDirectory()}/ImpulseSimulator");
+
+            //DeviceMetalDetector.FamilyInfoVariants[1].PortUDPAdditional = (short)port;
+            //DeviceMetalDetector.FamilyInfoVariants[1].PortUDPListenAdditional = (short)listenPort;
         }
 
         public Task Start()
@@ -56,7 +66,7 @@ namespace PassAlarmSimulator.Validator
 
                     Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
                     Console.ReadLine();
-                    System.Environment.Exit(0);
+                    Environment.Exit(0);
                 }
                 catch (Exception e)
                 {
@@ -72,11 +82,22 @@ namespace PassAlarmSimulator.Validator
         private void StartListeners()
         {
             new UdpListenerServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, null)?.StartListening();
-            new UdpListenerServer(Constants.PortUDPListenDefault, null)?.StartListening();
+            new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault, null)?.StartListening();
+            new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPListenDefault, null)?.StartListening();
 
             if (DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional != 0)
             {
                 new UdpListenerServer(DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional, null)?.StartListening();
+            }
+
+            if (DeviceMetalDetector.FamilyInfoVariants[1].PortUDPListenAdditional != 0)
+            {
+                new UdpListenerServer(DeviceMetalDetector.FamilyInfoVariants[1].PortUDPListenAdditional, null)?.StartListening();
+            }
+
+            if (DeviceMetalDetector.FamilyInfoVariants[2].PortUDPListenAdditional != 0)
+            {
+                new UdpListenerServer(DeviceMetalDetector.FamilyInfoVariants[2].PortUDPListenAdditional, null)?.StartListening();
             }
 
             Thread.Sleep(1000);
@@ -84,13 +105,17 @@ namespace PassAlarmSimulator.Validator
 
         public void Shutdown()
         {
-            _networkServerMatreshka.Shutdown();
+            _networkServerMatreshka?.Shutdown();
+            _networkServerMatreshkaXPROGOST?.Shutdown();
+            _networkServerImpulse?.Shutdown();
         }
 
         private void FindDevices(string ip)
         {
-            DeviceMetalDetector.FamilyInfoVariants[0].Find(_ip, UDPSender.Instance);
-            DeviceMetalDetector.FamilyInfoVariants[1].Find(_ip, UDPSender.Instance);
+            DeviceMetalDetector.FamilyInfoVariants.ForEach(i =>
+            {
+                i.Find(_ip, UDPSender.Instance);
+            });
 
             WaitForSeconds(4);
 

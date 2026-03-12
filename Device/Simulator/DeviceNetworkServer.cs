@@ -36,6 +36,8 @@ namespace PassAlarmSimulator.Device.Simulator
 
             _commandExtractor = new CommandExtractor(dirPath);
             _tcpServer = new TcpListener(IPAddress.Any, _tcpPort);
+
+            Console.WriteLine($"DeviceNetworkServer: listening ports: {inputUdpPort}...");
             _udpInputClient = new UdpClient(inputUdpPort);
         }
 
@@ -69,9 +71,10 @@ namespace PassAlarmSimulator.Device.Simulator
                 while (true)
                 {
                     var request = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
+                    Console.Write($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}:");
                     var code = _datagramProto.GetCodeFromDatagram(request.Buffer);
 
-                    Console.WriteLine($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}: code {code:X2}");
+                    Console.WriteLine($" code 0x{code:X2}");
 
                     await SendAnswer(request.Buffer, code);
                 }
@@ -82,7 +85,7 @@ namespace PassAlarmSimulator.Device.Simulator
             }
         }
 
-        private async Task SendAnswer(byte[] request, byte code, NetworkStream stream = null)
+        private async Task SendAnswer(byte[] request, short code, NetworkStream stream = null)
         {
             var bytesCommand = FindResponse(request, code);
 
@@ -152,7 +155,7 @@ namespace PassAlarmSimulator.Device.Simulator
                                         await SendAnswer(request, 0x42);
                                     }
                                     break;
-                            case 0xae:
+                                case 0xae:
                                     await SendAnswer(request, 0xae);
                                     break;
 
@@ -185,7 +188,7 @@ namespace PassAlarmSimulator.Device.Simulator
             });
         }
 
-        private byte[] FindResponse(byte[] request, byte code)          // TODO request
+        private byte[] FindResponse(byte[] request, short code)          // TODO request
         {
             return _commandExtractor.ExtractCommand(code);
         }

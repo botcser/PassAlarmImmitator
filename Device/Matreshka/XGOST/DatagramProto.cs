@@ -1,15 +1,31 @@
-﻿namespace IRAPROM.MyCore.Device.Matreshka
+﻿using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Device.Matreshka.XGOST;
+using System.Collections;
+using System.ComponentModel;
+
+namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
     public class DatagramProto : IDatagramProto
     {
         private const int MetaInfoLength = 3 + 1 + 4 + PacketMetaInfoLength;    // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
         private const int PacketMetaInfoLength = 4 + 2 + 2 + 2;                 // Frame number + Command + CRC checksum + End frame marker
-        private const int CommandCodePosition = 12;
+
+        private readonly List<byte> _hardwareAddress;
+
+        public DatagramProto()
+        {
+            _hardwareAddress = BitConverter.GetBytes(0xFFFE).ToList();
+        }
+
+        public DatagramProto(List<byte> hardwareAddress)
+        {
+            _hardwareAddress = hardwareAddress;
+        }
 
         public byte[] MakeRequestDatagram(short cmd, byte[] args = null)
         {
             var argsLength = (byte)(args?.Length ?? 0);
-            var datagram = new byte[18 + argsLength];
+            var datagram = new byte[Constants.CommandRequestMetaLength + argsLength];
 
             Constants.RequestMagicNumber.CopyTo(datagram, 0);
 
@@ -84,7 +100,7 @@
 
         public short GetCodeFromDatagram(byte[] request)
         {
-            return BitConverter.ToInt16(request, CommandCodePosition);
+            return BitConverter.ToInt16(request, Constants.CommandOffset); ;
         }
 
         public byte[] MakeZonesSensitivityDatagram(short coilsCount, short[] sensorsSensitivity)

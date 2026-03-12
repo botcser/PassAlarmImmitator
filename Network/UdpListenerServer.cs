@@ -25,10 +25,10 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             _lgMsg = lgMessages ?? new ObservableCollection<string>();
             _port = port;
-            _udpClient = new UdpClient(port);
-            _udpClient.EnableBroadcast = true;
 
             Console.WriteLine($"Validator: listening ports: {_port}...");
+            _udpClient = new UdpClient(port);
+            _udpClient.EnableBroadcast = true;
         }
 
         public void StartListening()
@@ -38,53 +38,6 @@ namespace IRAPROM.MyCore.MyNetwork
 #endif
 
             var error = false;
-//            Task.Run(() =>
-//            {
-//                do
-//                {
-//                    try
-//                    {
-//                        var remoteIPEndPoint = new IPEndPoint(IPAddress.Any, _port);
-//#if DEBUGG
-//                        Console.WriteLine($"Listening from {remoteIPEndPoint.Address}:{remoteIPEndPoint.Port}!\n");
-//#endif
-//                        var bytes = _udpClient.Receive(ref remoteIPEndPoint);
-
-
-//#if DEBUGG
-//                        Console.WriteLine($"Received: response from {remoteIPEndPoint.Address}:{remoteIPEndPoint.Port}!\n" +
-//                                          $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-//#endif
-
-//                        if (IsSentByServer(remoteIPEndPoint)) continue;
-
-//                        ParseResponse(bytes, remoteIPEndPoint);
-//                    }
-//                    catch (SocketException ex)
-//                    {
-//                        Console.WriteLine($"StartListening EX: specific SocketException {ex.Message}");
-//                        error = true;
-//                    }
-//                    catch (IOException ex)
-//                    {
-//                        if (ex.InnerException is SocketException innerEx && innerEx.ErrorCode == 10060)
-//                        {
-//                            Console.WriteLine($"Receive timeout occurred {ex.Message}.");
-//                        }
-//                        else
-//                        {
-//                            Console.WriteLine($"Receive unknown IOExceptions {ex.Message}.");
-//                        }
-//                        error = true;
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        Console.WriteLine($"StartListening EX: {ex.Message}");
-//                        error = true;
-//                    }
-//                } while (!error);
-//            });
-//           return;
 
             try
             {
@@ -193,9 +146,6 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             try
             {
-#if DEBUGG
-                Console.WriteLine($"Received: something on port {_port}...");
-#endif
                 Receive(result);
             }
             catch (Exception e)
@@ -213,10 +163,10 @@ namespace IRAPROM.MyCore.MyNetwork
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
             
-#if DEBUGG
-            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-#endif
+//#if DEBUGG
+//            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
+//                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+//#endif
 
 #if !USE_DEVICE_SIMULATOR
             if (IsSentByServer(remoteIpEndPoint)) return;
@@ -295,7 +245,15 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             rec = MetalDetectPacketInfo.ParseMatreshkaMessageUDP(bytes);
 
-            if (rec == null) return false;
+            if (rec == null)
+            {
+                rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes);
+
+                if (rec == null)
+                {
+                    return false;
+                }
+            }
             
             var message = $"rec.command = {rec.command}\n";
 

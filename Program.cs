@@ -1,10 +1,11 @@
 ﻿
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using Extensions;
 using IRAPROM.MyCore.Device;
 using PassAlarmSimulator.Validator;
+using System.Drawing;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 await App.Main();
 
@@ -33,31 +34,15 @@ public class App
                 case "2":
                     Console.WriteLine($"Testing in 192.168.16.255 network...");
 
-                    var ips = new List<string>();
-
-                    foreach (var ip in InitNetworksIp())
-                    {
-                        ips.Add(ip);
-                    }
-
-                    Console.WriteLine($"Choose the ip subnetwork:\n");
-                    
-                    foreach (var ip in ips)
-                    {
-                        Console.WriteLine($"\t{ips.IndexOf(ip)} = {ip}");
-                    }
-
-                    var index = int.Parse(Console.ReadLine() ?? string.Empty);
+                    var ip = InitIP();
 
                     Console.WriteLine($"Enter lower computer UDP port\n");
-
                     int.TryParse(Console.ReadLine(), out var port);
 
                     Console.WriteLine($"Enter higher computer UDP port to listen\n");
-
                     int.TryParse(Console.ReadLine(), out var portListen);
 
-                    task = new Validator(ips[index], port, portListen);
+                    task = new Validator(ip, port, portListen);
                     break;
                 case "0":
                     task?.Shutdown();
@@ -69,6 +54,27 @@ public class App
             }
 
             task?.Start().Wait();
+        }
+
+
+
+        string InitIP()
+        {
+            var ips = new List<string>();
+
+            foreach (var ip in InitNetworksIp())
+            {
+                ips.Add(ip);
+            }
+
+            Console.WriteLine($"Choose the ip subnetwork:\n");
+
+            foreach (var ip in ips)
+            {
+                Console.WriteLine($"\t{ips.IndexOf(ip)} = {ip}");
+            }
+            
+            return ips[int.Parse(Console.ReadLine() ?? string.Empty)];
         }
 
         IEnumerable<string> InitNetworksIp()

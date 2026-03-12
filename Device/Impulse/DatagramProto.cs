@@ -50,9 +50,9 @@
             return result - commandCode == 1;
         }
 
-        public byte GetCodeFromDatagram(byte[] request)
+        public short GetCodeFromDatagram(byte[] request)
         {
-            return request[CommandCodePosition];
+            return BitConverter.ToInt16(request, CommandCodePosition);
         }
 
         private static void MakeHeader(byte[] datagram, byte command)
