@@ -17,8 +17,8 @@ namespace IRAPROM.MyCore.MyNetwork
         public string Mask { get; set; } = "";
         public string IPGateway { get; set; } = "";
 
-        public short PortTCP { get; set; } = 0;
-        public short PortUDP { get; set; } = 0;
+        public ushort PortTCP { get; set; } = 0;
+        public ushort PortUDP { get; set; } = 0;
 
         public byte[] mac { get; set; } = new byte[6];
         //public string MAC => MyTools.ConvertByteArrayToHexString(mac);
@@ -62,8 +62,8 @@ namespace IRAPROM.MyCore.MyNetwork
                     rec.arIPGateway = br.ReadBytes(4);
                     rec.IPGateway = $"{rec.arIPGateway[0]}.{rec.arIPGateway[1]}.{rec.arIPGateway[2]}.{rec.arIPGateway[3]}";
 
-                    rec.PortTCP = br.ReadInt16();
-                    rec.PortUDP = br.ReadInt16();
+                    rec.PortTCP = br.ReadUInt16();
+                    rec.PortUDP = br.ReadUInt16();
 
                     rec.mac = br.ReadBytes(6);
 
@@ -112,8 +112,8 @@ namespace IRAPROM.MyCore.MyNetwork
                     rec.arIPGateway = br.ReadBytes(4);
                     rec.IPGateway = $"{rec.arIPGateway[0]}.{rec.arIPGateway[1]}.{rec.arIPGateway[2]}.{rec.arIPGateway[3]}";
 
-                    rec.PortTCP = br.ReadInt16();
-                    rec.PortUDP = br.ReadInt16();
+                    rec.PortTCP = br.ReadUInt16();
+                    rec.PortUDP = br.ReadUInt16();
 
                     rec.mac = br.ReadBytes(6);
 

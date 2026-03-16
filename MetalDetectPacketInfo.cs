@@ -120,7 +120,7 @@ namespace IRAPROM.MyCore.Model
 
         //extra info from TCP/IP components
         string IP = "";
-        short port = 0;
+        ushort port = 0;
         string DestCpuIP = "";
         short DestCpuPort = 0;     // this computer's UDP port
 
@@ -263,72 +263,28 @@ namespace IRAPROM.MyCore.Model
 
         public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr)
         {
-            if (arr.Length != Device.Matreshka.XGOST.Constants.FindResponseLength)
-            {
-#if DEBUG
-                Console.WriteLine($"MetalDetectPacketInfo: ParseXGOSTMatreshkaMessageUDP: Error: response length = {arr.Length} != {Device.Matreshka.XGOST.Constants.FindResponseLength}");
-#endif
-                return null;
-            }
-
             if (!CheckMatreshkaHeader(arr)) return null;
 
-            MetalDetectPacketInfo rec = null;
+            var rec = new MetalDetectPacketInfo();
 
-            using (var ms = new MemoryStream(arr))
+            if (arr.Length == Device.Matreshka.XGOST.Constants.CommandResponseLength)
             {
-                using (var br = new BinaryReader(ms))
-                {
-                    rec = new MetalDetectPacketInfo();
-                    rec.logTime = DateTime.Now;
-                    rec.head = br.ReadBytes(4); //4
-                    rec.deviceAdress = rec.head[3];
+                var deviceMetalDetector = DeviceMetalDetector.FamilyInfoVariants[2].ParseFindCommandResponse(arr, out var commandCode);
 
-                    if (arr.Length == 0x14) // PC V X PRO
-                    {
-                        rec.body = br.ReadBytes(arr.Length - 6);
+                rec.MetDetector.DeviceMetalDetector = deviceMetalDetector;
+                rec.Ip = rec.MetDetector.IP = deviceMetalDetector.IP;
+                rec.Mask = rec.MetDetector.Mask = deviceMetalDetector.Mask;
+                rec.Gateway = rec.MetDetector.Gateway = deviceMetalDetector.Gateway;
+                rec.port = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
+                rec.Mac = rec.MetDetector.MAC = deviceMetalDetector.MAC;
+                rec.mac = Convert.FromHexString(deviceMetalDetector.MAC);
+                rec.MetDetector.ModelId = (short)deviceMetalDetector.ModelId;
+                rec.ProductModel = rec.MetDetector.Name = deviceMetalDetector.ProductModelName;
+                rec.UDPPort = rec.MetDetector.PortUDP = deviceMetalDetector.PortUDP;
+                rec.TCPPort = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
+                rec.command = (short)commandCode;
 
-                        if (Constants.FindAnswerCodes.Contains(rec.command))
-                        {
-                            var devInf = new DeviceFindAnswerNetworkInf();
-
-                            using (var ms2 = new MemoryStream(arr))
-                            {
-                                using (var br2 = new BinaryReader(ms))
-                                {
-                                    devInf.Model = Convert.ToHexString(br2.ReadBytes(6));
-                                    devInf.mac = br2.ReadBytes(6);
-                                }
-                            }
-
-                            rec.deviceFindAnswerNetworkInf = devInf;
-                            rec.mac = devInf.mac;
-
-                            return rec;
-                        }
-                    }
-                    else // old PC V
-                    {
-                        rec.frameLen = br.ReadInt32(); //4
-                        rec.msgNum = br.ReadInt32(); //4
-                        rec.command = br.ReadInt16(); //2
-
-                        rec.body = br.ReadBytes(arr.Length - 14);
-
-                        if (Constants.FindAnswerCodes.Contains(rec.command))
-                        {
-                            var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
-
-                            if (devInf == null)
-                                return null;
-
-                            rec.deviceFindAnswerNetworkInf = devInf;
-                            rec.mac = devInf.mac;
-
-                            return rec;
-                        }
-                    }
-                }
+                return rec;
             }
 
             //С 15 байта

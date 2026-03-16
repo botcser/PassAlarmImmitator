@@ -1,11 +1,13 @@
-﻿using IRAPROM.MyCore.MyNetwork;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using IRAPROM.MyCore.MyNetwork;
 
 namespace IRAPROM.MyCore.Device
 {
     public abstract class FamilyInfo
     {
-        public abstract short PortTCP { get; }
-        public abstract short PortUDP { get; }
+        public abstract ushort PortTCP { get; }
+        public abstract ushort PortUDP { get; }
         public abstract short PortUDPAdditional { get; set; }
         public abstract short PortUDPListen { get; }
         public abstract short PortUDPListenAdditional { get; set; }
@@ -19,5 +21,7 @@ namespace IRAPROM.MyCore.Device
         public abstract int GetModelId(string name);
 
         public abstract Task Find(string ip, IUDPSend sender);
+
+        public abstract DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode);
     }
 }

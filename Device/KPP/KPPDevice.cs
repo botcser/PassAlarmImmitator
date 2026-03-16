@@ -19,7 +19,9 @@ namespace IRAPROM.MyCore.Device.KPP
         }
 
         public override string SeriesName { get; }
+        public override ushort ModelId { get; set; }
         public override string ModelName { get; }
+        public override string ProductModelName { get; set; }
         public override MetalDetectorPassage LastPassage { get; set; }
         public override int ZonesCount { get; set; }
         public override List<short> AvailableZonesCount { get; }

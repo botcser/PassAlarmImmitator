@@ -1,9 +1,13 @@
-﻿using IRAPROM.MyCore.Device;
+﻿using System;
+using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
@@ -13,14 +17,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if OLDPCV
         public bool PrevPackageIsAlarm;
 #endif
+        public ushort HardwareAddress;
 
         public override string SeriesName => "XPROGOST";
+        public override ushort ModelId { get; set; }
         public override string ModelName => WorkParams == null ? "Unknown XPROGOST" : Constants.GetModelName(Model);
+        public override string ProductModelName { get; set; }
+        public Constants.Model Model { get; set; }
 
-        public Constants.Model Model => WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
-        public override short PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
-        public override short PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
+        public override ushort PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
+        public override ushort PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
         public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
 
@@ -60,7 +67,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         }
 
         [JsonIgnore]
-        public static XPROGOST DefaultMatreshka = new XPROGOST("127.0.0.1", 9998, BitConverter.GetBytes(0xFFFE).ToList())
+        public static XPROGOST DefaultMatreshka = new XPROGOST("127.0.0.1", 9998, 0xFFFE)
         {
             WorkParams = new WorkParams()
             {
@@ -117,13 +124,12 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         };
 
         private MetalDetectorPassage _lastPassage = new MetalDetectorPassage();
-        private List<byte> HardwareAddress = new List<byte>(2);
 
         private int RowsCount => GridCellDefinitions != null ? GridCellDefinitions[0] : 0;
         private int ColumnsCount => GridCellDefinitions != null ? GridCellDefinitions[1] : 0;
 
 
-        public XPROGOST() : base(new WorkParamsProto(new DatagramProto(BitConverter.GetBytes(0xFFFE).ToList()), Constants.GetCommands, Constants.SetCommands), new Constants()) { }
+        public XPROGOST() : base(new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands), new Constants()) { }
 
 #if USE_COMMAND_CENTER
         public Matreshka(string ip, short port) : base(new WorkParamsProto(new NetworkProtoHttp(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
@@ -132,7 +138,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             PortTCP = port;
         }
 #else
-        public XPROGOST(string ip, short port, List<byte> hardwareAddress) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = port;
@@ -235,8 +241,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             switch (Model)
             {
-                case Constants.Model.PCZ3300MK:
-                case Constants.Model.PCV3300:
+                case Constants.Model.PCGOST3300:
+                case Constants.Model.PCGOSTx3300:
+                case Constants.Model.PCGOST6300:        // TODO hz
+                case Constants.Model.PCGOSTx6300:       // TODO hz
                     ParseSensors33(sensors, RowsCount, RealCoilsCount);
                     break;
                 default:

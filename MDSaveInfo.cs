@@ -9,6 +9,14 @@ namespace IRAPROM.MyCore.Model
         public MetDetector MetDetector;
         public DateTime logTime;
 
+        public string ProductModel = "";
+        public string Ip = "";
+        public string Mask = "";
+        public string Mac = "";
+        public string Gateway = "";
+        public ushort TCPPort;
+        public ushort UDPPort;
+
         public byte[] mac = new byte[6];
         public string MAC => Convert.ToHexString(mac);
 

@@ -1,8 +1,11 @@
 ﻿using IRAPROM.MyCore.Device;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 // ReSharper disable All
 
@@ -36,8 +39,6 @@ namespace PassAlarmSimulator.Device.Simulator
 
             _commandExtractor = new CommandExtractor(dirPath);
             _tcpServer = new TcpListener(IPAddress.Any, _tcpPort);
-
-            Console.WriteLine($"DeviceNetworkServer: listening ports: {inputUdpPort}...");
             _udpInputClient = new UdpClient(inputUdpPort);
         }
 
@@ -71,10 +72,9 @@ namespace PassAlarmSimulator.Device.Simulator
                 while (true)
                 {
                     var request = await _udpInputClient.ReceiveAsync(_cancellationTokenSource.Token);
-                    Console.Write($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}:");
                     var code = _datagramProto.GetCodeFromDatagram(request.Buffer);
 
-                    Console.WriteLine($" code 0x{code:X2}");
+                    Console.WriteLine($"Received UDP request from {request.RemoteEndPoint}: {BitConverter.ToString(request.Buffer)}: code {code:X2}");
 
                     await SendAnswer(request.Buffer, code);
                 }
@@ -155,7 +155,7 @@ namespace PassAlarmSimulator.Device.Simulator
                                         await SendAnswer(request, 0x42);
                                     }
                                     break;
-                                case 0xae:
+                            case 0xae:
                                     await SendAnswer(request, 0xae);
                                     break;
 

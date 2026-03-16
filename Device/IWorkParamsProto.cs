@@ -13,7 +13,7 @@ namespace IRAPROM.MyCore.Device
         void ScanCommands(byte startCode, byte endCode);
 
         void CallPassage();
-        
+
         void CallAlarm();
 
         void ClearPassageCount();

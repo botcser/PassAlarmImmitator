@@ -1,4 +1,7 @@
-﻿using IRAPROM.MyCore.MyNetwork;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using IRAPROM.MyCore.MyNetwork;
 using Newtonsoft.Json;
 
 namespace IRAPROM.MyCore.Device.Impulse
@@ -79,8 +82,8 @@ namespace IRAPROM.MyCore.Device.Impulse
         public const short PortUDPListenDefault = 5016;
         private short _portUDPListenAdditional;
 
-        public override short PortTCP => 5012;
-        public override short PortUDP => 5015;
+        public override ushort PortTCP => 5012;
+        public override ushort PortUDP => 5015;
         public override short PortUDPAdditional { get; set; }
         public override short PortUDPListen => 5016;
 
@@ -231,6 +234,11 @@ namespace IRAPROM.MyCore.Device.Impulse
             if (PortUDPAdditional != 0) sender.Send(FindDatagram, PortUDPAdditional, ip, taskCompletionSource);
 
             return taskCompletionSource.Task;
+        }
+
+        public override DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode)
+        {
+            throw new System.NotImplementedException(); // TODO sometime in future
         }
 
         public override int GetModelId(string val)                                 // Update MetalDetectorModelFromName

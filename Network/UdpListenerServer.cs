@@ -1,13 +1,14 @@
-﻿using IRAPROM.MyCore.Auxiliary;
+﻿using Extensions;
+using IRAPROM.MyCore.Auxiliary;
 using IRAPROM.MyCore.DBModel;
 using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Device.Matreshka;
 using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.MD;
 using PassAlarmSimulator.Validator;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Sockets;
-using IRAPROM.MyCore.Device.Matreshka;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IRAPROM.MyCore.MyNetwork
@@ -69,7 +70,11 @@ namespace IRAPROM.MyCore.MyNetwork
         public static void ParseResponse(byte[] response, IPEndPoint remoteIpEndPoint)
         {
             //---------- ответы поиска ---------------
-            if (MatreshkaResponse(response, remoteIpEndPoint, out var rec))
+            if (MatreshkaResponseXPROGOST(response, remoteIpEndPoint, out var rec))
+            {
+                DebugResponse("MatreshkaResponseXPROGOST");
+            }
+            else if(MatreshkaResponse(response, remoteIpEndPoint, out rec))
             {
                 DebugResponse("MatreshkaResponse");
             }
@@ -162,11 +167,11 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
-            
-//#if DEBUGG
-//            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-//                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-//#endif
+
+#if DEBUGG
+            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
+                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+#endif
 
 #if !USE_DEVICE_SIMULATOR
             if (IsSentByServer(remoteIpEndPoint)) return;
@@ -241,9 +246,114 @@ namespace IRAPROM.MyCore.MyNetwork
             return true;
         }
 
+        private static bool MatreshkaResponseXPROGOST(byte[] bytes, IPEndPoint ip, out MetalDetectPacketInfo rec)
+        {
+            Console.WriteLine($"MatreshkaResponseXPROGOST: parcing...");
+
+            rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes);
+
+            Console.WriteLine($"MatreshkaResponseXPROGOST: {rec?.Ip}");
+
+            rec.deviceFindAnswerNetworkInf = new DeviceFindAnswerNetworkInf()
+            {
+                IP = rec.Ip,
+                Mask = rec.Mask,
+                IPGateway = rec.Gateway,
+                mac = rec.mac,
+                PortTCP = rec.TCPPort,
+                PortUDP = rec.TCPPort,
+                Model = rec.ProductModel
+            };
+            
+            if (rec == null || rec.ProductModel.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
+
+            var message = $"rec.command = {rec.command}\n";
+
+            try
+            {
+                if (Constants.FindAnswerCodes.Contains(rec.command))
+                {
+                    message += $"FindAnswer -> MAC:{rec.MAC}  -  IP: {rec.deviceFindAnswerNetworkInf.IP}" +
+                               $"  Mask: {rec.deviceFindAnswerNetworkInf.Mask}" +
+                               $"  TCP-port: {rec.deviceFindAnswerNetworkInf.PortTCP}" +
+                               $"  UDP-port: {rec.deviceFindAnswerNetworkInf.PortUDP}" +
+                               $"  Gateway: {rec.deviceFindAnswerNetworkInf.IPGateway}";
+
+                    message += $"  Модель: {rec.deviceFindAnswerNetworkInf.Model}  Версия: {rec.deviceFindAnswerNetworkInf.Version}";
+
+                    var device = MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
+
+                    if (device == null)
+                    {
+                        Console.WriteLine("MatreshkaResponse: EX: Unknow device or device answer parsing error!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"MatreshkaResponse: FoundDevices: {device.IP}");
+                        Validator.FoundDevices.Add(device);
+                    }
+                }
+                else
+                {
+                    switch (rec.command)
+                    {
+                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                            {
+                                Console.WriteLine($"METDET_CMD_NORMAL_GET_PASSAGES: {BitConverter.ToString(bytes)}");
+
+                                message += $"WorkInf -> MAC:{rec.MAC}  -  {rec.NormalInfName}";
+
+                                break;
+                            }
+                        case MDCommands.METDET_CMD_ALARM:
+                            {
+                                Console.WriteLine($"METDET_CMD_ALARM: {BitConverter.ToString(bytes)}");
+
+                                message += $"ALARM -> MAC:{rec.MAC} ({rec.SensorModeName}) - ({rec.SensorsStrMsg.Trim()})";
+
+                                break;
+                            }
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            if (App.Loader_UDPPortRetransmission > 0)
+            {
+                if (MetalDetectPacketInfo.CheckMatreshkaHeader(bytes))
+                {
+                    switch (rec.command)
+                    {
+                        case MDCommands.METDET_CMD_ALARM:
+                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                        case MDCommands.METDET_CMD_FINDANSWER:
+                            UDPSender.Instance.Send(bytes, App.Loader_UDPPortRetransmission);
+                            break;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private static bool MatreshkaResponse(byte[] bytes, IPEndPoint ip, out MetalDetectPacketInfo rec)
         {
             rec = MetalDetectPacketInfo.ParseMatreshkaMessageUDP(bytes);
+
+            if (rec == null)
+            {
+                return false;
+            }
 
             if (rec == null)
             {
@@ -298,6 +408,7 @@ namespace IRAPROM.MyCore.MyNetwork
                     }
                     else
                     {
+                        Console.WriteLine($"MatreshkaResponse: FoundDevices: {device.IP}");
                         Validator.FoundDevices.Add(device);
                     }
                 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using IRAPROM.MyCore.Device.Impulse;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
@@ -10,7 +12,7 @@ namespace IRAPROM.MyCore.Device
     public abstract class DeviceMetalDetector: CardItem, IEquatable<DeviceMetalDetector>
     {
         [JsonIgnore]
-        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new Matreshka.Constants(), new Constants(), new Matreshka.XGOST.Constants() };
+        public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new Matreshka.Constants(), new Device.Impulse.Constants(), new IRAPROM.MyCore.Device.Matreshka.XGOST.Constants() };
         
         [JsonIgnore]
         public static DeviceMetalDetector DefaultDeviceMetalDetector = IRAPROM.MyCore.Device.Matreshka.Matreshka.DefaultMatreshka;
@@ -33,8 +35,8 @@ namespace IRAPROM.MyCore.Device
         public virtual string Mask { get => _mask; set { _mask = value; if (WorkParams != null) WorkParams.Mask = value; } }
         public virtual string Gateway { get => _gateway; set { _gateway = value; if (WorkParams != null) WorkParams.Gateway = value; } }
         public virtual string MAC { get => _mac; set { _mac = value; if (WorkParams != null) WorkParams.MAC = value; } }
-        public virtual short PortTCP { get => _portTCP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portTCP; set { _portTCP = value; if (WorkParams != null) WorkParams.PortTCP = value; } }
-        public virtual short PortUDP { get => _portUDP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portUDP; set { _portUDP = value; if (WorkParams != null) WorkParams.PortUDP = value; } }
+        public virtual ushort PortTCP { get => _portTCP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portTCP; set { _portTCP = value; if (WorkParams != null) WorkParams.PortTCP = value; } }
+        public virtual ushort PortUDP { get => _portUDP == 0 ? FamilyInfo?.PortTCP ?? 0 : _portUDP; set { _portUDP = value; if (WorkParams != null) WorkParams.PortUDP = value; } }
         [JsonIgnore]
         public virtual List<int> GridCellDefinitions { get; set; }
         [JsonIgnore]
@@ -45,7 +47,9 @@ namespace IRAPROM.MyCore.Device
         [JsonIgnore]
         public abstract List<short> AvailableZonesCount { get; }
         public abstract string SeriesName { get; }
+        public abstract ushort ModelId { set; get; }
         public abstract string ModelName { get; }
+        public abstract string ProductModelName { set; get; }
 
         [JsonProperty]
         public abstract MetalDetectorPassage LastPassage { get; set; }
@@ -53,9 +57,9 @@ namespace IRAPROM.MyCore.Device
         public abstract void CleanStatistics();
 
         [JsonProperty]
-        protected short _portUDP;
+        protected ushort _portUDP;
         [JsonProperty]
-        protected short _portTCP;
+        protected ushort _portTCP;
         [JsonProperty]
         protected readonly IWorkParamsProto WorkParamsProto;
 

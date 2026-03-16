@@ -1,5 +1,15 @@
-﻿using IRAPROM.MyCore.MyNetwork;
+﻿using IRAPROM.MyCore.Model;
+using IRAPROM.MyCore.MyNetwork;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
@@ -10,51 +20,57 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
         public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
         public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0xFF, 0xFF, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x8B, 0x69, 0x3C, 0x5A, 0x72, 0xfB, 0x0D, 0x0A };
-        
-        public const int CommandRequestMetaLength = 22;
-        public const int CommandResponseMetaLength = 20;
-        public const int FindResponseLength = 56;
-        public static int CommandOffset = 13;
 
-        public static (short deviceCode, short code, int responseLenght, string name) GetNetworkParams = (0x0021, 0x0021, CommandRequestMetaLength + 16, "GetNetworkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) GetBaseSensitivity = (0x0022, 0x0022, CommandRequestMetaLength + 1, "GetBaseSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity3 = (0x023, 0x00233, CommandRequestMetaLength + 12, "GetZonesSensitivity3");
-        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity6 = (0x023, 0x00236, CommandRequestMetaLength + 24, "GetZonesSensitivity6");
-        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity11 = (0x023, 0x00239, CommandRequestMetaLength + 44, "GetZonesSensitivity11");
-        public static (short deviceCode, short code, int responseLenght, string name) GetWorkFrequency = (0x0024, 0x0024, CommandRequestMetaLength + 1, "GetWorkFrequency");
-        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkMode = (0x0025, 0x0025, CommandRequestMetaLength + 3, "GetZonesWorkMode");
-        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkModeV33 = (0x0025, 0x00255, CommandRequestMetaLength + 4, "GetZonesWorkMode");
-        public static (short deviceCode, short code, int responseLenght, string name) GetAlarmParams = (0x0026, 0x0026, CommandRequestMetaLength + 3, "GetAlarmParams");
-        public static (short deviceCode, short code, int responseLenght, string name) GetTime = (0x0027, 0x0027, CommandRequestMetaLength + 7, "GetTime");
-        public static (short deviceCode, short code, int responseLenght, string name) GetSerialNumber = (0x0028, 0x0028, CommandRequestMetaLength + 12, "GetSerialNumber");
-        public static (short deviceCode, short code, int responseLenght, string name) GetPassageCount = (0x0029, 0x0029, CommandRequestMetaLength + 5, "GetPassageCount");
-        public static (short deviceCode, short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, 0x002A, CommandRequestMetaLength + 1, "GetWorkProgramScene");
-        public static (short deviceCode, short code, int responseLenght, string name) GetAlarmLogs = (0x002B, 0x002B, 0, "GetAlarmLogs");
+        public const int CommandResponseLength = 56;
+        public const int ResultOffset = 15;
+        public const int DataLengthOffset = 5;
+        public const int FrameSequenceOffset = 9;
+        public const int MetaInfoLength = 3 + 2 + 4 + PacketMetaInfoLength;        // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
+        public const int PacketMetaInfoLength = 4 + 2 + 4 + 2 + 2;                 // Frame number + Command + Password + CRC checksum + End frame marker
+        public const int CommandCodeOffset = 13;
 
-        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, CommandRequestMetaLength, "SetNetworkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, CommandRequestMetaLength, "SetBaseSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, CommandRequestMetaLength, "SetZonesSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, CommandRequestMetaLength, "SetWorkFrequency");
-        public static (short deviceCode, short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, 0x0005, CommandRequestMetaLength, "SetZonesWorkMode");
-        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, CommandRequestMetaLength, "SetAlarmParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, CommandRequestMetaLength, "SetTime");
-        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, CommandRequestMetaLength, "SetSerialNumber");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, CommandRequestMetaLength, "SetWorkProgramScene");
-        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, CommandRequestMetaLength, "ClearPassageCount");
-        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, CommandRequestMetaLength, "CallPassage");
-        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, CommandRequestMetaLength, "CallAlarm");
+        public static (short deviceCode, short code, int responseLenght, string name) GetPassword = (0x0087, 0x0087, MetaInfoLength + 7, "GetPassword");
+        public static (short deviceCode, short code, int responseLenght, string name) GetFirmwareVersion = (0x0089, 0x0089, MetaInfoLength + 12, "GetFirmwareVersion");
+        public static (short deviceCode, short code, int responseLenght, string name) GetSerialNumber = (0x008A, 0x008A, MetaInfoLength + 16, "GetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) GetTime = (0x0088, 0x0088, MetaInfoLength + 6, "GetTime");
+
+        public static (short deviceCode, short code, int responseLenght, string name) GetNetworkParams = (0x0081, 0x0081, MetaInfoLength + 22, "GetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) GetBaseSensitivity = (0x0082, 0x0082, MetaInfoLength + 2, "GetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity = (0x083, 0x0083, MetaInfoLength + 12, "GetZonesSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesSensitivity33 = (0x083, 0x00833, MetaInfoLength + 12, "GetZonesSensitivity33");
+        public static (short deviceCode, short code, int responseLenght, string name) GetWorkFrequency = (0x0084, 0x0084, MetaInfoLength + 1, "GetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkMode = (0x0085, 0x0085, MetaInfoLength + 3, "GetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) GetZonesWorkModeV33 = (0x0025, 0x00255, MetaInfoLength + 4, "GetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) GetAlarmParams = (0x0086, 0x0086, MetaInfoLength + 3, "GetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) GetPassageCount = (0x008B, 0x008B, MetaInfoLength + 16, "GetPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, 0x002A, MetaInfoLength + 1, "GetWorkProgramScene");
+
+        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, MetaInfoLength, "SetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, MetaInfoLength, "SetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, MetaInfoLength, "SetZonesSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, MetaInfoLength, "SetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, 0x0005, MetaInfoLength, "SetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, MetaInfoLength, "SetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, MetaInfoLength, "SetTime");
+        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, MetaInfoLength, "SetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, MetaInfoLength, "SetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, MetaInfoLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, MetaInfoLength, "CallPassage");
+        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, MetaInfoLength, "CallAlarm");
         
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
-                { PCV3300Name, (0x002A, new List <short>{ 11, 22, 33 }, PCV3300Name, new List<int> {11, 3}, 11 ) },
-                { PCZ3300MKName, (0x0020, new List<short>{ 11, 22, 33 }, PCZ3300MKName, new List<int> {11, 3}, 6 )},
-                { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name, new List<int> {3, 3}, 6 )}, 
-                { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name, new List<int> {3, 3}, 6 ) }, 
-                { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name, new List<int> {6, 3}, 6 ) }, 
-                { PCVx1800Name, (0x0033, new List<short>{ 6, 12, 18 }, PCVx1800Name, new List<int> {6, 3}, 6 ) }, 
-                { MV6Name, (0x0064, new List <short>{ 6, 6, 6 }, MV6Name, new List<int> {6, 3}, 6 ) },                    // Монопанели передают режим ЗО = 2
-                { MVx6Name, (0x0065, new List <short>{ 6, 6, 6 }, MVx6Name, new List<int> {6, 3}, 6 ) },
-                { UnknownName, (0x00FE, new List <short>{ 6, 6, 6 }, UnknownName, new List<int> {6, 1}, 6 ) },
+                { PCX600PROName, (0x006E, new List <short>{ 3, 6, 9 }, PCX600PROName, new List<int> {3, 1}, 6 ) },
+                { PCX1100PROName, (0x006F, new List <short>{ 11, 22, 33 }, PCX1100PROName, new List<int> {11, 3}, 11 ) },
+                { PCGOST900Name, (0x0028, new List <short>{ 3, 6, 9 }, PCGOST900Name, new List<int> {3, 3}, 6 ) },
+                { PCGOST1800Name, (0x0029, new List <short>{ 6, 12, 18 }, PCGOST1800Name, new List<int> {6, 3}, 6 ) },
+                { PCGOST3300Name, (0x003E, new List <short>{ 11, 22, 33 }, PCGOST3300Name, new List<int> {11, 3}, 11 ) },
+                { PCGOST6300Name, (0x0040, new List <short>{ 21, 42, 63 }, PCGOST6300Name, new List<int> {33, 3}, 11 ) },
+                { PCGOSTx900Name, (0x0032, new List <short>{ 3, 6, 9 }, PCGOSTx900Name, new List<int> {3, 3}, 6 ) },
+                { PCGOSTx1800Name, (0x0033, new List <short>{ 6, 12, 18 }, PCGOSTx1800Name, new List<int> {6, 3}, 6 ) },
+                { PCGOSTx3300Name, (0x0048, new List <short>{ 11, 22, 33 }, PCGOSTx3300Name, new List<int> {11, 3}, 11 ) },
+                { PCGOSTx6300Name, (0x004A, new List <short>{ 21, 42, 63 }, PCGOSTx6300Name, new List<int> {33, 3}, 11 ) },
+                { MGOST6Name, (0x0064, new List <short>{ 3, 6, 9 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
             };
 
         public const short PortTCPDefault = 5000;
@@ -63,8 +79,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private short _portUDPListenAdditional = 0;
         private short _portUDPAdditional = 0;
 
-        public override short PortTCP => 5000;
-        public override short PortUDP => 1021;
+        public override ushort PortTCP => 5000;
+        public override ushort PortUDP => 1021;
         public override short PortUDPAdditional
         {
             get => _portUDPAdditional;
@@ -91,20 +107,23 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public override List<string> WorkPrograms => _workPrograms;
 
 
-        private const string PCZ3300MKName = "PC Z 3300 M K";
-        private const string PCV900Name = "PC V 900 (9/6/3)";
-        private const string PCVx900Name = "PC Vx 900 (9/6/3)";
-        private const string PCV1800Name = "PC V 1800 (18/12/6)";
-        private const string PCVx1800Name = "PC Vx 1800 (18/12/6)";
-        private const string PCV3300Name = "PC V 3300 (33/22/11)";
-        private const string MV6Name = "M V 6";
-        private const string MVx6Name = "M Vx 6";
-        private const string UnknownName = "Unknown Matreshka";
+        private const string PCX600PROName = "PC X 600 PRO";
+        private const string PCX1100PROName = "PC X 1100 PRO";
+        private const string PCGOST900Name = "PC V 900 GOST";
+        private const string PCGOST1800Name = "PC V 1800 GOST";
+        private const string PCGOST3300Name = "PC V 3300 GOST";
+        private const string PCGOST6300Name = "PC V 6300 GOST";
+        private const string PCGOSTx900Name = "PC Vx 900 GOST";
+        private const string PCGOSTx1800Name = "PC Vx 1800 GOST";
+        private const string PCGOSTx3300Name = "PC Vx 3300 GOST";
+        private const string PCGOSTx6300Name = "PC Vx 6300 GOST";
+        private const string MGOST6Name = "M V 6 GOST";
+        private const string UnknownName = "Unknown GOST Matreshka";
 
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
             GetBaseSensitivity, GetWorkFrequency, GetAlarmParams, GetZonesWorkMode, GetPassageCount, GetNetworkParams, GetTime,
-            GetSerialNumber, GetWorkProgramScene, GetAlarmLogs, GetZonesSensitivity11, GetZonesSensitivity6, GetZonesSensitivity3,
+            GetSerialNumber, GetWorkProgramScene, GetPassword, GetZonesSensitivity, GetFirmwareVersion, GetSerialNumber,
         };
 
         public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
@@ -191,206 +210,72 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             UnknownMatreshka = 0xFE,
 
-            MZ6MK = 20,
+            PCX600PRO = 0x6E,
+            PCX1100PRO = 0x6F,
 
-            PCV900 = 40,
-            PCV1800 = 41,
-            PCZ3300MK = 0x20,
-            PCV3300 = 0x2A,
-            PCV4800 = 43,
-            PCV6300 = 44,
-            PCV9300 = 45,
-            PCVx900 = 50,
-            PCVx1800 = 51,
-            PCVx3300 = 52,
-            PCVx4800_MZmb = 53,
-            PCVx6300_MZmb = 54,
-            PCVx9300 = 55,
-            PCV90011 = 60,
-            PCV180011 = 61,
-            PCV3300M11 = 62,
-            PCV480011 = 63,
-            PCV630011_MV6mb = 64,
-            PCV930011 = 65,
-            PCVx90011 = 70,
-            PCVx180011 = 71,
-            PCVx330011 = 72,
-            PCVx480011 = 73,
-            PCVx630011 = 74,
-            PCVx930011 = 75,
-            PCV480016_PCVi1800mb = 80,
-            PCV630016 = 81,
-            PCV930016 = 82,
-            PCVx480016_PCVi3300mb = 90,
-            PCVx630016 = 91,
-            PCVx930016 = 92,
+            PCGOST900 = 0x28,
+            PCGOST1800 = 0x29,
+            PCGOST3300 = 0x3E,
+            PCGOST6300 = 0x40,
 
-            MV6 = 100,
-            MVx6 = 101,
-            MV11_hz = 110,
-            MVx11_hz = 111,
-            MV16_hz = 120,
-            MVx16_hz = 121,
+            PCGOSTx900 = 0x32,
+            PCGOSTx1800 = 0x33,
+            PCGOSTx3300 = 0x48,
+            PCGOSTx6300 = 0x4A,
+
+            MGOST6 = 0x64,
         }
-        
+
         public static string GetModelName(Model id)                                 // Update MetalDetectorModelFromName
         {
             switch (id)
             {
-                case Model.PCV1800:
+                case Model.PCX600PRO:
                 {
-                    return PCV1800Name;
+                    return PCX600PROName;
                 }
-                case Model.PCVx900:
+                case Model.PCX1100PRO:
                 {
-                    return PCVx900Name;
+                    return PCX1100PROName;
                 }
-                case Model.PCVx9300:
+                case Model.PCGOST900:
                 {
-                    return "PC Vx 9300 (93/62/31) 6 (Монопанель MZ 6 MK)";
+                    return PCGOST900Name;
                 }
-                case Model.PCV6300:
+                case Model.PCGOST1800:
                 {
-                    return "PC V 6300 (63/42/21) 6 (Монопанель)";
+                    return PCGOST1800Name;
                 }
-                case Model.PCV9300:
+                case Model.PCGOST3300:
                 {
-                    return "PC V 9300 (93/62/31) 6";
+                    return PCGOST3300Name;
                 }
-                case Model.PCV480016_PCVi1800mb:
+                case Model.PCGOST6300:
                 {
-                    return "PC V 4800 (48/32/16) (PCVi1800 (18/12/6))";
+                    return PCGOST6300Name;
                 }
-                case Model.PCVx480016_PCVi3300mb:
+                case Model.PCGOSTx900:
                 {
-                    return "PC Vx 4800 (48/32/16) (PCVi3300 (33/22/11))";
+                    return PCGOSTx900Name;
                 }
-                case Model.MV6:
+                case Model.PCGOSTx1800:
                 {
-                    return MV6Name;
+                    return PCGOSTx1800Name;
                 }
-                case Model.MZ6MK:
+                case Model.PCGOSTx3300:
                 {
-                    return "M Z 6 MK Монопанель";
+                    return PCGOSTx3300Name;
                 }
-                case Model.PCV900:
+                case Model.PCGOSTx6300:
                 {
-                    return PCV900Name;
+                    return PCGOSTx6300Name;
                 }
-                case Model.PCV3300:
+                case Model.MGOST6:
                 {
-                    return "PC V 3300 (33/22/11)";
-                }
-                case Model.PCZ3300MK:
-                {
-                    return "PC Z 3300 M K";
-                }
-                case Model.PCV4800:
-                {
-                    return "PC V 4800 (48/32/16) 6";
-                }
-                case Model.PCVx1800:
-                {
-                    return PCVx1800Name;
-                }
-                case Model.PCVx3300:
-                {
-                    return "PC Vx 3300 (33/22/11) 6";
-                }
-                case Model.PCVx4800_MZmb:
-                {
-                    return "PC Vx 4800 (48/32/16) 6 (MZ Монопанель)";
-                }
-                case Model.PCVx6300_MZmb:
-                {
-                    return "PC Vx 6300 (63/42/21) 6 (MZ Монопанель)";
-                }
-                case Model.PCV90011:
-                {
-                    return "PC V 900 (9/6/3) 11";
-                }
-                case Model.PCV180011:
-                {
-                    return "PC V 1800 (18/12/6) 11";
-                }
-                case Model.PCV3300M11:
-                {
-                    return PCV3300Name;
-                }
-                case Model.PCV480011:
-                {
-                    return "PC V 4800 (48/32/16) 11";
-                }
-                case Model.PCV630011_MV6mb:
-                {
-                    return "PC V 6300 (63/42/21) 11 (MV6 Монопанель)";
-                }
-                case Model.PCV930011:
-                {
-                    return "PC V 9300 (93/62/31) 11";
-                }
-                case Model.PCVx90011:
-                {
-                    return "PC Vx 900 (9/6/3) 11";
-                }
-                case Model.PCVx180011:
-                {
-                    return "PC Vx 1800 (18/12/6) 11";
-                }
-                case Model.PCVx330011:
-                {
-                    return "PC Vx 3300 (33/22/11) 11";
-                }
-                case Model.PCVx480011:
-                {
-                    return "PC Vx 4800 (18/12/6) 11";
-                }
-                case Model.PCVx630011:
-                {
-                    return "PC Vx 6300 (63/42/21) 11";
-                }
-                case Model.PCVx930011:
-                {
-                    return "PC Vx 9300 (93/62/31) 11";
-                }
-                case Model.PCV630016:
-                {
-                    return "PC V 6300 (63/42/21) 16";
-                }
-                case Model.PCV930016:
-                {
-                    return "PC V 9300 (93/62/31) 16";
-                }
-                case Model.PCVx630016:
-                {
-                    return "PC Vx 6300 (63/42/21) 16";
-                }
-                case Model.PCVx930016:
-                {
-                    return "PC Vx 9300 (93/62/31) 16";
-                }
-                case Model.MVx6:
-                {
-                    return MVx6Name;
-                }
-                case Model.MV11_hz:
-                {
-                    return "M V 11 new";
-                }
-                case Model.MVx11_hz:
-                {
-                    return "M Vx 11 new";
-                }
-                case Model.MV16_hz:
-                {
-                    return "M V 16 new";
-                }
-                case Model.MVx16_hz:
-                {
-                    return "M Vx 16 new";
+                    return MGOST6Name;
                 }
                 case Model.UnknownMatreshka:
-                default: return "Unknown Matreshka";
+                default: return "Unknown GOST Matreshka";
             }
         }
         
@@ -408,14 +293,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             return name switch
             {
-                PCZ3300MKName => Models[PCZ3300MKName].ModelId,
-                PCV900Name => Models[PCV900Name].ModelId,
-                PCVx900Name => Models[PCVx900Name].ModelId,
-                PCV1800Name => Models[PCV1800Name].ModelId,
-                PCVx1800Name => Models[PCVx1800Name].ModelId,
-                PCV3300Name => Models[PCV3300Name].ModelId,
-                MV6Name => Models[MV6Name].ModelId,
-                MVx6Name => Models[MVx6Name].ModelId,
+                PCX600PROName => Models[PCX600PROName].ModelId,
+                PCX1100PROName => Models[PCX1100PROName].ModelId,
+                PCGOST900Name => Models[PCGOST900Name].ModelId,
+                PCGOST1800Name => Models[PCGOST1800Name].ModelId,
+                PCGOST3300Name => Models[PCGOST3300Name].ModelId,
+                PCGOST6300Name => Models[PCGOST6300Name].ModelId,
+                PCGOSTx900Name => Models[PCGOSTx900Name].ModelId,
+                PCGOSTx1800Name => Models[PCGOSTx1800Name].ModelId,
+                PCGOSTx3300Name => Models[PCGOSTx3300Name].ModelId,
+                PCGOSTx6300Name => Models[PCGOSTx6300Name].ModelId,
+                MGOST6Name => Models[MGOST6Name].ModelId,
                 _ => -1
             };
         }
@@ -431,6 +319,42 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             taskCompletionSource.SetResult();
 
             return taskCompletionSource.Task; 
+        }
+
+        public override DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode)
+        {
+            var deviceMetalDetector = new XPROGOST();
+
+            using (var ms = new MemoryStream(bytes))
+            {
+                using (var br = new BinaryReader(ms))
+                {
+                    var magicNumberHead = br.ReadBytes(3); //4
+
+                    deviceMetalDetector.HardwareAddress = BitConverter.ToUInt16(br.ReadBytes(2));
+                    
+                    var frameDataLength = br.ReadBytes(4);
+                    var frameSequenceNumber = br.ReadBytes(4);
+                    commandCode = br.ReadUInt16();
+                    var result = br.ReadByte();
+
+                    deviceMetalDetector.IP = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    deviceMetalDetector.Mask = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    deviceMetalDetector.Gateway = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    deviceMetalDetector.PortTCP = BitConverter.ToUInt16(br.ReadBytes(2));
+                    deviceMetalDetector.PortUDP = BitConverter.ToUInt16(br.ReadBytes(2));
+                    deviceMetalDetector.MAC = Convert.ToHexString(br.ReadBytes(6));
+
+                    deviceMetalDetector.ProductModelName = Encoding.UTF8.GetString(br.ReadBytes(10));
+
+                    var modelId = br.ReadBytes(4).Select(i => (char)i).ToList();
+
+                    deviceMetalDetector.ModelId = (ushort)(Convert.FromHexString($"{modelId[0]}{modelId[1]}")[0]/* + Convert.FromHexString($"{modelId[2]}{modelId[3]}")[0] * 0x100*/);
+                    deviceMetalDetector.Model = (Model)deviceMetalDetector.ModelId;
+                }
+            }
+
+            return deviceMetalDetector;
         }
 
         public override string GetModelName(int id)

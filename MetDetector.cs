@@ -167,10 +167,10 @@ namespace IRAPROM.MyCore.DBModel
         public string Mask { get; set; } //Маска сети
 
 
-        public short PortUDP { get; set; }
+        public ushort PortUDP { get; set; }
 
 
-        public short PortTCP { get; set; } //Порт TCP
+        public ushort PortTCP { get; set; } //Порт TCP
 
         public string Gateway { get; set; }
 
@@ -300,8 +300,8 @@ namespace IRAPROM.MyCore.DBModel
         private string _mac;
         private string _mask;
         private string _name;
-        private short _portTcp;
-        private short _portUdp;
+        private ushort _portTcp;
+        private ushort _portUdp;
 
         private string _radiationSensor;
         private short _sens01;
@@ -392,7 +392,7 @@ namespace IRAPROM.MyCore.DBModel
                 OnPropertyChanged("Mask");
             }
         }
-        public short PortUDP
+        public ushort PortUDP
         {
             get => _portUdp;
             set
@@ -403,7 +403,7 @@ namespace IRAPROM.MyCore.DBModel
                 OnPropertyChanged("PortUDP");
             }
         }
-        public short PortTCP
+        public ushort PortTCP
         {
             get => _portTcp;
             set

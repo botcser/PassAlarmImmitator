@@ -17,12 +17,14 @@ namespace IRAPROM.MyCore.Device.Matreshka
 #endif
 
         public override string SeriesName => "Матрешка";
+        public override ushort ModelId { get; set; }
         public override string ModelName => WorkParams == null ? "Unknown Matreshka" : Constants.GetModelName(Model);
+        public override string ProductModelName { get; set; }
 
         public Constants.Model Model => WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
-        public override short PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
-        public override short PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
+        public override ushort PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
+        public override ushort PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
         public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
 
@@ -132,7 +134,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             PortTCP = port;
         }
 #else
-        public Matreshka(string ip, short port) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public Matreshka(string ip, ushort port) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = port;

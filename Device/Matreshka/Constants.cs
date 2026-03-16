@@ -1,11 +1,14 @@
-﻿using IRAPROM.MyCore.MyNetwork;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using IRAPROM.MyCore.MyNetwork;
 using Newtonsoft.Json;
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class Constants : FamilyInfo
     {
-        public static readonly short[] FindAnswerCodes = { 0x1040, 0x2DE1 };
+        public static readonly short[] FindAnswerCodes = { 0x1040, 0x2DE1, 0x1100 };
         public static byte[] RequestMagicNumber = { 0x40, 0x23, 0x24 }; // @#$
         public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
         public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
@@ -59,8 +62,8 @@ namespace IRAPROM.MyCore.Device.Matreshka
         private short _portUDPListenAdditional = 0;
         private short _portUDPAdditional = 0;
 
-        public override short PortTCP => 5000;
-        public override short PortUDP => 9998;
+        public override ushort PortTCP => 5000;
+        public override ushort PortUDP => 9998;
         public override short PortUDPAdditional
         {
             get => _portUDPAdditional;
@@ -426,6 +429,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
             taskCompletionSource.SetResult();
 
             return taskCompletionSource.Task; 
+        }
+
+        public override DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode)
+        {
+            throw new System.NotImplementedException(); // TODO sometime in future
         }
 
         public override string GetModelName(int id)

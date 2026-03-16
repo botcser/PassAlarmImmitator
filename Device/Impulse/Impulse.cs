@@ -10,7 +10,9 @@ namespace IRAPROM.MyCore.Device.Impulse
     public class Impulse : DeviceMetalDetector, INotifyPropertyChanged
     {
         public override string SeriesName => "Импульс";
+        public override ushort ModelId { get; set; }
         public override string ModelName => WorkParams == null ? "Unknown Impulse" : Constants.GetModelName(Model);
+        public override string ProductModelName { get; set; }
         public Constants.Model Model => WorkParams == null ? Constants.Model.Unknown : (Constants.Model)WorkParams.ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
@@ -63,7 +65,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             PortTCP = portTCP;
         }
 #else
-        public Impulse(string ip, short portTCP) : base(new WorkParamsProto(new NetworkProtoImpulse(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public Impulse(string ip, ushort portTCP) : base(new WorkParamsProto(new NetworkProtoImpulse(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = portTCP;

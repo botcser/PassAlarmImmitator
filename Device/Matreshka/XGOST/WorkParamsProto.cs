@@ -1,8 +1,15 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using IRAPROM.MyCore.Model.WP;
 using PassAlarmSimulator.Device;
-using PassAlarmSimulator.Validator;
+//using PassAlarmSimulator.Validator;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
@@ -29,7 +36,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             {
                 InitZonesSensitivity(workParams);
 
-                InitModelBySensorsSensitivity(workParams);
+                //InitModelBySensorsSensitivity(workParams);
 
                 InitNetworkParams(workParams); // TODO: PCV1800 broken proto
                 InitBaseSensitivity(workParams);
@@ -139,25 +146,25 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
                 await Task.Delay(1000);
 
-                alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+                //alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
-                if (alarmPassage != null) break;
+                //if (alarmPassage != null) break;
 
             } while (timer > 0);
 
-            if (alarmPassage == null)
-            {
-                Console.WriteLine($"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
+            //if (alarmPassage == null)
+            //{
+            //    Console.WriteLine($"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
 
-                return false;
-            }
+            //    return false;
+            //}
 
-            alarmPassage = alarmPassage.Clone();
+            //alarmPassage = alarmPassage.Clone();
             timer = milliSecondsTimeout;
             MetalDetectorPassage lastPassage;
 
             Console.WriteLine($"\nOK. Now you must make a passage (clean) through all devices at once. You have 20 seconds to do this!");
-            Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
+            //Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
 
             do
             {
@@ -165,19 +172,19 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
                 await Task.Delay(1000);
 
-                lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+                //lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
-                if (lastPassage != null) break;
+                //if (lastPassage != null) break;
 
             } while (timer > 0);
 
-            if (lastPassage == null)
-            {
-                Console.WriteLine($"DynamicTest: Error: No Clean Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
+            //if (lastPassage == null)
+            //{
+            //    Console.WriteLine($"DynamicTest: Error: No Clean Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
 
-                return false;
-            }
-
+            //    return false;
+            //}
+            return false;
             return ValidatePassages(alarmPassage, lastPassage);
         }
 
@@ -200,50 +207,19 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             try
             {
-                var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
-
-                workParams.SensorsSensitivity = null;
-                workParams.SensorsSensitivity ??= new short[response.Length / 2];
+                var response = ExecuteGetCommand(Constants.GetZonesSensitivity.code);
+                return;
+                workParams.SensorsSensitivity = new short[response.Length / 2];
 
                 for (byte i = 0; i < response.Length; i += 2)
                 {
-                    workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                    workParams.SensorsSensitivity[i / 2] = (short)(response[i] + ((short)response[i + 1] << 8));
                 }
             }
             catch (Exception _)
             {
-                try
-                {
-                    var response = ExecuteGetCommand(Constants.GetZonesSensitivity6.code);
-
-                    workParams.SensorsSensitivity = null;
-                    workParams.SensorsSensitivity ??= new short[response.Length / 2];
-
-                    for (byte i = 0; i < response.Length; i += 2)
-                    {
-                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
-                    }
-                }
-                catch (Exception __)
-                {
-                    try
-                    {
-                        var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
-
-                        workParams.SensorsSensitivity = null;
-                        workParams.SensorsSensitivity ??= new short[response.Length / 2];
-
-                        for (byte i = 0; i < response.Length; i += 2)
-                        {
-                            workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
-                        }
-                    }
-                    catch (Exception ___)
-                    {
-                        Console.WriteLine($"ERROR: InitZonesSensitivity: unknown coils count of device {workParams.IP}:{workParams.MAC}!");
-                        return;
-                    }
-                }
+                Console.WriteLine($"ERROR: InitZonesSensitivity: unknown coils count of device {workParams.IP}:{workParams.MAC}!");
+                return;
             }
         }
 

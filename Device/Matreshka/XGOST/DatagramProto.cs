@@ -1,44 +1,55 @@
-﻿using IRAPROM.MyCore.Device;
-using IRAPROM.MyCore.Device.Matreshka.XGOST;
-using System.Collections;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Device.Matreshka.XGOST;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
     public class DatagramProto : IDatagramProto
     {
-        private const int MetaInfoLength = 3 + 1 + 4 + PacketMetaInfoLength;    // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
-        private const int PacketMetaInfoLength = 4 + 2 + 2 + 2;                 // Frame number + Command + CRC checksum + End frame marker
-
-        private readonly List<byte> _hardwareAddress;
+        private readonly ushort _hardwareAddress;
 
         public DatagramProto()
         {
-            _hardwareAddress = BitConverter.GetBytes(0xFFFE).ToList();
+            _hardwareAddress = 0xFFFE;
         }
 
-        public DatagramProto(List<byte> hardwareAddress)
+        public DatagramProto(ushort hardwareAddress)
         {
             _hardwareAddress = hardwareAddress;
         }
 
+
+
         public byte[] MakeRequestDatagram(short cmd, byte[] args = null)
         {
             var argsLength = (byte)(args?.Length ?? 0);
-            var datagram = new byte[Constants.CommandRequestMetaLength + argsLength];
+            var datagram = new byte[Constants.MetaInfoLength + argsLength];
 
             Constants.RequestMagicNumber.CopyTo(datagram, 0);
 
-            datagram[3] = 0;
-            datagram[4] = (byte)(PacketMetaInfoLength + argsLength);
+            datagram[3] = (byte)_hardwareAddress;
+            datagram[4] = (byte)(_hardwareAddress >> 8);
+            
+            datagram[Constants.DataLengthOffset] = Constants.PacketMetaInfoLength;
+            datagram[Constants.DataLengthOffset + 1] = 0;
+            datagram[Constants.DataLengthOffset + 2] = 0;
+            datagram[Constants.DataLengthOffset + 3] = 0;
 
-            for (var i = 5; i <= 11; i++)
+            for (var i = Constants.FrameSequenceOffset; i < Constants.CommandCodeOffset; i++)
             {
                 datagram[i] = 0;
             }
 
-            datagram[12] = (byte)cmd;
-            datagram[13] = 0;
+            datagram[Constants.CommandCodeOffset] = (byte)cmd;
+            datagram[Constants.CommandCodeOffset + 1] = (byte)(cmd>>8);
+
+            datagram[15] = 0x8B;        // PASSWORD
+            datagram[16] = 0x69;
+            datagram[17] = 0x3C;
+            datagram[18] = 0x5A;
 
             if (args != null)
             {
@@ -60,13 +71,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (cmd != 0x21 && !ValidateChecksum(response))                         // TODO: Matreshka BUG Return Ethernet Parameters
             {
                 Console.WriteLine($"Matreshka EX: DatagramProto: GetResult: data checksum is not valid!!!");
-                
+
                 return Array.Empty<byte>();
             }
 
-            var error = response[14];
+            var error = response[Constants.ResultOffset];
 
-            return ValidateRequestResult(error) ? response.Skip(15).Take(response.Length - 4 - 15).ToArray() : Array.Empty<byte>();
+            return ValidateRequestResult(error) ? response.Skip(Constants.ResultOffset + 1).Take(response.Length - 4 - Constants.ResultOffset).ToArray() : Array.Empty<byte>();
         }
 
         public bool ValidateRequestResult(byte result, byte commandCode = 0)
@@ -100,17 +111,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public short GetCodeFromDatagram(byte[] request)
         {
-            return BitConverter.ToInt16(request, Constants.CommandOffset); ;
+            return BitConverter.ToInt16(request, Constants.CommandCodeOffset);
         }
 
         public byte[] MakeZonesSensitivityDatagram(short coilsCount, short[] sensorsSensitivity)
         {
-            var datagram = new byte[coilsCount * 4 + MetaInfoLength];
+            var datagram = new byte[coilsCount * 4 + Constants.MetaInfoLength];
 
             Constants.RequestMagicNumber.CopyTo(datagram, 0);
 
             datagram[3] = 1;                                // Serial port hardware address ?
-            datagram[4] = (byte)(PacketMetaInfoLength + coilsCount * 4);      // Frame packet length (4 bytes)
+            datagram[4] = (byte)(Constants.PacketMetaInfoLength + coilsCount * 4);      // Frame packet length (4 bytes)
             datagram[12] = (byte)Constants.SetZonesSensitivity.code;
             
             for (var i = 0; i < coilsCount * 2; i++)
