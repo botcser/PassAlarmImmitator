@@ -11,6 +11,8 @@ using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Device.Matreshka;
 using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.MyNetwork;
+//using Npgsql;
+//using NpgsqlTypes;
 
 namespace IRAPROM.MyCore.Model
 {
@@ -18,12 +20,14 @@ namespace IRAPROM.MyCore.Model
     {
 
         public short IdModel = 0; //Добавил недавно
+        public string ProductModel = "";
 
         public byte[] head = new byte[4];
-        public byte deviceAdress = 0;
-        public int frameLen = 0;
-        public int msgNum = 0;
-        public short command = 0;
+        public ushort hardwareAdress;
+        public byte result;
+        public int frameLen;
+        public int msgNum;
+        public short command;
         public byte[] body = new byte[256];
 
         // for alarm
@@ -119,13 +123,22 @@ namespace IRAPROM.MyCore.Model
         public DeviceFindAnswerNetworkInf deviceFindAnswerNetworkInf = null;
 
         //extra info from TCP/IP components
-        string IP = "";
+        public string Ip = "";
+        public string Mask = "";
+        public string Mac = "";
+        public string Gateway = "";
+        public ushort TCPPort;
+        public ushort UDPPort;
+
         ushort port = 0;
         string DestCpuIP = "";
         short DestCpuPort = 0;     // this computer's UDP port
 
 
-
+        public MetalDetectPacketInfo()
+        {
+            MetDetector = new MetDetector();
+        }
 
         public static bool CheckMatreshkaHeader(byte[] arr)
         {
@@ -156,51 +169,31 @@ namespace IRAPROM.MyCore.Model
                     rec = new MetalDetectPacketInfo();
                     rec.logTime = DateTime.Now;
                     rec.head = br.ReadBytes(4); //4
-                    rec.deviceAdress = rec.head[3];
+                    rec.hardwareAdress = rec.head[3];
+                    
+                    rec.frameLen = br.ReadInt32(); //4
+                    rec.msgNum = br.ReadInt32(); //4
+                    rec.command = br.ReadInt16(); //2
 
-                    if (arr.Length == 0x14) // PC V X PRO
+                    rec.body = br.ReadBytes(arr.Length - 14);
+
+                    if (Constants.FindAnswerCodes.Contains(rec.command))
                     {
-                        rec.body = br.ReadBytes(arr.Length - 6);
+                        var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
 
-                        if (Constants.FindAnswerCodes.Contains(rec.command))
-                        {
-                            var devInf = new DeviceFindAnswerNetworkInf();
+                        if (devInf == null)
+                            return null;
 
-                            using (var ms2 = new MemoryStream(arr))
-                            {
-                                using (var br2 = new BinaryReader(ms))
-                                {
-                                    devInf.Model = Convert.ToHexString(br2.ReadBytes(6));
-                                    devInf.mac = br2.ReadBytes(6);
-                                }
-                            }
+                        rec.deviceFindAnswerNetworkInf = devInf;
+                        rec.mac = devInf.mac;
+                        rec.Ip = rec.MetDetector.IP = devInf.IP;
+                        rec.Mac = rec.MetDetector.MAC = devInf.MAC;
+                        rec.Gateway = rec.MetDetector.Gateway = devInf.IPGateway;
+                        rec.Mask = rec.MetDetector.Mask = devInf.Mask;
+                        rec.UDPPort = rec.MetDetector.PortUDP = devInf.PortUDP;
+                        rec.TCPPort = rec.MetDetector.PortTCP = devInf.PortTCP;
 
-                            rec.deviceFindAnswerNetworkInf = devInf;
-                            rec.mac = devInf.mac;
-
-                            return rec;
-                        }
-                    }
-                    else // old PC V
-                    {
-                        rec.frameLen = br.ReadInt32(); //4
-                        rec.msgNum = br.ReadInt32(); //4
-                        rec.command = br.ReadInt16(); //2
-
-                        rec.body = br.ReadBytes(arr.Length - 14);
-
-                        if (Constants.FindAnswerCodes.Contains(rec.command))
-                        {
-                            var devInf = DeviceFindAnswerNetworkInf.GetRecFromPacket(rec.body);
-
-                            if (devInf == null)
-                                return null;
-
-                            rec.deviceFindAnswerNetworkInf = devInf;
-                            rec.mac = devInf.mac;
-
-                            return rec;
-                        }
+                        return rec;
                     }
                 }
             }
@@ -225,7 +218,13 @@ namespace IRAPROM.MyCore.Model
                     MetDetector md = null;
                     short modelId = 0;
                     var MAC = Convert.ToHexString(rec.mac);
-                    
+
+                    //if (MyARM.Instance.AddedDevicesTryGetValue(MAC, out md, out var onChanged))
+                    //{
+                    //    rec.IdModel = modelId = md.ModelId;
+                    //    rec.MetDetector = md;
+                    //}
+
                     switch (rec.command)
                     {
                         case MDCommands.METDET_CMD_ALARM:
@@ -236,6 +235,7 @@ namespace IRAPROM.MyCore.Model
                             if (md != null)
                             {
                                 md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                                //onChanged(md);
                             }
                             break;
 
@@ -248,6 +248,7 @@ namespace IRAPROM.MyCore.Model
                             if (md != null)
                             {
                                 md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
+                                //onChanged(md);
                             }
                             break;
 
@@ -278,7 +279,7 @@ namespace IRAPROM.MyCore.Model
                 rec.port = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
                 rec.Mac = rec.MetDetector.MAC = deviceMetalDetector.MAC;
                 rec.mac = Convert.FromHexString(deviceMetalDetector.MAC);
-                rec.MetDetector.ModelId = (short)deviceMetalDetector.ModelId;
+                rec.IdModel = rec.MetDetector.ModelId = (short)deviceMetalDetector.ModelId;
                 rec.ProductModel = rec.MetDetector.Name = deviceMetalDetector.ProductModelName;
                 rec.UDPPort = rec.MetDetector.PortUDP = deviceMetalDetector.PortUDP;
                 rec.TCPPort = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
@@ -307,6 +308,12 @@ namespace IRAPROM.MyCore.Model
                     MetDetector md = null;
                     short modelId = 0;
                     var MAC = Convert.ToHexString(rec.mac);
+
+                    //if (MyARM.Instance.AddedDevicesTryGetValue(MAC, out md, out var onChanged))
+                    //{
+                    //    rec.IdModel = modelId = md.ModelId;
+                    //    rec.MetDetector = md;
+                    //}
 
                     switch (rec.command)
                     {
@@ -345,44 +352,92 @@ namespace IRAPROM.MyCore.Model
 
         public static DeviceMetalDetector MakeMetalDeviceFromPacketInfo(MetalDetectPacketInfo rec, MetalDetectorSeries series)
         {
-            var dev = new MetDetector
-            {
-                MAC = rec.MAC,
-                IP = rec.deviceFindAnswerNetworkInf.IP,
-                Mask = rec.deviceFindAnswerNetworkInf.Mask,
-                PortTCP = rec.deviceFindAnswerNetworkInf.PortTCP,
-                PortUDP = rec.deviceFindAnswerNetworkInf.PortUDP,
-                Gateway = rec.deviceFindAnswerNetworkInf.IPGateway
-            };
+            MetDetector dev = null;
 
-            if (rec.deviceFindAnswerNetworkInf.Model == MDModel.cMZ6MK)
+            //if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var dev, out var onChanged))
+            //{
+            //    if (dev.dtLastInfFindMD == default)
+            //    {
+            //        dev.dtLastInfFindMD = DateTime.Now;
+            //        dev.FindNetworkStatus = 1;
+            //    }
+            //    else
+            //    {
+            //        dev.FindNetworkStatus = 1;
+            //        dev.dtLastInfFindMD = DateTime.Now;
+
+            //        if (dev.dtLastInfFindMD.AddSeconds(10) < DateTime.Now)  //Информация с прошлых запросов
+            //        {
+            //            //Что-то делаем
+            //        }
+            //        else //Информация уже найдена на предыдущих срабатываниях таймера текущего поиска - просто меняем время
+            //        {
+            //        }
+            //    }
+
+            //    onChanged(dev);
+
+            //    return dev.DeviceMetalDetector;
+            //}
+
+            //dev = MyARM.Instance.DevicesFound.FirstOrDefault(x => x.MAC == rec.MAC);
+
+            if (dev == null)
             {
-                dev.ModelId = (short)MetalDetectorModel.PCVx9300_MZ6MK;
+                if (rec.MetDetector == null)
+                {
+                    dev = new MetDetector
+                    {
+                        MAC = rec.MAC,
+                        IP = rec.deviceFindAnswerNetworkInf.IP,
+                        Mask = rec.deviceFindAnswerNetworkInf.Mask,
+                        PortTCP = rec.deviceFindAnswerNetworkInf.PortTCP,
+                        PortUDP = rec.deviceFindAnswerNetworkInf.PortUDP,
+                        Gateway = rec.deviceFindAnswerNetworkInf.IPGateway
+                    };
+                }
+                else
+                {
+                    dev = rec.MetDetector;
+                }
+
+                if (rec.deviceFindAnswerNetworkInf.Model == MDModel.cMZ6MK)
+                {
+                    dev.ModelId = (short)MetalDetectorModel.PCVx9300_MZ6MK;
+                    
+                    //if (MyTools.ExistValue(rec.deviceFindAnswerNetworkInf.Version))
+                    //{
+                    //    dev.Version = rec.deviceFindAnswerNetworkInf.Version;
+                    //}
+                }
+
+                switch (series)
+                {
+                    case MetalDetectorSeries.Matryoshka:
+                        dev.Name ??= $"{dev.IP}:{dev.MAC}";
+                        dev.ModelSeries = MetalDetectorSeries.Matryoshka;
+                        dev.DeviceMetalDetector ??= new Device.Matreshka.Matreshka(dev.IP, dev.PortTCP) { MAC = dev.MAC, Gateway = dev.Gateway, Mask = dev.Mask };
+                        break;
+                    case MetalDetectorSeries.Impulse:
+                        dev.Name ??= $"{dev.IP}:{dev.MAC}";
+                        dev.ModelSeries = MetalDetectorSeries.BlockPost;
+                        dev.DeviceMetalDetector ??= new Device.Impulse.Impulse(dev.IP, dev.PortTCP) { MAC = dev.MAC, Gateway = dev.Gateway, Mask = dev.Mask };
+
+                        break;
+                    case MetalDetectorSeries.Unknown:
+                    case MetalDetectorSeries.BlockPost:
+                    default:
+                        dev.Name = $"Неизвестный detector {dev.IP}:{dev.MAC}";
+                        dev.ModelSeries = MetalDetectorSeries.BlockPost;
+                        break;
+                }
+
+                dev.dtLastInfFindMD = DateTime.Now;
+
+                //MyARM.Instance.DevicesFound.Add(dev);
             }
-
-            switch (series)
-            {
-                case MetalDetectorSeries.Matryoshka:
-                    dev.Name = $"{dev.IP}:{dev.MAC}";
-                    dev.ModelSeries = MetalDetectorSeries.Matryoshka;
-                    dev.DeviceMetalDetector = new Device.Matreshka.Matreshka(dev.IP, dev.PortTCP)
-                        { MAC = dev.MAC, Gateway = dev.Gateway, Mask = dev.Mask };
-                    break;
-                case MetalDetectorSeries.Impulse:
-                    dev.Name = $"{dev.IP}:{dev.MAC}";
-                    dev.ModelSeries = MetalDetectorSeries.BlockPost;
-                    dev.DeviceMetalDetector = new Device.Impulse.Impulse(dev.IP, dev.PortTCP)
-                        { MAC = dev.MAC, Gateway = dev.Gateway, Mask = dev.Mask };
-                    break;
-                case MetalDetectorSeries.Unknown:
-                case MetalDetectorSeries.BlockPost:
-                default:
-                    dev.Name = $"Неизвестный detector {dev.IP}:{dev.MAC}";
-                    dev.ModelSeries = MetalDetectorSeries.BlockPost;
-                    break;
-            }
-
-            dev.dtLastInfFindMD = DateTime.Now;
+            else
+                dev.dtLastInfFindMD = DateTime.Now;
 
             return dev.DeviceMetalDetector;
         }

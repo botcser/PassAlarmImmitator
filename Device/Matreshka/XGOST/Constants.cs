@@ -25,9 +25,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public const int ResultOffset = 15;
         public const int DataLengthOffset = 5;
         public const int FrameSequenceOffset = 9;
-        public const int MetaInfoLength = 3 + 2 + 4 + PacketMetaInfoLength;        // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
-        public const int PacketMetaInfoLength = 4 + 2 + 4 + 2 + 2;                 // Frame number + Command + Password + CRC checksum + End frame marker
+        public const int MetaInfoLength = 3 + 2 + 4 + PacketMetaInfoLength;      //23   // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
+        public const int PacketMetaInfoLength = 4 + 2 + 4 + 2 + 2;                      // Frame number + Command + Password + CRC checksum + End frame marker
         public const int CommandCodeOffset = 13;
+        public const int DataOffset = 19;
+
 
         public static (short deviceCode, short code, int responseLenght, string name) GetPassword = (0x0087, 0x0087, MetaInfoLength + 7, "GetPassword");
         public static (short deviceCode, short code, int responseLenght, string name) GetFirmwareVersion = (0x0089, 0x0089, MetaInfoLength + 12, "GetFirmwareVersion");
@@ -323,38 +325,42 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public override DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode)
         {
-            var deviceMetalDetector = new XPROGOST();
+            XPROGOST result;
 
             using (var ms = new MemoryStream(bytes))
             {
                 using (var br = new BinaryReader(ms))
                 {
                     var magicNumberHead = br.ReadBytes(3); //4
-
-                    deviceMetalDetector.HardwareAddress = BitConverter.ToUInt16(br.ReadBytes(2));
-                    
+                    var hardwareAddress = BitConverter.ToUInt16(br.ReadBytes(2));
                     var frameDataLength = br.ReadBytes(4);
                     var frameSequenceNumber = br.ReadBytes(4);
+
                     commandCode = br.ReadUInt16();
-                    var result = br.ReadByte();
 
-                    deviceMetalDetector.IP = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
-                    deviceMetalDetector.Mask = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
-                    deviceMetalDetector.Gateway = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
-                    deviceMetalDetector.PortTCP = BitConverter.ToUInt16(br.ReadBytes(2));
-                    deviceMetalDetector.PortUDP = BitConverter.ToUInt16(br.ReadBytes(2));
-                    deviceMetalDetector.MAC = Convert.ToHexString(br.ReadBytes(6));
+                    var commandResult = br.ReadByte();
 
-                    deviceMetalDetector.ProductModelName = Encoding.UTF8.GetString(br.ReadBytes(10));
+                    var ip = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    var mask = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    var gateway = new IPAddress((uint)IPAddress.HostToNetworkOrder(int.Parse(Convert.ToHexString(br.ReadBytes(4)), NumberStyles.HexNumber))).ToString();
+                    var portTcp = BitConverter.ToUInt16(br.ReadBytes(2));
+                    var portUdp = BitConverter.ToUInt16(br.ReadBytes(2));
+                    var mac = Convert.ToHexString(br.ReadBytes(6));
+
+                    var deviceMetalDetector = new XPROGOST(ip, portTcp, hardwareAddress) { Mask = mask, Gateway = gateway, PortUDP = portUdp, MAC = mac,
+                        ProductModelName = Encoding.UTF8.GetString(br.ReadBytes(10))
+                    };
 
                     var modelId = br.ReadBytes(4).Select(i => (char)i).ToList();
 
                     deviceMetalDetector.ModelId = (ushort)(Convert.FromHexString($"{modelId[0]}{modelId[1]}")[0]/* + Convert.FromHexString($"{modelId[2]}{modelId[3]}")[0] * 0x100*/);
                     deviceMetalDetector.Model = (Model)deviceMetalDetector.ModelId;
+
+                    result = deviceMetalDetector;
                 }
             }
 
-            return deviceMetalDetector;
+            return result;
         }
 
         public override string GetModelName(int id)

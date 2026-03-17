@@ -188,12 +188,12 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void CallPassage()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.deviceCode), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void CallAlarm()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.deviceCode), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void InitZonesSensitivity(WorkParams workParams)

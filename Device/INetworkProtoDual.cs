@@ -1,5 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Extensions;
 
 namespace IRAPROM.MyCore.Device
@@ -13,6 +18,11 @@ namespace IRAPROM.MyCore.Device
         public static void SendAndGetCommon(Command command)
         {
             if (command == null || command.Port.IsNullOrEmpty() || command.Ip.IsNullOrEmpty() || command.DatagramRequest.Length == 0) return;
+
+            //#if DEBUG
+            //            command.AddResponse(new byte[]{11,11,11,11,11,11,11,11,11,11}, 9999.ToString());
+            //            return;
+            //#endif
 
             Console.WriteLine("\n");
 
@@ -127,7 +137,7 @@ namespace IRAPROM.MyCore.Device
 
         private static void StartListenUdp(Command command, CancellationTokenSource cancellationTokenSource)
         {
-            var udpServerListenPorts = new List<int>() { 9999, 1021, 1022, 5011, 5012, 5013, 5016, };
+            var udpServerListenPorts = new List<int>() { 9999, 1021, 5011, 5012, 5013, 5016, };
 
             udpServerListenPorts.ForEach(port =>
             {

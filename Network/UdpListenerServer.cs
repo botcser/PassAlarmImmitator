@@ -168,10 +168,10 @@ namespace IRAPROM.MyCore.MyNetwork
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
 
-#if DEBUGG
-            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-#endif
+            //#if DEBUGG
+            //            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
+            //                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+            //#endif
 
 #if !USE_DEVICE_SIMULATOR
             if (IsSentByServer(remoteIpEndPoint)) return;
@@ -248,11 +248,19 @@ namespace IRAPROM.MyCore.MyNetwork
 
         private static bool MatreshkaResponseXPROGOST(byte[] bytes, IPEndPoint ip, out MetalDetectPacketInfo rec)
         {
-            Console.WriteLine($"MatreshkaResponseXPROGOST: parcing...");
+            rec = null;
+
+            if (bytes.Length < 0x14)
+            {
+                return false;
+            }
 
             rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes);
-
-            Console.WriteLine($"MatreshkaResponseXPROGOST: {rec?.Ip}");
+            
+            if (rec == null || rec.ProductModel.IsNullOrEmpty())
+            {
+                return false;
+            }
 
             rec.deviceFindAnswerNetworkInf = new DeviceFindAnswerNetworkInf()
             {
@@ -264,11 +272,6 @@ namespace IRAPROM.MyCore.MyNetwork
                 PortUDP = rec.TCPPort,
                 Model = rec.ProductModel
             };
-            
-            if (rec == null || rec.ProductModel.IsNullOrEmpty())
-            {
-                return false;
-            }
 
             MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
 
@@ -350,21 +353,11 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             rec = MetalDetectPacketInfo.ParseMatreshkaMessageUDP(bytes);
 
-            if (rec == null)
+            if (rec == null || rec.Ip.IsNullOrEmpty())
             {
                 return false;
             }
 
-            if (rec == null)
-            {
-                rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes);
-
-                if (rec == null)
-                {
-                    return false;
-                }
-            }
-            
             var message = $"rec.command = {rec.command}\n";
 
             try

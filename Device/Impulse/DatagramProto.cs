@@ -55,7 +55,7 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         public short GetCodeFromDatagram(byte[] request)
         {
-            return BitConverter.ToInt16(request, CommandCodePosition);
+            return request[CommandCodePosition];
         }
 
         private static void MakeHeader(byte[] datagram, byte command)

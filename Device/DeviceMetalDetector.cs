@@ -135,7 +135,7 @@ namespace IRAPROM.MyCore.Device
         public virtual bool StaticTest()
         {
 #if DEBUG
-            Console.Write($"StaticTest: GetWorkParams {_ip}:{MAC}... ");
+            Console.WriteLine($"___StaticTest: GetWorkParams {_ip}:{MAC}... ");
 #endif
 
             WorkParams = WorkParamsProto.GetWorkParams();
@@ -143,8 +143,9 @@ namespace IRAPROM.MyCore.Device
             WorkParams.IP = IP;
 
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
+
 #if DEBUG
-            Console.WriteLine($"{(result ? " OK." : "FAIL!")}");
+            Console.WriteLine($"___StaticTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")}");
 #endif
 
             return result;

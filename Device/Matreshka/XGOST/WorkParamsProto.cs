@@ -195,20 +195,20 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void CallPassage()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.deviceCode), Constants.CallAlarm.deviceCode, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void CallAlarm()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.code), Constants.CallAlarm.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.deviceCode), Constants.CallAlarm.deviceCode, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void InitZonesSensitivity(WorkParams workParams)
         {
             try
             {
-                var response = ExecuteGetCommand(Constants.GetZonesSensitivity.code);
-                return;
+                var response = ExecuteGetCommand(Constants.GetZonesSensitivity.deviceCode);
+
                 workParams.SensorsSensitivity = new short[response.Length / 2];
 
                 for (byte i = 0; i < response.Length; i += 2)
@@ -225,7 +225,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitNetworkParams(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetNetworkParams.code);
+            var response = ExecuteGetCommand(Constants.GetNetworkParams.deviceCode);
 
             using (var ms = new MemoryStream(response))
             {
@@ -246,17 +246,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitBaseSensitivity(WorkParams workParams)
         {
-             workParams.BaseSensitivity = ExecuteGetCommand(Constants.GetBaseSensitivity.code).FirstOrDefault();
+             workParams.BaseSensitivity = ExecuteGetCommand(Constants.GetBaseSensitivity.deviceCode).FirstOrDefault();
         }
 
         public void InitWorkFrequency(WorkParams workParams)
         {
-            workParams.WorkingFreq = ExecuteGetCommand(Constants.GetWorkFrequency.code).FirstOrDefault();
+            workParams.WorkingFreq = ExecuteGetCommand(Constants.GetWorkFrequency.deviceCode).FirstOrDefault();
         }
 
         public void InitAlarmParams(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetAlarmParams.code);
+            var response = ExecuteGetCommand(Constants.GetAlarmParams.deviceCode);
 
             workParams.AlarmDuration = response[0];
             workParams.AlarmVolume = response[1];
@@ -265,12 +265,12 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitWorkProgramScene(WorkParams workParams)
         {
-            workParams.WorkProgram = ExecuteGetCommand(Constants.GetWorkProgramScene.code).FirstOrDefault();
+            workParams.WorkProgram = ExecuteGetCommand(Constants.GetWorkProgramScene.deviceCode).FirstOrDefault();
         }
 
         public void InitZonesWorkMode(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetZonesWorkMode.code);
+            var response = ExecuteGetCommand(Constants.GetZonesWorkMode.deviceCode);
 
             workParams.ZonesSensorMode = response[0];
             workParams.WorkProgram = response[1];
@@ -279,10 +279,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitPassageCount(WorkParams workParams)
         {
-            var responsePeoplePassing = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x00 });
-            var responsePeopleReturning = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x01 });
-            var responsePeoplePassingAlarms = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x02 });
-            var responsePeopleReturningAlarms = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x03 });
+            var responsePeoplePassing = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x00 });
+            var responsePeopleReturning = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x01 });
+            var responsePeoplePassingAlarms = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x02 });
+            var responsePeopleReturningAlarms = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x03 });
 
             workParams.ForwardPassageCount = BitConverter.ToInt32(responsePeoplePassing, 1);
             workParams.BackwardPassageCount = BitConverter.ToInt32(responsePeopleReturning, 1);
@@ -292,35 +292,35 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         
         public void SetZonesSensitivity(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetZonesSensitivity.code, workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray());
+            ExecuteSetCommandRaw(Constants.SetZonesSensitivity.deviceCode, workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray());
         }
 
         public void SetBaseSensitivity(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.code, new [] { (byte)workParams.BaseSensitivity });
+            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.deviceCode, new [] { (byte)workParams.BaseSensitivity });
         }
 
         public void SetWorkFrequency(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkFrequency.code, new[] { (byte)workParams.WorkingFreq });
+            ExecuteSetCommandRaw(Constants.SetWorkFrequency.deviceCode, new[] { (byte)workParams.WorkingFreq });
         }
 
         public void SetAlarmParams(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetAlarmParams.code, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
+            ExecuteSetCommandRaw(Constants.SetAlarmParams.deviceCode, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
         }
 
         public void ClearPassageCount()
         {
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x00 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x01 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x02 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x03 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x00 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x01 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x02 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x03 });
         }
 
         public void SetWorkProgramScene(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
+            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.deviceCode, new byte[] { workParams.WorkProgram });
         }
 
         public void SetNetworkParams(WorkParams workParams)
@@ -332,7 +332,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             args.AddRange(BitConverter.GetBytes((short)workParams.PortTCP));
             args.AddRange(BitConverter.GetBytes((short)workParams.PortUDP));
 
-            ExecuteSetCommandRaw(Constants.SetNetworkParams.code, args.ToArray());
+            ExecuteSetCommandRaw(Constants.SetNetworkParams.deviceCode, args.ToArray());
 
             NetworkProto.Ip = workParams.IP;
         }
@@ -481,7 +481,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private void SetZonesWorkMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetZonesWorkMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
+            ExecuteSetCommandRaw(Constants.SetZonesWorkMode.deviceCode, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
         }
 
         private void InitModelBySensorsSensitivity(WorkParams workParams)

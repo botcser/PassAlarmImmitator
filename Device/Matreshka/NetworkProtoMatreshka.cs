@@ -111,13 +111,13 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 try
                 {
 #if DEBUGG
-                    Console.Write($"socket {Socket.Client.Handle} writing {Ip}:{_port} (timeout {Socket.SendTimeout}ms)...");
+                    Console.Write($"Writing {Ip}:{_port}..");
 #endif
 
                     Stream.Write(bytes, 0, bytes.Length);
 
 #if DEBUGG
-                    Console.Write("success\n");
+                    Console.WriteLine("success");
 #endif
                 }
                 catch (Exception e)
@@ -137,13 +137,17 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
             if (Stream == null || !Stream.CanRead) return null;
 
+#if DEBUGG
+            Console.WriteLine($"Reading {Ip}:{_port} HeaderSize {HeaderSize} bytes...");
+#endif
+
             var headerBytes = new byte[HeaderSize];
             var nRead = Stream.Read(headerBytes, 0, HeaderSize);
 
             if (nRead != HeaderSize)
             {
 #if DEBUGG
-                Console.WriteLine($"socket {Socket.Client.Handle} reading {Ip}:{_port} Matreshka header first 8 bytes error!!!");
+                Console.WriteLine($"Reading {Ip}:{_port} Matreshka header first 8 bytes error!!!");
 #endif
                 return Array.Empty<byte>();
             }
@@ -156,7 +160,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             if (nRead != frameLength)
             {
 #if DEBUGG
-                Console.WriteLine($"socket {Socket.Client.Handle} reading {Ip}:{_port} frameLength bytes error!!!");
+                Console.WriteLine($"Reading {Ip}:{_port} frameLength bytes error!!!");
 #endif
                 return Array.Empty<byte>();
             }

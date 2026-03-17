@@ -1,5 +1,4 @@
 ﻿using System;
-using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -138,7 +137,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             PortTCP = port;
         }
 #else
-        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoMatreshka(ip, Constants.PortTCPDefault), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoXPROGOST(ip, Constants.PortTCPDefault), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = port;
@@ -156,40 +155,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             return (int)Model >= 100;
         }
-
-#if OLDPCV
-        public void RegisterPassage(MetalDetectorPassage newPassage)
-        {
-            if (newPassage.IsAlarm)
-            {
-                ProcessAlarm(newPassage);
-            }
-            else
-            {
-                _lastPassage.AlarmInf = newPassage.AlarmInf;
-                _lastPassage.LogId = newPassage.LogId;
-                _lastPassage.MAC = newPassage.MAC;
-
-                if (LastPassage.IsAlarm && !PrevPackageIsAlarm)
-                {
-                    CleanAlarm();
-                }
-                
-                UpdatePassageCounters(newPassage);
-            }
-
-            PrevPackageIsAlarm = newPassage.IsAlarm;
-        }
-
-        private void CleanAlarm()
-        {
-            LastPassage.IsAlarm = false;
-            LastPassage.SensorsProcessed = _lastPassage.Sensors = Array.Empty<byte>();
-            LastPassage.AlarmCells.Clear();
-            UpdateAlarmCells(LastPassage.Sensors);
-        }
-#endif
-
         private void ProcessAlarm(MetalDetectorPassage newPassage)
         {
             _lastPassage.AlarmInf = newPassage.AlarmInf;

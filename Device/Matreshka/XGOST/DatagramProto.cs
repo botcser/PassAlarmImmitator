@@ -53,9 +53,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             if (args != null)
             {
-                for (var i = 14; i < 14 + argsLength; i++)
+                for (var i = Constants.DataOffset; i < Constants.DataOffset + argsLength; i++)
                 {
-                    datagram[i] = args[i - 14];
+                    datagram[i] = args[i - Constants.DataOffset];
                 }
             }
 
@@ -137,8 +137,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private void MakeTail(byte[] datagram)
         {
-            var data = new byte[datagram.Length - Constants.RequestMagicNumber.Length - 1 - 4 - 4];       // - 1 hw ser port, - 4 length frame - 4 tail
-            
+            var data = new byte[datagram.Length - Constants.FrameSequenceOffset - 4];       // - 4 tail
+
             for (var i = 0; i < data.Length; i++)
             {
                 data[i] = datagram[i + 8];
