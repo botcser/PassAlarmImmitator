@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using Extensions;
 using IRAPROM.MyCore.Device;
@@ -54,7 +57,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
 
 #if DEBUGG
-                Console.Write($"new socket {Socket.Client.Handle} connecting {Ip}:{_port} (timeout {5000}ms)...");
+                Console.Write($"Connecting {Ip}:{_port} ...");
 #endif
 
                 if (!Socket.BeginConnect(Ip, _port, null, null).AsyncWaitHandle.WaitOne(5000, false))

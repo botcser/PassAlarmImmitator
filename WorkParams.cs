@@ -35,7 +35,10 @@ namespace IRAPROM.MyCore.Model.WP
         public int BackwardPassageCount { get; set; }
         public int ForwardAlarmsCount { get; set; }
         public int BackwardAlarmsCount { get; set; }
-        public long Password { get; set; }
+        public int Password { get; set; }
+        public string FirmwareVersion { get; set; }
+        public string SerialNumber { get; set; }
+        public DateTime DateTime { get; set; }
         public string MAC { get; set; }
         
         public WorkParams() { }

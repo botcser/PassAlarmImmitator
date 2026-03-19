@@ -135,12 +135,18 @@ namespace IRAPROM.MyCore.Device
         public virtual bool StaticTest()
         {
 #if DEBUG
-            Console.WriteLine($"___StaticTest: GetWorkParams {_ip}:{MAC}... ");
+            Console.WriteLine($"___PreStaticTest: GetWorkParams {_ip}:{MAC}... ");
 #endif
 
             WorkParams = WorkParamsProto.GetWorkParams();
             WorkParams.MAC = MAC;
             WorkParams.IP = IP;
+
+#if DEBUG
+            Console.WriteLine("...OK ");
+#endif
+
+            Console.WriteLine($"\n\n____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}\n");
 
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
 

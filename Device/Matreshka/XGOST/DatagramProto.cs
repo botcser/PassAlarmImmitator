@@ -68,7 +68,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             if (response == null) return Array.Empty<byte>();
 
-            if (cmd != 0x21 && !ValidateChecksum(response))                         // TODO: Matreshka BUG Return Ethernet Parameters
+            if (cmd != 0x81 && !ValidateChecksum(response))                         // TODO: Matreshka BUG Return Ethernet Parameters
             {
                 Console.WriteLine($"Matreshka EX: DatagramProto: GetResult: data checksum is not valid!!!");
 
@@ -77,7 +77,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             var error = response[Constants.ResultOffset];
 
-            return ValidateRequestResult(error) ? response.Skip(Constants.ResultOffset + 1).Take(response.Length - 4 - Constants.ResultOffset).ToArray() : Array.Empty<byte>();
+            return ValidateRequestResult(error) ? response.Skip(Constants.ResultOffset + 1).Take(response.Length - 4 - Constants.ResultOffset - 1).ToArray() : Array.Empty<byte>();
         }
 
         public bool ValidateRequestResult(byte result, byte commandCode = 0)
@@ -90,16 +90,25 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             switch (result)
             {
                 case 0x01:
-                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Parameter error\"!");
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Parameter error\" Frame header error!");
                     break;
                 case 0x02:
-                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Timeout\"!");
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Timeout\" Frame tail error!");
                     break;
                 case 0x03:
-                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"File does not exist\"!");
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"File does not exist\" Password error!");
                     break;
                 case 0x04:
-                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Packet CRC error\"!");
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Packet CRC error\" Data packet CRC error!");
+                    break;
+                case 0x05:
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Packet CRC error\" Parameter error!");
+                    break;
+                case 0x06:
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Packet CRC error\" Command length error!");
+                    break;
+                case 0x07:
+                    Console.WriteLine($"Matreshka: DatagramProto: CheckResult: \"Packet CRC error\" Undefined command!");
                     break;
                 default: 
                     Console.WriteLine($"Matreshka: DatagramProto: CheckResult: Unknown error!");
@@ -137,11 +146,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private void MakeTail(byte[] datagram)
         {
-            var data = new byte[datagram.Length - Constants.FrameSequenceOffset - 4];       // - 4 tail
-
+            var data = new byte[datagram.Length - (Constants.FrameSequenceOffset) - 4];       // - 4 tail
+            
             for (var i = 0; i < data.Length; i++)
             {
-                data[i] = datagram[i + 8];
+                data[i] = datagram[i + Constants.FrameSequenceOffset];
             }
 
             var checksum = GetChecksum(data, data.Length);

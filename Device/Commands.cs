@@ -1,4 +1,6 @@
-﻿namespace IRAPROM.MyCore.Device
+﻿using System.Collections.Generic;
+
+namespace IRAPROM.MyCore.Device
 {
     public class Commands
     {

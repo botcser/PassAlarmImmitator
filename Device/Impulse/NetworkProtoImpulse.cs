@@ -1,4 +1,9 @@
-﻿namespace IRAPROM.MyCore.Device.Impulse
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+
+namespace IRAPROM.MyCore.Device.Impulse
 {
     public class NetworkProtoImpulse : NetworkProtoCommonDual
     {

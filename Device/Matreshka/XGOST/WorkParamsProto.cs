@@ -1,14 +1,16 @@
-﻿using System;
+﻿using IRAPROM.MyCore.Model.WP;
+using PassAlarmSimulator.Device;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using IRAPROM.MyCore.Model.WP;
-using PassAlarmSimulator.Device;
+using static System.Net.Mime.MediaTypeNames;
 //using PassAlarmSimulator.Validator;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
@@ -16,7 +18,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
-        
+        private readonly int _resetDelay = TimeSpan.FromMilliseconds(12000).Milliseconds;
+
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
         }
@@ -35,15 +38,16 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             try
             {
                 InitZonesSensitivity(workParams);
-
-                //InitModelBySensorsSensitivity(workParams);
-
-                InitNetworkParams(workParams); // TODO: PCV1800 broken proto
+                InitNetworkParams(workParams);
                 InitBaseSensitivity(workParams);
                 InitWorkFrequency(workParams);
                 InitAlarmParams(workParams);
-                InitWorkProgramScene(workParams);
                 InitZonesWorkMode(workParams);
+
+                InitOperatorPassword(workParams);
+                InitFirmwareVersion(workParams);
+                InitSerialNumber(workParams);
+                InitTime(workParams);
                 InitPassageCount(workParams);
             }
             catch (Exception e)
@@ -63,7 +67,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetWorkProgramScene(workParams);
             Thread.Sleep(_requestDelay);
             
-            SetZonesWorkMode(workParams);
+            SetWorkProgramScene(workParams);
             Thread.Sleep(_requestDelay);
 
             SetZonesSensitivity(workParams);
@@ -90,8 +94,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             const byte testValue = 0x02;
 
-            return WorkProgramTest(workParams, testValue) && ZonesWorkModeTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) &&
-                   BaseSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) && AlarmParamsTest(workParams, testValue) && ClearPassageTest(workParams);
+            return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
+                   WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && TimeTest(workParams, new DateTime(2022,2,2,2,2,2)) 
+                   && OperatorPasswordTest(workParams, 287454020) && NetworkTest(workParams) && ClearPassageTest(workParams);
         }
         
         public void HandTest(WorkParams workParams)
@@ -195,19 +200,19 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void CallPassage()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallPassage.deviceCode), Constants.CallAlarm.deviceCode, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.SimulatePass.deviceCode), Constants.SimulatePass.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void CallAlarm()
         {
-            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.CallAlarm.deviceCode), Constants.CallAlarm.deviceCode, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
+            ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.SimulatePass.deviceCode), Constants.SimulatePass.code, "127.0.0.1", Constants.PortTCPDefault.ToString(), ProtocolType.Tcp));
         }
 
         public void InitZonesSensitivity(WorkParams workParams)
         {
             try
             {
-                var response = ExecuteGetCommand(Constants.GetZonesSensitivity.deviceCode);
+                var response = ExecuteGetCommand(Constants.GetZonesSensitivity.code);
 
                 workParams.SensorsSensitivity = new short[response.Length / 2];
 
@@ -225,7 +230,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitNetworkParams(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetNetworkParams.deviceCode);
+            var response = ExecuteGetCommand(Constants.GetNetworkParams.code);
+            //var command = ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.SetNetworkParams.deviceCode), Constants.SetNetworkParams.code, workParams.IP, workParams.PortTCP.ToString(), ProtocolType.Tcp));
+            //var response = command.Result;
 
             using (var ms = new MemoryStream(response))
             {
@@ -240,37 +247,67 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                     workParams.Gateway = $"{arIPGateway[0]}.{arIPGateway[1]}.{arIPGateway[2]}.{arIPGateway[3]}";
                     workParams.PortTCP = br.ReadInt16();
                     workParams.PortUDP = br.ReadInt16();
+                    workParams.MAC = Convert.ToHexString(br.ReadBytes(6));
                 }
             }
         }
 
         public void InitBaseSensitivity(WorkParams workParams)
         {
-             workParams.BaseSensitivity = ExecuteGetCommand(Constants.GetBaseSensitivity.deviceCode).FirstOrDefault();
+             workParams.BaseSensitivity = ExecuteGetCommand(Constants.GetBaseSensitivity.code).FirstOrDefault();
         }
 
         public void InitWorkFrequency(WorkParams workParams)
         {
-            workParams.WorkingFreq = ExecuteGetCommand(Constants.GetWorkFrequency.deviceCode).FirstOrDefault();
+            workParams.WorkingFreq = ExecuteGetCommand(Constants.GetWorkFrequency.code).FirstOrDefault();
         }
 
         public void InitAlarmParams(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetAlarmParams.deviceCode);
+            var response = ExecuteGetCommand(Constants.GetAlarmParams.code);
 
             workParams.AlarmDuration = response[0];
             workParams.AlarmVolume = response[1];
             workParams.AlarmTone = response[2];
         }
 
-        public void InitWorkProgramScene(WorkParams workParams)
+        public void InitOperatorPassword(WorkParams workParams)
         {
-            workParams.WorkProgram = ExecuteGetCommand(Constants.GetWorkProgramScene.deviceCode).FirstOrDefault();
+            workParams.Password = ExecuteGetCommand(Constants.GetPassword.code).FirstOrDefault();
+        }
+
+        public void InitFirmwareVersion(WorkParams workParams)
+        {
+            var response = ExecuteGetCommand(Constants.GetFirmwareVersion.code);
+
+            workParams.FirmwareVersion = Encoding.ASCII.GetString(response);
+        }
+
+        public void InitSerialNumber(WorkParams workParams)
+        {
+            var response = ExecuteGetCommand(Constants.GetSerialNumber.code);
+
+            workParams.SerialNumber = Convert.ToHexString(response);
+        }
+
+        public void InitTime(WorkParams workParams)
+        {
+            var response = ExecuteGetCommand(Constants.GetTime.code);
+
+            var ye = response[0];
+            var mo = response[1];
+            var da = response[2];
+
+            var ho = response[3];
+            var mi = response[4];
+            var se = response[5];
+
+            workParams.DateTime = new DateTime(ye, mo, da, ho, mi, se);
         }
 
         public void InitZonesWorkMode(WorkParams workParams)
         {
-            var response = ExecuteGetCommand(Constants.GetZonesWorkMode.deviceCode);
+            var response = ExecuteGetCommand(Constants.GetZonesWorkMode.code);
 
             workParams.ZonesSensorMode = response[0];
             workParams.WorkProgram = response[1];
@@ -279,48 +316,64 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitPassageCount(WorkParams workParams)
         {
-            var responsePeoplePassing = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x00 });
-            var responsePeopleReturning = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x01 });
-            var responsePeoplePassingAlarms = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x02 });
-            var responsePeopleReturningAlarms = ExecuteGetCommand(Constants.GetPassageCount.deviceCode, new byte[] { 0x03 });
+            var response = ExecuteGetCommand(Constants.GetPassageCount.code);
 
-            workParams.ForwardPassageCount = BitConverter.ToInt32(responsePeoplePassing, 1);
-            workParams.BackwardPassageCount = BitConverter.ToInt32(responsePeopleReturning, 1);
-            workParams.ForwardAlarmsCount = BitConverter.ToInt32(responsePeoplePassingAlarms, 1);
-            workParams.BackwardAlarmsCount = BitConverter.ToInt32(responsePeopleReturningAlarms, 1);
+            workParams.ForwardPassageCount = BitConverter.ToInt32(response, 0);
+            workParams.BackwardPassageCount = BitConverter.ToInt32(response, 4);
+            workParams.ForwardAlarmsCount = BitConverter.ToInt32(response, 8);
+            workParams.BackwardAlarmsCount = BitConverter.ToInt32(response, 12);
         }
         
         public void SetZonesSensitivity(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetZonesSensitivity.deviceCode, workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray());
+            ExecuteSetCommandRaw(Constants.SetZonesSensitivity.code, workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray());
         }
 
         public void SetBaseSensitivity(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.deviceCode, new [] { (byte)workParams.BaseSensitivity });
+            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.code, new [] { (byte)workParams.BaseSensitivity });
         }
 
         public void SetWorkFrequency(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkFrequency.deviceCode, new[] { (byte)workParams.WorkingFreq });
+            ExecuteSetCommandRaw(Constants.SetWorkFrequency.code, new[] { (byte)workParams.WorkingFreq });
         }
 
         public void SetAlarmParams(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetAlarmParams.deviceCode, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
+            ExecuteSetCommandRaw(Constants.SetAlarmParams.code, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
+        }
+
+        private void SetOperatorPassword(WorkParams workParams)
+        {
+            var bytes = BitConverter.GetBytes(workParams.Password);
+            var byte0 = bytes[0];
+            var byte1 = bytes.Length > 1 ? bytes[1] : (byte)0;
+            var byte2 = bytes.Length > 2 ? bytes[2] : (byte)0;
+            var byte3 = bytes.Length > 3 ? bytes[3] : (byte)0;
+
+            ExecuteSetCommandRaw(Constants.SetPassword.code, new[] { byte0, byte1, byte2, byte3 });
+        }
+
+        private void SetTime(WorkParams workParams)
+        {
+            var ye = (byte)(workParams.DateTime.Year - 2000);
+            var mo = (byte)workParams.DateTime.Month;
+            var da = (byte)workParams.DateTime.Day;
+
+            var ho = (byte)workParams.DateTime.Hour;
+            var mi = (byte)workParams.DateTime.Minute;
+            var se = (byte)workParams.DateTime.Second;
+
+            ExecuteSetCommandRaw(Constants.SetTime.code, new[] { ye, mo, da, ho, mi, se });
         }
 
         public void ClearPassageCount()
         {
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x00 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x01 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x02 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.deviceCode, new byte[] { 0x03 });
-        }
-
-        public void SetWorkProgramScene(WorkParams workParams)
-        {
-            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.deviceCode, new byte[] { workParams.WorkProgram });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x00 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x01 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x02 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x03 });
         }
 
         public void SetNetworkParams(WorkParams workParams)
@@ -332,50 +385,47 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             args.AddRange(BitConverter.GetBytes((short)workParams.PortTCP));
             args.AddRange(BitConverter.GetBytes((short)workParams.PortUDP));
 
-            ExecuteSetCommandRaw(Constants.SetNetworkParams.deviceCode, args.ToArray());
+            //var command = ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.SetNetworkParams.deviceCode), Constants.SetNetworkParams.code, workParams.IP, workParams.PortTCP.ToString(), ProtocolType.Tcp));
+            //var response = command.Result;
 
             NetworkProto.Ip = workParams.IP;
+
+            ExecuteSetCommandRaw(Constants.SetNetworkParams.code, args.ToArray());
         }
 
-        private bool WorkProgramTest(WorkParams workParams, byte testValue)
+        public void SetWorkProgramScene(WorkParams workParams)
         {
-            workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
-            Thread.Sleep(_requestDelay);
-            InitWorkProgramScene(workParams);
+            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
+        }
 
-            if (workParams.WorkProgram != testValue)
-            {
+        private bool WorkProgramSceneTest(WorkParams workParams, byte testValue)
+        {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkProgram test fail!");
+            Console.WriteLine($"WorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ZonesWorkModeTest(WorkParams workParams, byte testValue)
-        {
+            workParams.WorkProgram = testValue;
             workParams.ZonesSensorMode = testValue;
-            workParams.WorkProgram = testValue; // TODO: PCV1800 не работает
-            workParams.AlarmInfraMode = testValue;
-            SetZonesWorkMode(workParams);
+            workParams.InfraredPassCounterMode = testValue;
+            SetWorkProgramScene(workParams);
             Thread.Sleep(_requestDelay);
             InitZonesWorkMode(workParams);
 
-            if (workParams.ZonesSensorMode != testValue || workParams.AlarmInfraMode != testValue)
+            if (workParams.WorkProgram != testValue && workParams.ZonesSensorMode != testValue && workParams.InfraredPassCounterMode != testValue)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
+                Console.WriteLine($"WorkProgramSceneTest: {workParams.IP}:\t WorkProgram test fail!");
 #endif
                 return false;
             }
+
             return true;
         }
 
         private bool ZonesSensitivityTest(WorkParams workParams, byte testValue)
         {
+#if DEBUG
+            Console.WriteLine($"ZonesSensitivityTest: testing \"Set Zone Sensitivity\"...");
+#endif
             workParams.SensorsSensitivity = new[]
             {
                 (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
@@ -391,7 +441,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 workParams.SensorsSensitivity[06] != testValue)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
+                Console.WriteLine($"ZonesSensitivityTest: {workParams.IP}:\t ZonesSensitivity test fail!");
 #endif
                 return false;
             }
@@ -400,6 +450,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool BaseSensitivityTest(WorkParams workParams, byte testValue)
         {
+#if DEBUG
+            Console.WriteLine($"BaseSensitivityTest: testing \"Set Security Level\"...");
+#endif
+
             workParams.BaseSensitivity = testValue;
             SetBaseSensitivity(workParams);
             Thread.Sleep(_requestDelay);
@@ -408,7 +462,107 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (workParams.BaseSensitivity != testValue)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t BaseSensitivity test fail!");
+                Console.WriteLine($"BaseSensitivityTest: {workParams.IP}:\t BaseSensitivity test fail!");
+#endif
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool OperatorPasswordTest(WorkParams workParams, int testValue)
+        {
+#if DEBUG
+            Console.WriteLine($"OperatorPasswordTest: testing \"Set Operator Password\"...");
+#endif
+
+            workParams.Password = testValue;
+            SetOperatorPassword(workParams);
+            Thread.Sleep(_requestDelay);
+            InitOperatorPassword(workParams);
+
+            if (workParams.Password != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"OperatorPasswordTest: {workParams.IP}:\t OperatorPassword test fail!");
+#endif
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool RestoreSettingsTest(WorkParams workParams)
+        {
+            var defaultIp = workParams.IP;
+
+            workParams.BaseSensitivity = 11;
+            workParams.IP = "192.168.1.111";
+            SetNetworkParams(workParams);
+            Thread.Sleep(_requestDelay * 2);
+            SetBaseSensitivity(workParams);
+            Thread.Sleep(_requestDelay);
+            //RestoreSettings(workParams);
+            Thread.Sleep(_resetDelay);
+            workParams.IP = defaultIp;
+            InitBaseSensitivity(workParams);
+
+            if (workParams.BaseSensitivity == 11)
+            {
+#if DEBUG
+                Console.WriteLine($"SelfTest: {workParams.IP}:\t RestoreSettings test fail!");
+#endif
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool NetworkTest(WorkParams workParams)
+        {
+#if DEBUG
+            Console.WriteLine($"NetworkTest: testing \"Set Ethernet Parameters\"...");
+#endif
+
+            var defaultIp = workParams.IP;
+
+            workParams.BaseSensitivity = 11;
+            workParams.IP = "192.168.1.111";
+            SetNetworkParams(workParams);
+            Thread.Sleep(_requestDelay * 2);
+            workParams.BaseSensitivity = 22;
+            InitBaseSensitivity(workParams);
+
+            if (workParams.BaseSensitivity != 11)
+            {
+#if DEBUG
+                Console.WriteLine($"NetworkTest: {workParams.IP}:\t RestoreSettings test fail!");
+#endif
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TimeTest(WorkParams workParams, DateTime testValue)
+        {
+#if DEBUG
+            Console.WriteLine($"TimeTest: testing \"Set Time Parameters\"...");
+#endif
+
+            workParams.DateTime = testValue;
+            SetTime(workParams);
+            Thread.Sleep(_requestDelay);
+            InitTime(workParams);
+
+            if (workParams.DateTime != testValue)
+            {
+#if DEBUG
+                Console.WriteLine($"TimeTest: {workParams.IP}:\t Time test fail!");
 #endif
 
                 return false;
@@ -419,6 +573,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool WorkingFreqTest(WorkParams workParams)
         {
+#if DEBUG
+            Console.WriteLine($"WorkingFreqTest: testing \"Set Driving Frequency\"...");
+#endif
+
             byte workingFreq;
 
             do
@@ -434,7 +592,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (workParams.WorkingFreq != workingFreq)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t WorkingFreq test fail!");
+                Console.WriteLine($"WorkingFreqTest: {workParams.IP}:\t WorkingFreq test fail!");
 #endif
                 return false;
             }
@@ -444,6 +602,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool AlarmParamsTest(WorkParams workParams, byte testValue)
         {
+#if DEBUG
+            Console.WriteLine($"AlarmParamsTest: testing \"Set Alarm Parameters\"...");
+#endif
+
             workParams.AlarmDuration = testValue;
             workParams.AlarmVolume = testValue;
             workParams.AlarmTone = testValue;
@@ -454,7 +616,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (workParams.AlarmDuration != testValue || workParams.AlarmVolume != testValue || workParams.AlarmTone != testValue)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t AlarmParams sound test fail!");
+                Console.WriteLine($"AlarmParamsTest: {workParams.IP}:\t AlarmParams sound test fail!");
 #endif
                 return false;
             }
@@ -464,6 +626,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool ClearPassageTest(WorkParams workParams)
         {
+#if DEBUG
+            Console.WriteLine($"ClearPassageTest: testing \"Clear People Count\"...");
+#endif
+
             ClearPassageCount();
             Thread.Sleep(_requestDelay);
             InitPassageCount(workParams);
@@ -471,17 +637,12 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (workParams.ForwardAlarmsCount != 0 || workParams.ForwardPassageCount != 0 || workParams.BackwardAlarmsCount != 0 || workParams.BackwardPassageCount != 0)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t ClearPassage test fail!");
+                Console.WriteLine($"ClearPassageTest: {workParams.IP}:\t ClearPassage test fail!");
 #endif
                 return false;
             }
 
             return true;
-        }
-
-        private void SetZonesWorkMode(WorkParams workParams)
-        {
-            ExecuteSetCommandRaw(Constants.SetZonesWorkMode.deviceCode, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
         }
 
         private void InitModelBySensorsSensitivity(WorkParams workParams)

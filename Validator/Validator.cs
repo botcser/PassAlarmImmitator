@@ -1,5 +1,6 @@
 ﻿using Extensions;
 using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
 using System.Diagnostics;
@@ -180,8 +181,6 @@ namespace PassAlarmSimulator.Validator
 
         private bool StaticTests()
         {
-            Console.WriteLine($"\n____________Starting Static Tests...");
-
             _watchdog.Start();
 
             var success = FoundDevices.All(device => device.StaticTest());

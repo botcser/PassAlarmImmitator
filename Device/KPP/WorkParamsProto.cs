@@ -1,4 +1,5 @@
-﻿using IRAPROM.MyCore.Model.WP;
+﻿using System;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device.KPP
 {

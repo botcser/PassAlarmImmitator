@@ -1,4 +1,7 @@
-﻿namespace IRAPROM.MyCore.Device.Matreshka
+﻿using System;
+using System.Linq;
+
+namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class DatagramProto : IDatagramProto
     {

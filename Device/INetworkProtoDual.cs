@@ -19,11 +19,6 @@ namespace IRAPROM.MyCore.Device
         {
             if (command == null || command.Port.IsNullOrEmpty() || command.Ip.IsNullOrEmpty() || command.DatagramRequest.Length == 0) return;
 
-            //#if DEBUG
-            //            command.AddResponse(new byte[]{11,11,11,11,11,11,11,11,11,11}, 9999.ToString());
-            //            return;
-            //#endif
-
             Console.WriteLine("\n");
 
             switch (command.Protocol)

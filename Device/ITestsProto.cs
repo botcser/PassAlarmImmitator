@@ -1,4 +1,5 @@
-﻿using IRAPROM.MyCore.Model.WP;
+﻿using System.Threading.Tasks;
+using IRAPROM.MyCore.Model.WP;
 
 namespace PassAlarmSimulator.Device
 {

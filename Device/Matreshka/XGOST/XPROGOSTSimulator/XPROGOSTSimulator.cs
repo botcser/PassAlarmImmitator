@@ -1,4 +1,5 @@
-﻿using IRAPROM.MyCore.Device.Matreshka.XGOST;
+﻿using System.IO;
+using IRAPROM.MyCore.Device.Matreshka.XGOST;
 using PassAlarmSimulator.Device.Simulator;
 
 namespace PassAlarmSimulator.Device.Matreshka.XGOST.XPROGOSTSimulator
