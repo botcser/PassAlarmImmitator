@@ -19,16 +19,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static byte[] RequestMagicNumber = { 0x40, 0x23, 0x24 }; // @#$
         public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
         public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
-        public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0xFF, 0xFF, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x8B, 0x69, 0x3C, 0x5A, 0x72, 0xfB, 0x0D, 0x0A };
+        public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0xFF, 0xFF, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x8B, 0x69, 0x3C, 0x5A, 0xcb, 0xd7, 0x0D, 0x0A };
 
         public const int CommandResponseLength = 56;
         public const int ResultOffset = 15;
         public const int DataLengthOffset = 5;
         public const int FrameSequenceOffset = 9;
-        public const int MetaInfoLength = 3 + 2 + 4 + PacketMetaInfoLength;      //23   // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
+        public const int MetaInfoLength = (3 + 2 + 4) + PacketMetaInfoLength;      //23   // Start frame marker + Hardware address + Frame packet length + PacketMetaInfoLength
         public const int PacketMetaInfoLength = 4 + 2 + 4 + 2 + 2;                      // Frame number + Command + Password + CRC checksum + End frame marker
         public const int CommandCodeOffset = 13;
         public const int DataOffset = 19;
+        public const int ResponseMetaInfoLength = (3 + 2 + 4) + 4 + 2 + 1 + 2 + 2;
 
 
         public static (short deviceCode, short code, int responseLenght, string name) GetPassword = (0x0087, 0x0087, MetaInfoLength + 7, "GetPassword");
@@ -47,20 +48,20 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static (short deviceCode, short code, int responseLenght, string name) GetAlarmParams = (0x0086, 0x0086, MetaInfoLength + 3, "GetAlarmParams");
         public static (short deviceCode, short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, 0x002A, MetaInfoLength + 1, "GetWorkProgramScene");
 
-        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, MetaInfoLength, "SetNetworkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, MetaInfoLength, "SetBaseSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, MetaInfoLength, "SetZonesSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, MetaInfoLength, "SetWorkFrequency");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x0005, 0x0005, MetaInfoLength, "SetWorkProgramScene");
-        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, MetaInfoLength, "SetAlarmParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0008, 0x0008, MetaInfoLength, "SetTime");
-        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, MetaInfoLength, "SetSerialNumber");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramSceneHZ = (0x000A, 0x000A, MetaInfoLength, "SetWorkProgramSceneHZ"); //???
-        public static (short deviceCode, short code, int responseLenght, string name) SetPassword = (0x0007, 0x0007, MetaInfoLength, "SetPassword");
-        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0040, 0x0040, MetaInfoLength, "ClearPassageCount");
-        public static (short deviceCode, short code, int responseLenght, string name) ResetSettings = (0x41, 0x41, MetaInfoLength, "ResetSettings");
-        public static (short deviceCode, short code, int responseLenght, string name) SimulatePass = (0x42, 0x42, MetaInfoLength, "SimulatePass");
-        public static (short deviceCode, short code, int responseLenght, string name) ResetDevice = (0x43, 0x43, MetaInfoLength, "ResetDevice");
+        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, ResponseMetaInfoLength, "SetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, ResponseMetaInfoLength, "SetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, ResponseMetaInfoLength, "SetZonesSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, ResponseMetaInfoLength, "SetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x0005, 0x0005, ResponseMetaInfoLength, "SetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, ResponseMetaInfoLength, "SetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0008, 0x0008, ResponseMetaInfoLength, "SetTime");
+        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, ResponseMetaInfoLength, "SetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramSceneHZ = (0x000A, 0x000A, ResponseMetaInfoLength, "SetWorkProgramSceneHZ"); //???
+        public static (short deviceCode, short code, int responseLenght, string name) SetPassword = (0x0007, 0x0007, ResponseMetaInfoLength, "SetPassword");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0040, 0x0040, ResponseMetaInfoLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) ResetSettings = (0x41, 0x41, ResponseMetaInfoLength, "ResetSettings");
+        public static (short deviceCode, short code, int responseLenght, string name) SimulatePass = (0x42, 0x42, ResponseMetaInfoLength, "SimulatePass");
+        public static (short deviceCode, short code, int responseLenght, string name) ResetDevice = (0x43, 0x43, ResponseMetaInfoLength, "ResetDevice");
 
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
@@ -132,7 +133,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
-            SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetNetworkParams, SetTime,
+            SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetNetworkParams, SetTime, SetPassword,
             SetSerialNumber, SetWorkProgramScene, ClearPassageCount, ResetDevice, ResetSettings, SimulatePass
         }; 
 

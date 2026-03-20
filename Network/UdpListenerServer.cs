@@ -168,10 +168,10 @@ namespace IRAPROM.MyCore.MyNetwork
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
 
-            //#if DEBUGG
-            //            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-            //                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-            //#endif
+#if DEBUGG
+            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
+                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+#endif
 
 #if !USE_DEVICE_SIMULATOR
             if (IsSentByServer(remoteIpEndPoint)) return;

@@ -72,7 +72,7 @@ namespace IRAPROM.MyCore.Device
                             Array.Copy(bytesTcp, 0, result, 0, redBytesCount);
                             command.AddResponse(result, command.Port);
 #if DEBUG
-                            Console.WriteLine($"Response: {BitConverter.ToString(result)}\n");
+                            Console.WriteLine($"Response: {BitConverter.ToString(result)}");
 #endif
                             socketTcp.Close();
                             streamTcp.Close();

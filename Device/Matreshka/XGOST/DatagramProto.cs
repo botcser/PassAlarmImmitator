@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.Device.Matreshka.XGOST;
+using IRAPROM.MyCore.Model.WP;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using IRAPROM.MyCore.Device;
-using IRAPROM.MyCore.Device.Matreshka.XGOST;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
@@ -32,11 +33,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             datagram[3] = (byte)_hardwareAddress;
             datagram[4] = (byte)(_hardwareAddress >> 8);
-            
-            datagram[Constants.DataLengthOffset] = Constants.PacketMetaInfoLength;
-            datagram[Constants.DataLengthOffset + 1] = 0;
-            datagram[Constants.DataLengthOffset + 2] = 0;
-            datagram[Constants.DataLengthOffset + 3] = 0;
+
+            var dataLength = BitConverter.GetBytes(args?.Length + Constants.PacketMetaInfoLength ?? Constants.PacketMetaInfoLength);
+            var byte0 = dataLength[0];
+            var byte1 = dataLength[1];
+            var byte2 = dataLength[2];
+            var byte3 = dataLength[3];
+
+            datagram[Constants.DataLengthOffset] = byte0;
+            datagram[Constants.DataLengthOffset + 1] = byte1;
+            datagram[Constants.DataLengthOffset + 2] = byte2;
+            datagram[Constants.DataLengthOffset + 3] = byte3;
 
             for (var i = Constants.FrameSequenceOffset; i < Constants.CommandCodeOffset; i++)
             {

@@ -95,8 +95,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             const byte testValue = 0x02;
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
-                   WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && TimeTest(workParams, new DateTime(2022,2,2,2,2,2)) 
-                   && OperatorPasswordTest(workParams, 287454020) && NetworkTest(workParams) && ClearPassageTest(workParams);
+                   WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) && 
+                   ClearPassageTest(workParams) && 
+                   TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && 
+                   NetworkTest(workParams);
         }
         
         public void HandTest(WorkParams workParams)
@@ -273,7 +275,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void InitOperatorPassword(WorkParams workParams)
         {
-            workParams.Password = ExecuteGetCommand(Constants.GetPassword.code).FirstOrDefault();
+            var bytes = ExecuteGetCommand(Constants.GetPassword.code);
+
+            workParams.Password = BitConverter.ToInt32(bytes, 0);
         }
 
         public void InitFirmwareVersion(WorkParams workParams)
@@ -294,7 +298,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             var response = ExecuteGetCommand(Constants.GetTime.code);
 
-            var ye = response[0];
+            var ye = 2000 + response[0];
             var mo = response[1];
             var da = response[2];
 
@@ -331,7 +335,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void SetBaseSensitivity(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.code, new [] { (byte)workParams.BaseSensitivity });
+            var bytes = BitConverter.GetBytes(workParams.BaseSensitivity);
+            var byte0 = bytes[0];
+            var byte1 = bytes[1];
+
+            ExecuteSetCommandRaw(Constants.SetBaseSensitivity.code, new [] { byte0, byte1 });
         }
 
         public void SetWorkFrequency(WorkParams workParams)
@@ -370,10 +378,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public void ClearPassageCount()
         {
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x00 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x01 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x02 });
-            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x03 });
+            ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x0F });
         }
 
         public void SetNetworkParams(WorkParams workParams)
@@ -401,7 +406,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool WorkProgramSceneTest(WorkParams workParams, byte testValue)
         {
 #if DEBUG
-            Console.WriteLine($"WorkProgramSceneTest: testing \"Set Working Mode\"...");
+            Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
             workParams.WorkProgram = testValue;
             workParams.ZonesSensorMode = testValue;
@@ -424,21 +429,20 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool ZonesSensitivityTest(WorkParams workParams, byte testValue)
         {
 #if DEBUG
-            Console.WriteLine($"ZonesSensitivityTest: testing \"Set Zone Sensitivity\"...");
+            Console.WriteLine($"\nZonesSensitivityTest: testing \"Set Zone Sensitivity\"...");
 #endif
-            workParams.SensorsSensitivity = new[]
+
+            for (var i = 0; i < workParams.SensorsSensitivity.Length; i++)
             {
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-            };
+                workParams.SensorsSensitivity[i] = testValue;
+            }
+
             SetZonesSensitivity(workParams);
             Thread.Sleep(_requestDelay);
             InitZonesSensitivity(workParams);
 
             if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue ||
-                workParams.SensorsSensitivity[06] != testValue)
+                workParams.SensorsSensitivity[05] != testValue)
             {
 #if DEBUG
                 Console.WriteLine($"ZonesSensitivityTest: {workParams.IP}:\t ZonesSensitivity test fail!");
@@ -451,7 +455,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool BaseSensitivityTest(WorkParams workParams, byte testValue)
         {
 #if DEBUG
-            Console.WriteLine($"BaseSensitivityTest: testing \"Set Security Level\"...");
+            Console.WriteLine($"\nBaseSensitivityTest: testing \"Set Security Level\"...");
 #endif
 
             workParams.BaseSensitivity = testValue;
@@ -474,7 +478,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool OperatorPasswordTest(WorkParams workParams, int testValue)
         {
 #if DEBUG
-            Console.WriteLine($"OperatorPasswordTest: testing \"Set Operator Password\"...");
+            Console.WriteLine($"\nOperatorPasswordTest: testing \"Set Operator Password\"...");
 #endif
 
             workParams.Password = testValue;
@@ -496,6 +500,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool RestoreSettingsTest(WorkParams workParams)
         {
+#if DEBUG
+            Console.WriteLine($"\nRestoreSettingsTest: testing \"Restore Factory Settings\"...");
+#endif
+
             var defaultIp = workParams.IP;
 
             workParams.BaseSensitivity = 11;
@@ -512,7 +520,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (workParams.BaseSensitivity == 11)
             {
 #if DEBUG
-                Console.WriteLine($"SelfTest: {workParams.IP}:\t RestoreSettings test fail!");
+                Console.WriteLine($"RestoreSettingsTest: {workParams.IP}:\t RestoreSettings test fail!");
 #endif
 
                 return false;
@@ -524,7 +532,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool NetworkTest(WorkParams workParams)
         {
 #if DEBUG
-            Console.WriteLine($"NetworkTest: testing \"Set Ethernet Parameters\"...");
+            Console.WriteLine($"\nNetworkTest: testing \"Set Ethernet Parameters\"...");
 #endif
 
             var defaultIp = workParams.IP;
@@ -551,7 +559,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool TimeTest(WorkParams workParams, DateTime testValue)
         {
 #if DEBUG
-            Console.WriteLine($"TimeTest: testing \"Set Time Parameters\"...");
+            Console.WriteLine($"\nTimeTest: testing \"Set Time Parameters\"...");
 #endif
 
             workParams.DateTime = testValue;
@@ -574,7 +582,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool WorkingFreqTest(WorkParams workParams)
         {
 #if DEBUG
-            Console.WriteLine($"WorkingFreqTest: testing \"Set Driving Frequency\"...");
+            Console.WriteLine($"\nWorkingFreqTest: testing \"Set Driving Frequency\"...");
 #endif
 
             byte workingFreq;
@@ -603,7 +611,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool AlarmParamsTest(WorkParams workParams, byte testValue)
         {
 #if DEBUG
-            Console.WriteLine($"AlarmParamsTest: testing \"Set Alarm Parameters\"...");
+            Console.WriteLine($"\nAlarmParamsTest: testing \"Set Alarm Parameters\"...");
 #endif
 
             workParams.AlarmDuration = testValue;
@@ -627,7 +635,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private bool ClearPassageTest(WorkParams workParams)
         {
 #if DEBUG
-            Console.WriteLine($"ClearPassageTest: testing \"Clear People Count\"...");
+            Console.WriteLine($"\nClearPassageTest: testing \"Clear People Count\"...");
 #endif
 
             ClearPassageCount();

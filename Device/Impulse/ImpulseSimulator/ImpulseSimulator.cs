@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IRAPROM.MyCore.Device.Impulse;
+using System.IO;
 
 namespace PassAlarmSimulator.Device.Impulse.ImpulseSimulator
 {

@@ -84,6 +84,14 @@ namespace IRAPROM.MyCore.Device
             Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
         }
 
+        public Command(short deviceCommandCode, short code, int responseLength, string name = "")
+        {
+            Code = code;
+            DeviceCommandCode = deviceCommandCode;
+            Name = name.IsNullOrEmpty() ? deviceCommandCode.ToString() : name;
+            NeedResponse = responseLength > 0;
+        }
+
         public Command(byte[] datagramRequest, short deviceCommandCode, short code, string name = "")
         {
             Code = code;

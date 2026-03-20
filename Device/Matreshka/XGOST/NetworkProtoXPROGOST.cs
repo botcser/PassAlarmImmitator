@@ -46,9 +46,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
                     if (Socket.Client == null || Socket.Client.IsBound)
                     {
-#if DEBUGG
-                        Console.WriteLine($"disposing socket {(Socket.Client == null ? "closed" : Socket.Client.Handle.ToString())} {Ip}:{_port}...");
-#endif
+//#if DEBUGG
+//                        Console.WriteLine($"disposing socket {(Socket.Client == null ? "closed" : Socket.Client.Handle.ToString())} {Ip}:{_port}...");
+//#endif
                         Socket.Dispose();
                     }
                 }

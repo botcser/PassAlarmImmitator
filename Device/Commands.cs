@@ -16,7 +16,7 @@ namespace IRAPROM.MyCore.Device
 
             setCommands.ForEach(cmd =>
             {
-                SetCommandsList.Add(new Command(cmd.Item1, cmd.Item2, cmd.Item4));
+                SetCommandsList.Add(new Command(cmd.Item1, cmd.Item2, cmd.Item3, cmd.Item4));
             });
         }
     }
