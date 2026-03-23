@@ -137,7 +137,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             PortTCP = port;
         }
 #else
-        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoXPROGOST(ip, Constants.PortTCPDefault), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoXPROGOST(ip, port == 0 ? Constants.PortTCPDefault : port), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
             IP = ip;
             PortTCP = port;

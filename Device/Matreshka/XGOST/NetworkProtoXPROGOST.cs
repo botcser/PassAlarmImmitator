@@ -13,14 +13,18 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
     {
         [JsonProperty]
         public string Ip { get; set; }
+        [JsonProperty]
+        public int PortTCP { get; set; }
 
         internal TcpClient Socket;
         internal NetworkStream Stream;
 
         [JsonProperty]
-        private readonly int _port;
+        private readonly int _portDefault;
         [JsonProperty]
         private readonly int _timeOut = 15000;
+
+        private int _port => PortTCP == 0 ? _portDefault : PortTCP;
 
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);
@@ -30,7 +34,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public NetworkProtoXPROGOST(string ip, int portTCP, int timeOut = 0)
         {
             Ip = ip;
-            _port = portTCP;
+            _portDefault = portTCP;
             _timeOut = timeOut == 0 ? _timeOut : timeOut;
             Socket = new TcpClient();
             Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;

@@ -1,8 +1,12 @@
-﻿namespace IRAPROM.MyCore.Device
+﻿using Newtonsoft.Json;
+
+namespace IRAPROM.MyCore.Device
 {
     public interface INetworkProto
     {
         public string Ip { get; set; }
+
+        public int PortTCP { get; set; }
 
         bool Connect();
 

@@ -1,20 +1,24 @@
-﻿using System;
+﻿using Casualbunker.Server.Common;
+using Extensions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Casualbunker.Server.Common;
-using Extensions;
 
 namespace IRAPROM.MyCore.Device
 {
     public class NetworkProtoHttp: INetworkProtoDual
     {
         public static NetworkProtoHttp Instance => _instance ??= new NetworkProtoHttp();
-        
+
+        [JsonProperty]
         public string Ip { get; set; }
+        [JsonProperty]
+        public int PortTCP { get; set; }
 
         private const string UrlServer = "http://commandcenter.runasp.net/api/commandcenter/ping";
         private const string UrlSend = 1 == 0 ? UrlDebug : UrlRelease;

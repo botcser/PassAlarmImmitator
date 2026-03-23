@@ -13,6 +13,8 @@ namespace IRAPROM.MyCore.Device
     {
         [JsonProperty]
         public string Ip { get; set; }
+        [JsonProperty]
+        public int PortTCP { get; set; }
 
         internal TcpClient Socket;
         internal NetworkStream Stream;
