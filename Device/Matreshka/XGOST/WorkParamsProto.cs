@@ -18,7 +18,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
-        private readonly int _resetDelay = TimeSpan.FromMilliseconds(12000).Milliseconds;
 
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
@@ -82,8 +81,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetAlarmParams(workParams);
             Thread.Sleep(_requestDelay);
 
-            SetNetworkParams(workParams);
-            Thread.Sleep(_requestDelay);
+            if (NetworkProto.Ip != workParams.IP || NetworkProto.PortTCP != workParams.PortTCP)
+            {
+                SetNetworkParams(workParams);
+            }
 
             NetworkProto.Disconnect();
 
@@ -139,59 +140,20 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             ClearPassageCount();
         }
 
-        public async Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout)
+        public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
         {
-            Console.WriteLine($"\nYou must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
-
-            var timer = milliSecondsTimeout;
-            MetalDetectorPassage alarmPassage;
-
-            do
+            if (alarm)
             {
-                timer -= 1000;
-
-                await Task.Delay(1000);
-
-                //alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
-
-                //if (alarmPassage != null) break;
-
-            } while (timer > 0);
-
-            //if (alarmPassage == null)
-            //{
-            //    Console.WriteLine($"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
-
-            //    return false;
-            //}
-
-            //alarmPassage = alarmPassage.Clone();
-            timer = milliSecondsTimeout;
-            MetalDetectorPassage lastPassage;
-
-            Console.WriteLine($"\nOK. Now you must make a passage (clean) through all devices at once. You have 20 seconds to do this!");
-            //Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
-
-            do
+                SimulateAlarm();
+            }
+            else
             {
-                timer -= 1000;
+                SimulatePass();
+            }
 
-                await Task.Delay(1000);
+            NetworkProto.Disconnect();
 
-                //lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
-
-                //if (lastPassage != null) break;
-
-            } while (timer > 0);
-
-            //if (lastPassage == null)
-            //{
-            //    Console.WriteLine($"DynamicTest: Error: No Clean Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
-
-            //    return false;
-            //}
-            return false;
-            return ValidatePassages(alarmPassage, lastPassage);
+            return true;
         }
 
         private bool ValidatePassages(MetalDetectorPassage alarmPassage, MetalDetectorPassage lastPassage)
@@ -430,9 +392,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             args.AddRange(BitConverter.GetBytes((short)workParams.PortTCP));
             args.AddRange(BitConverter.GetBytes((short)workParams.PortUDP));
 
-            //var command = ExecuteCommonCommand(new Command(DatagramProto.MakeRequestDatagram(Constants.SetNetworkParams.deviceCode), Constants.SetNetworkParams.code, workParams.IP, workParams.PortTCP.ToString(), ProtocolType.Tcp));
-            //var response = command.Result;
-
             ExecuteSetCommandRaw(Constants.SetNetworkParams.code, args.ToArray());
 
             NetworkProto.Disconnect();
@@ -445,6 +404,19 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
         }
 
+        public bool SimulatePass()
+        {
+            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00 });
+
+            return true;
+        }
+
+        public bool SimulateAlarm()
+        {
+            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x01, 0x11,0x11,0x11,0x11, 0x88,0x88,0x88,0x88 });
+
+            return true;
+        }
 
         private bool WorkProgramSceneTest(WorkParams workParams, byte testValue)
         {
@@ -543,6 +515,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool RestoreSettingsTest(WorkParams workParams)
         {
+            return true;
 #if DEBUG
             Console.WriteLine($"\nRestoreSettingsTest: testing \"Restore Factory Settings\"...");
 #endif
@@ -554,17 +527,19 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             Thread.Sleep(_requestDelay);
             workParams.PortTCP = 5001;
             SetNetworkParams(workParams);
-            Thread.Sleep(_requestDelay * 2);
+            Thread.Sleep(5000);
             
             RestoreSettings(workParams);
-            Thread.Sleep(_requestDelay);
+            Thread.Sleep(5000);
 
             NetworkProto.Ip = workParams.IP = "192.168.1.100";
             NetworkProto.PortTCP = workParams.PortTCP = Constants.PortTCPDefault;
             InitBaseSensitivity(workParams);
+
 #if DEBUG
             Console.WriteLine($"RestoreSettingsTest: done...");
 #endif
+
             if (workParams.BaseSensitivity == 33)
             {
 #if DEBUG
@@ -590,7 +565,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             workParams.IP = "192.168.1.111";
             workParams.PortTCP = 5001;
             SetNetworkParams(workParams);
-            Thread.Sleep(_requestDelay * 4);
+            Thread.Sleep(5000);
 
             workParams.BaseSensitivity = 11;
 

@@ -161,7 +161,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             ClearPassageCount();
         }
 
-        public Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout)
+        public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
         {
             throw new NotImplementedException();
         }

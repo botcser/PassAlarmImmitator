@@ -42,6 +42,7 @@ namespace IRAPROM.MyCore.Model
                 dev.Name = $"{MetalDetectorSeriesLib.GetModel(dev.ModelId)}";
 
                 Validator.FoundDevices.Add(dev.DeviceMetalDetector);
+                MyARM.Instance.AddedDevicesAddForValidatorOnly(dev.MAC, dev);
         }
     }
 

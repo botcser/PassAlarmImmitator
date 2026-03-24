@@ -255,7 +255,7 @@ namespace IRAPROM.MyCore.MyNetwork
                 return false;
             }
 
-            rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes);
+            rec = MetalDetectPacketInfo.ParseXGOSTMatreshkaMessageUDP(bytes, ip);
             
             if (rec == null || rec.ProductModel.IsNullOrEmpty())
             {
@@ -299,6 +299,7 @@ namespace IRAPROM.MyCore.MyNetwork
                     {
                         Console.WriteLine($"MatreshkaResponse: FoundDevices: {device.IP}");
                         Validator.FoundDevices.Add(device);
+                        MyARM.Instance.AddedDevicesAddForValidatorOnly(device.MAC, rec.MetDetector);
                     }
                 }
                 else
@@ -403,6 +404,7 @@ namespace IRAPROM.MyCore.MyNetwork
                     {
                         Console.WriteLine($"MatreshkaResponse: FoundDevices: {device.IP}");
                         Validator.FoundDevices.Add(device);
+                        MyARM.Instance.AddedDevicesAddForValidatorOnly(device.MAC, rec.MetDetector);
                     }
                 }
                 else

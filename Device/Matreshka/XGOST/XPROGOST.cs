@@ -155,6 +155,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             return (int)Model >= 100;
         }
+
         private void ProcessAlarm(MetalDetectorPassage newPassage)
         {
             _lastPassage.AlarmInf = newPassage.AlarmInf;

@@ -126,7 +126,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             ClearPassageCount();
         }
 
-        public async Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout)
+        public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
         {
             Console.WriteLine($"\nYou must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
 
@@ -137,7 +137,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             {
                 timer -= 1000;
 
-                await Task.Delay(1000);
+                Thread.Sleep(1000);
 
                 alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
@@ -163,7 +163,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             {
                 timer -= 1000;
 
-                await Task.Delay(1000);
+                Thread.Sleep(1000);
 
                 lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 

@@ -22,6 +22,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0xFF, 0xFF, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x8B, 0x69, 0x3C, 0x5A, 0xcb, 0xd7, 0x0D, 0x0A };
 
         public const int CommandResponseLength = 56;
+        public const int PassResponseLength = 26 + 4 + 5;
+        public const int AlarmResponseLength = 45 + 4 + 5;
         public const int ResultOffset = 15;
         public const int DataLengthOffset = 5;
         public const int FrameSequenceOffset = 9;
@@ -31,6 +33,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public const int DataOffset = 19;
         public const int ResponseMetaInfoLength = (3 + 2 + 4) + 4 + 2 + 1 + 2 + 2;
 
+        public const short AlarmUdpCode = 0x1102;
+        public const short CleanPassUdpCode = 0x1101;
 
         public static (short deviceCode, short code, int responseLenght, string name) GetPassword = (0x0087, 0x0087, MetaInfoLength + 7, "GetPassword");
         public static (short deviceCode, short code, int responseLenght, string name) GetFirmwareVersion = (0x0089, 0x0089, MetaInfoLength + 12, "GetFirmwareVersion");
@@ -128,13 +132,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
             GetBaseSensitivity, GetWorkFrequency, GetAlarmParams, GetZonesWorkMode, GetPassageCount, GetNetworkParams, GetTime,
-            GetSerialNumber, GetWorkProgramScene, GetPassword, GetZonesSensitivity, GetFirmwareVersion, GetSerialNumber,
+            GetSerialNumber, GetWorkProgramScene, GetPassword, GetZonesSensitivity, GetFirmwareVersion, GetSerialNumber, SimulatePass
         };
 
         public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
             SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetNetworkParams, SetTime, SetPassword,
-            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, ResetDevice, ResetSettings, SimulatePass
+            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, ResetDevice, ResetSettings
         }; 
 
         private static readonly List<string> _workPrograms = new List<string>() {

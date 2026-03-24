@@ -157,14 +157,55 @@ namespace IRAPROM.MyCore.Device
             return result;
         }
 
-        public virtual void HandTest()
+        public virtual async Task<bool> DynamicTest(int milliSecondsTimeout)
         {
-            throw new NotImplementedException();
-        }
+#if DEBUG
+            Console.WriteLine($"\n___DynamicTest: {_ip}:{MAC}");
+#endif
 
-        public virtual Task<bool> DynamicTest(int milliSecondsTimeout)
-        {
-            return ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout);
+            var passages = LastPassage?.EnterPassagesCount ?? 0;
+            var success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, true);
+
+            Thread.Sleep(1000);
+
+            if (LastPassage == null || !LastPassage.IsAlarm || !success)
+            {
+#if DEBUG
+                Console.WriteLine($"DynamicTest: Error: missing simulate alarm or it was not alarm!");
+#endif
+                return false;
+            }
+
+            if (passages == LastPassage.EnterPassagesCount)
+            {
+#if DEBUG
+                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate alarm is equal {passages}!");
+#endif
+                return false;
+            }
+
+            passages = LastPassage?.EnterPassagesCount ?? 0;
+            success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, false);
+
+            Thread.Sleep(1000);
+
+            if (LastPassage == null || LastPassage.IsAlarm || !success)
+            {
+#if DEBUG
+                Console.WriteLine($"DynamicTest: Error: missing simulate passage or it was alarm!");
+#endif
+                return false;
+            }
+
+            if (passages == LastPassage.EnterPassagesCount)
+            {
+#if DEBUG
+                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate passage is equal {passages}!");
+#endif
+                return false;
+            }
+
+            return true;
         }
 
         public virtual void SimulatePassage()

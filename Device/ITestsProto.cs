@@ -9,6 +9,6 @@ namespace PassAlarmSimulator.Device
 
         void HandTest(WorkParams workParams);
 
-        Task<bool> DynamicTest(WorkParams workParams, int milliSecondsTimeout);
+        bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm);
     }
 }

@@ -262,8 +262,10 @@ namespace IRAPROM.MyCore.Model
             return rec;
         }
 
-        public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr)
+        public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr, IPEndPoint ipEndPoint)
         {
+            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: {arr.Length}");
+
             if (!CheckMatreshkaHeader(arr)) return null;
 
             var rec = new MetalDetectPacketInfo();
@@ -288,63 +290,107 @@ namespace IRAPROM.MyCore.Model
                 return rec;
             }
 
-            //С 15 байта
-            using (var ms = new MemoryStream(rec.body))
+            if (arr.Length == Device.Matreshka.XGOST.Constants.AlarmResponseLength)
             {
-                using (var br = new BinaryReader(ms))
+                Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: AlarmUdpCode:");
+
+                using (var ms = new MemoryStream(arr))
                 {
-                    //с 15 байта
-                    if (rec.body.Length >= 6)
+                    using (var br = new BinaryReader(ms))
                     {
-                        rec.mac = br.ReadBytes(6);
-                    }
+                        var odd = br.ReadBytes(Device.Matreshka.XGOST.Constants.CommandCodeOffset);
 
-                    if (arr.Length < 36)
-                    {
-                        return rec;
-                    }
+                        rec.command = (short)br.ReadUInt16();
 
+                        var someTime = br.ReadByte();
+                        var someDate = br.ReadBytes(6);
 
-                    MetDetector md = null;
-                    short modelId = 0;
-                    var MAC = Convert.ToHexString(rec.mac);
+                        Console.WriteLine($"\n\todd {Convert.ToHexString(odd)}" +
+                                          $"\n\tcommand {rec.command}" +
+                                          $"\n\tsomeTime {someTime}" +
+                                          $"\n\tsomeDate {Convert.ToHexString(someDate)}");
 
-                    //if (MyARM.Instance.AddedDevicesTryGetValue(MAC, out md, out var onChanged))
-                    //{
-                    //    rec.IdModel = modelId = md.ModelId;
-                    //    rec.MetDetector = md;
-                    //}
+                        var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
+                        short modelId = 0;
 
-                    switch (rec.command)
-                    {
-                        case MDCommands.METDET_CMD_ALARM:
-                            rec.timeStamp = br.ReadBytes(7); //с 21 байта
-                            rec.ZonesSensorMode = br.ReadByte(); //28 байт
-                            rec.sensors = br.ReadBytes(18); //с 29 байта    // 6 байт у PC Z 3300 MK
+                        if (md.Value != null)
+                        {
+                            rec.IdModel = modelId = md.Value.ModelId;
+                            rec.MetDetector = md.Value;
+                            rec.Ip = md.Value.IP;
+                            rec.Mac = md.Value.MAC;
+                        }
 
-                            if (md != null)
-                            {
-                                md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
-                            }
-                            break;
+                        var EnterPassagesCount = br.ReadUInt32();
+                        var ExitPassagesCount = br.ReadUInt32();
+                        var EnterAlarmCount = br.ReadUInt32();
+                        var ExitAlarmCount = br.ReadUInt32();
+                        var InfraredPassCounterMode = br.ReadByte();
+                        var AlarmZoneMode = rec.ZonesSensorMode = br.ReadByte();
+                        var metalQuantity = br.ReadUInt16();
+                        var sensors = rec.sensors = br.ReadBytes(8);
 
-                        case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
-                            rec.NormalPassNum = br.ReadInt32(); // с 21 байта
-                            rec.NormalReturnNum = br.ReadInt32(); //с 25 байта
-                            rec.AlarmPassNum = br.ReadInt32(); //с 29 байта
-                            rec.AlarmReturnNum = br.ReadInt32(); //с 33 байта
+                        Console.WriteLine($"\tsensors {Convert.ToHexString(rec.sensors)} " +
+                                          $"\n\tEnterPassagesCount {EnterPassagesCount}" +
+                                          $"\n\tExitPassagesCount {ExitPassagesCount}" +
+                                          $"\n\tEnterAlarmCount {EnterAlarmCount}" +
+                                          $"\n\tExitAlarmCount {ExitAlarmCount}" +
+                                          $"\n\tInfraredPassCounterMode {InfraredPassCounterMode}" +
+                                          $"\n\tAlarmZoneMode {AlarmZoneMode}" +
+                                          $"\n\tmetalQuantity {metalQuantity}" +
+                                          $"\n\tsensors {Convert.ToHexString(sensors)}");
 
-                            if (md != null)
-                            {
-                                md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
-                            }
-                            break;
-
-                        default:
-                            break;
+                        if (md.Value != null)
+                        {
+                            md.Value.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.Mac, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                        }
                     }
                 }
 
+                return rec;
+            }
+
+            if (arr.Length == Device.Matreshka.XGOST.Constants.PassResponseLength)
+            {
+                Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: PassUdpCode:");
+
+                using (var ms = new MemoryStream(rec.body))
+                {
+                    using (var br = new BinaryReader(ms))
+                    {
+                        var odd = br.ReadBytes(Device.Matreshka.XGOST.Constants.CommandCodeOffset);
+
+                        rec.command = (short)br.ReadUInt16();
+
+                        var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
+                        short modelId = 0;
+
+                        if (md.Value != null)
+                        {
+                            rec.IdModel = modelId = md.Value.ModelId;
+                            rec.MetDetector = md.Value;
+                            rec.Ip = md.Value.IP;
+                            rec.Mac = md.Value.MAC;
+                        }
+
+                        var EnterPassagesCount = br.ReadUInt32();
+                        var ExitPassagesCount = br.ReadUInt32();
+                        var EnterAlarmCount = br.ReadUInt32();
+                        var ExitAlarmCount = br.ReadUInt32();
+
+                        Console.WriteLine($"\tsensors {Convert.ToHexString(rec.sensors)} " +
+                                          $"\tEnterPassagesCount {EnterPassagesCount}" +
+                                          $"\tExitPassagesCount {ExitPassagesCount}" +
+                                          $"\tEnterAlarmCount {EnterAlarmCount}" +
+                                          $"\tExitAlarmCount {ExitAlarmCount}");
+
+                        if (md.Value != null)
+                        {
+                            md.Value.DeviceMetalDetector.LastPassage =
+                                new MetalDetectorPassage(rec.Mac, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                        }
+                    }
+                }
             }
 
             return rec;
