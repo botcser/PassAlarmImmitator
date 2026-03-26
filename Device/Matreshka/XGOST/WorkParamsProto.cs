@@ -93,12 +93,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         
         public bool StaticTest(WorkParams workParams)
         {
-            RebootDevice(workParams);
-#if DEBUG
-            Console.WriteLine("rebooted.");
-#endif
-            return false;
-
             const byte testValue = 0x02;
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
