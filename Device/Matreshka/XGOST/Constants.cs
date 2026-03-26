@@ -65,12 +65,12 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0040, 0x0040, ResponseMetaInfoLength, "ClearPassageCount");
         public static (short deviceCode, short code, int responseLenght, string name) ResetSettings = (0x41, 0x41, ResponseMetaInfoLength, "ResetSettings");
         public static (short deviceCode, short code, int responseLenght, string name) SimulatePass = (0x42, 0x42, ResponseMetaInfoLength, "SimulatePass");
-        public static (short deviceCode, short code, int responseLenght, string name) ResetDevice = (0x43, 0x43, ResponseMetaInfoLength, "ResetDevice");
+        public static (short deviceCode, short code, int responseLenght, string name) RebootDevice = (0x43, 0x43, ResponseMetaInfoLength, "RebootDevice");
 
         public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
             {
-                { PCX600PROName, (0x006E, new List <short>{ 3, 6, 9 }, PCX600PROName, new List<int> {3, 1}, 6 ) },
-                { PCX1100PROName, (0x006F, new List <short>{ 11, 22, 33 }, PCX1100PROName, new List<int> {11, 3}, 11 ) },
+                { PCX600PROName, (0x006E, new List <short>{ 6 }, PCX600PROName, new List<int> {6, 1}, 6 ) },
+                { PCX1100PROName, (0x006F, new List <short>{ 11 }, PCX1100PROName, new List<int> {11, 1}, 11 ) },
                 { PCGOST900Name, (0x0028, new List <short>{ 3, 6, 9 }, PCGOST900Name, new List<int> {3, 3}, 6 ) },
                 { PCGOST1800Name, (0x0029, new List <short>{ 6, 12, 18 }, PCGOST1800Name, new List<int> {6, 3}, 6 ) },
                 { PCGOST3300Name, (0x003E, new List <short>{ 11, 22, 33 }, PCGOST3300Name, new List<int> {11, 3}, 11 ) },
@@ -138,7 +138,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
             SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetNetworkParams, SetTime, SetPassword,
-            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, ResetDevice, ResetSettings
+            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, RebootDevice, ResetSettings
         }; 
 
         private static readonly List<string> _workPrograms = new List<string>() {

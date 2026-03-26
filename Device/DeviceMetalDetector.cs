@@ -43,7 +43,7 @@ namespace IRAPROM.MyCore.Device
         public virtual int RealCoilsCount { get; set; }
 
         [JsonIgnore]
-        public abstract int ZonesCount { get; set; }
+        public abstract byte ZonesCount { get; set; }
         [JsonIgnore]
         public abstract List<short> AvailableZonesCount { get; }
         public abstract string SeriesName { get; }
@@ -134,18 +134,6 @@ namespace IRAPROM.MyCore.Device
 
         public virtual bool StaticTest()
         {
-#if DEBUG
-            Console.WriteLine($"___PreStaticTest: GetWorkParams {_ip}:{MAC}... ");
-#endif
-
-            WorkParams = WorkParamsProto.GetWorkParams();
-            WorkParams.MAC = MAC;
-            WorkParams.IP = IP;
-
-#if DEBUG
-            Console.WriteLine("...OK ");
-#endif
-
             Console.WriteLine($"\n\n____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}\n");
 
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
@@ -163,10 +151,22 @@ namespace IRAPROM.MyCore.Device
             Console.WriteLine($"\n___DynamicTest: {_ip}:{MAC}");
 #endif
 
-            var passages = LastPassage?.EnterPassagesCount ?? 0;
+            var enterPassagesCount = LastPassage?.EnterPassagesCount ?? 0;
+            var enterAlarmCount = LastPassage?.EnterAlarmCount ?? 0;
+            var exitPassagesCount = LastPassage?.ExitPassagesCount ?? 0;
+            var exitAlarmCount = LastPassage?.ExitAlarmCount ?? 0;
+#if DEBUG
+            Console.WriteLine($"\n___DynamicTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
+                              $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
+#endif
             var success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, true);
+            
+            Thread.Sleep(2000);
 
-            Thread.Sleep(1000);
+#if DEBUG
+            Console.WriteLine($"\n___DynamicTest After: \n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\n\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
+                              $"\n\t ExitPassagesCount {LastPassage.ExitPassagesCount}\n\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
+#endif
 
             if (LastPassage == null || !LastPassage.IsAlarm || !success)
             {
@@ -176,18 +176,22 @@ namespace IRAPROM.MyCore.Device
                 return false;
             }
 
-            if (passages == LastPassage.EnterPassagesCount)
+            if (enterPassagesCount == LastPassage.EnterPassagesCount && enterAlarmCount == LastPassage.EnterAlarmCount && exitPassagesCount == LastPassage.ExitPassagesCount &&
+                exitAlarmCount == LastPassage.ExitAlarmCount)
             {
 #if DEBUG
-                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate alarm is equal {passages}!");
+                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate alarm is equal!");
 #endif
                 return false;
             }
 
-            passages = LastPassage?.EnterPassagesCount ?? 0;
+            enterPassagesCount = LastPassage?.EnterPassagesCount ?? 0;
+            enterAlarmCount = LastPassage?.EnterAlarmCount ?? 0;
+            exitPassagesCount = LastPassage?.ExitPassagesCount ?? 0;
+            exitAlarmCount = LastPassage?.ExitAlarmCount ?? 0;
             success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, false);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
 
             if (LastPassage == null || LastPassage.IsAlarm || !success)
             {
@@ -197,10 +201,11 @@ namespace IRAPROM.MyCore.Device
                 return false;
             }
 
-            if (passages == LastPassage.EnterPassagesCount)
+            if (enterPassagesCount == LastPassage.EnterPassagesCount && enterAlarmCount == LastPassage.EnterAlarmCount && exitPassagesCount == LastPassage.ExitPassagesCount &&
+                exitAlarmCount == LastPassage.ExitAlarmCount)
             {
 #if DEBUG
-                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate passage is equal {passages}!");
+                Console.WriteLine($"DynamicTest: Error: passage count before and after simulate passage is equal!");
 #endif
                 return false;
             }

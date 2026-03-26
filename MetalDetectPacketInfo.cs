@@ -106,10 +106,10 @@ namespace IRAPROM.MyCore.Model
 
 
         ///// for normal
-        public int NormalPassNum = 0;
-        public int NormalReturnNum = 0;
-        public int AlarmPassNum = 0;
-        public int AlarmReturnNum = 0;
+        public uint NormalPassNum = 0;
+        public uint NormalReturnNum = 0;
+        public uint AlarmPassNum = 0;
+        public uint AlarmReturnNum = 0;
 
         //public decimal? Temperature = null;
         //public string Explosives = "";
@@ -240,10 +240,10 @@ namespace IRAPROM.MyCore.Model
                             break;
 
                         case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
-                            rec.NormalPassNum = br.ReadInt32(); // с 21 байта
-                            rec.NormalReturnNum = br.ReadInt32(); //с 25 байта
-                            rec.AlarmPassNum = br.ReadInt32(); //с 29 байта
-                            rec.AlarmReturnNum = br.ReadInt32(); //с 33 байта
+                            rec.NormalPassNum = br.ReadUInt32(); // с 21 байта
+                            rec.NormalReturnNum = br.ReadUInt32(); //с 25 байта
+                            rec.AlarmPassNum = br.ReadUInt32(); //с 29 байта
+                            rec.AlarmReturnNum = br.ReadUInt32(); //с 33 байта
 
                             if (md != null)
                             {
@@ -264,133 +264,114 @@ namespace IRAPROM.MyCore.Model
 
         public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr, IPEndPoint ipEndPoint)
         {
-            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: {arr.Length}");
-
-            if (!CheckMatreshkaHeader(arr)) return null;
-
             var rec = new MetalDetectPacketInfo();
 
-            if (arr.Length == Device.Matreshka.XGOST.Constants.CommandResponseLength)
+            try
             {
-                var deviceMetalDetector = DeviceMetalDetector.FamilyInfoVariants[2].ParseFindCommandResponse(arr, out var commandCode);
+                if (!CheckMatreshkaHeader(arr)) return null;
 
-                rec.MetDetector.DeviceMetalDetector = deviceMetalDetector;
-                rec.Ip = rec.MetDetector.IP = deviceMetalDetector.IP;
-                rec.Mask = rec.MetDetector.Mask = deviceMetalDetector.Mask;
-                rec.Gateway = rec.MetDetector.Gateway = deviceMetalDetector.Gateway;
-                rec.port = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
-                rec.Mac = rec.MetDetector.MAC = deviceMetalDetector.MAC;
-                rec.mac = Convert.FromHexString(deviceMetalDetector.MAC);
-                rec.IdModel = rec.MetDetector.ModelId = (short)deviceMetalDetector.ModelId;
-                rec.ProductModel = rec.MetDetector.Name = deviceMetalDetector.ProductModelName;
-                rec.UDPPort = rec.MetDetector.PortUDP = deviceMetalDetector.PortUDP;
-                rec.TCPPort = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
-                rec.command = (short)commandCode;
-
-                return rec;
-            }
-
-            if (arr.Length == Device.Matreshka.XGOST.Constants.AlarmResponseLength)
-            {
-                Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: AlarmUdpCode:");
-
-                using (var ms = new MemoryStream(arr))
+                if (arr.Length == Device.Matreshka.XGOST.Constants.CommandResponseLength)
                 {
-                    using (var br = new BinaryReader(ms))
-                    {
-                        var odd = br.ReadBytes(Device.Matreshka.XGOST.Constants.CommandCodeOffset);
+                    var deviceMetalDetector = DeviceMetalDetector.FamilyInfoVariants[2].ParseFindCommandResponse(arr, out var commandCode);
 
-                        rec.command = (short)br.ReadUInt16();
+                    rec.MetDetector.DeviceMetalDetector = deviceMetalDetector;
+                    rec.Ip = rec.MetDetector.IP = deviceMetalDetector.IP;
+                    rec.Mask = rec.MetDetector.Mask = deviceMetalDetector.Mask;
+                    rec.Gateway = rec.MetDetector.Gateway = deviceMetalDetector.Gateway;
+                    rec.port = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
+                    rec.Mac = rec.MetDetector.MAC = deviceMetalDetector.MAC;
+                    rec.mac = Convert.FromHexString(deviceMetalDetector.MAC);
+                    rec.IdModel = rec.MetDetector.ModelId = (short)deviceMetalDetector.ModelId;
+                    rec.ProductModel = rec.MetDetector.Name = deviceMetalDetector.ProductModelName;
+                    rec.UDPPort = rec.MetDetector.PortUDP = deviceMetalDetector.PortUDP;
+                    rec.TCPPort = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
+                    rec.command = (short)commandCode;
 
-                        var someTime = br.ReadByte();
-                        var someDate = br.ReadBytes(6);
-
-                        Console.WriteLine($"\n\todd {Convert.ToHexString(odd)}" +
-                                          $"\n\tcommand {rec.command}" +
-                                          $"\n\tsomeTime {someTime}" +
-                                          $"\n\tsomeDate {Convert.ToHexString(someDate)}");
-
-                        var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
-                        short modelId = 0;
-
-                        if (md.Value != null)
-                        {
-                            rec.IdModel = modelId = md.Value.ModelId;
-                            rec.MetDetector = md.Value;
-                            rec.Ip = md.Value.IP;
-                            rec.Mac = md.Value.MAC;
-                        }
-
-                        var EnterPassagesCount = br.ReadUInt32();
-                        var ExitPassagesCount = br.ReadUInt32();
-                        var EnterAlarmCount = br.ReadUInt32();
-                        var ExitAlarmCount = br.ReadUInt32();
-                        var InfraredPassCounterMode = br.ReadByte();
-                        var AlarmZoneMode = rec.ZonesSensorMode = br.ReadByte();
-                        var metalQuantity = br.ReadUInt16();
-                        var sensors = rec.sensors = br.ReadBytes(8);
-
-                        Console.WriteLine($"\tsensors {Convert.ToHexString(rec.sensors)} " +
-                                          $"\n\tEnterPassagesCount {EnterPassagesCount}" +
-                                          $"\n\tExitPassagesCount {ExitPassagesCount}" +
-                                          $"\n\tEnterAlarmCount {EnterAlarmCount}" +
-                                          $"\n\tExitAlarmCount {ExitAlarmCount}" +
-                                          $"\n\tInfraredPassCounterMode {InfraredPassCounterMode}" +
-                                          $"\n\tAlarmZoneMode {AlarmZoneMode}" +
-                                          $"\n\tmetalQuantity {metalQuantity}" +
-                                          $"\n\tsensors {Convert.ToHexString(sensors)}");
-
-                        if (md.Value != null)
-                        {
-                            md.Value.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.Mac, rec.sensors, rec.logTime, rec.ZonesSensorMode);
-                        }
-                    }
+                    return rec;
                 }
 
-                return rec;
-            }
-
-            if (arr.Length == Device.Matreshka.XGOST.Constants.PassResponseLength)
-            {
-                Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: PassUdpCode:");
-
-                using (var ms = new MemoryStream(rec.body))
+                if (arr.Length == Device.Matreshka.XGOST.Constants.AlarmResponseLength)
                 {
-                    using (var br = new BinaryReader(ms))
+                    using (var ms = new MemoryStream(arr))
                     {
-                        var odd = br.ReadBytes(Device.Matreshka.XGOST.Constants.CommandCodeOffset);
-
-                        rec.command = (short)br.ReadUInt16();
-
-                        var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
-                        short modelId = 0;
-
-                        if (md.Value != null)
+                        using (var br = new BinaryReader(ms))
                         {
-                            rec.IdModel = modelId = md.Value.ModelId;
-                            rec.MetDetector = md.Value;
-                            rec.Ip = md.Value.IP;
-                            rec.Mac = md.Value.MAC;
-                        }
+                            var odd = br.ReadBytes(Device.Matreshka.XGOST.Constants.CommandCodeOffset);
 
-                        var EnterPassagesCount = br.ReadUInt32();
-                        var ExitPassagesCount = br.ReadUInt32();
-                        var EnterAlarmCount = br.ReadUInt32();
-                        var ExitAlarmCount = br.ReadUInt32();
+                            rec.command = (short)br.ReadUInt16();
 
-                        Console.WriteLine($"\tsensors {Convert.ToHexString(rec.sensors)} " +
-                                          $"\tEnterPassagesCount {EnterPassagesCount}" +
-                                          $"\tExitPassagesCount {ExitPassagesCount}" +
-                                          $"\tEnterAlarmCount {EnterAlarmCount}" +
-                                          $"\tExitAlarmCount {ExitAlarmCount}");
+                            var someTime = br.ReadByte();
+                            var someDate = br.ReadBytes(6);
 
-                        if (md.Value != null)
-                        {
-                            md.Value.DeviceMetalDetector.LastPassage =
-                                new MetalDetectorPassage(rec.Mac, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                            //Console.WriteLine($"\n\todd {Convert.ToHexString(odd)}" +
+                            //                  $"\n\tcommand {rec.command}" +
+                            //                  $"\n\tsomeTime {someTime}" +
+                            //                  $"\n\tsomeDate {Convert.ToHexString(someDate)}");
+
+                            var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
+                            short modelId = 0;
+                            MetDetector metDetector = null;
+                            Action<MetDetector> metDetectorOnChanged = null;
+
+                            if (md.Value != null)
+                            {
+                                MyARM.Instance.AddedDevicesTryGetValue(md.Value.MAC, out metDetector, out metDetectorOnChanged);
+                                rec.IdModel = modelId = md.Value.ModelId;
+                                rec.MetDetector = md.Value;
+                                rec.Ip = md.Value.IP;
+                                rec.Mac = md.Value.MAC;
+                            }
+
+                            var enterPassagesCount = br.ReadUInt32();
+                            var exitPassagesCount = br.ReadUInt32();
+                            var enterAlarmCount = br.ReadUInt32();
+                            var exitAlarmCount = br.ReadUInt32();
+                            var alarmZoneMode = rec.ZonesSensorMode = br.ReadByte();
+                            var infraredPassCounterMode = (byte)(br.ReadByte() & 0x0F);
+                            var metalQuantity = br.ReadUInt16();
+                            var sensors = rec.sensors = br.ReadBytes(8);
+
+                            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
+                                              $"\n\tEnterPassagesCount {enterPassagesCount}" +
+                                              $"\n\tExitPassagesCount {exitPassagesCount}" +
+                                              $"\n\tEnterAlarmCount {enterAlarmCount}" +
+                                              $"\n\tExitAlarmCount {exitAlarmCount}" +
+                                              $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
+                                              $"\n\tAlarmZoneMode {alarmZoneMode}" +
+                                              $"\n\tmetalQuantity {metalQuantity}" +
+                                              $"\n\tsensors {Convert.ToHexString(sensors)}");
+                            
+                            if (metDetector != null)
+                            {
+                                metDetector.AlarmZoneMode = metDetector.DeviceMetalDetector.ZonesCount = metDetector.DeviceMetalDetector.WorkParams.ZonesSensorMode = alarmZoneMode;
+                                metDetector.InfraredPassCounterMode = metDetector.DeviceMetalDetector.WorkParams.InfraredPassCounterMode = infraredPassCounterMode;
+
+                                if (sensors.Any(i => i > 0))
+                                {
+                                    metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.Mac, rec.sensors, rec.logTime, alarmZoneMode)
+                                    {
+                                        EnterPassagesCount = enterPassagesCount,
+                                        ExitPassagesCount = exitPassagesCount,
+                                        EnterAlarmCount = enterAlarmCount,
+                                        ExitAlarmCount = exitAlarmCount,
+                                    };
+                                }
+                                else
+                                {
+                                    metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.Mac, rec.logTime, alarmZoneMode, enterPassagesCount, enterAlarmCount, exitPassagesCount, exitAlarmCount);
+                                }
+                                
+                                metDetectorOnChanged?.Invoke(metDetector);
+                            }
                         }
                     }
+
+                    return rec;
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: EX: {e.Message}");
             }
 
             return rec;

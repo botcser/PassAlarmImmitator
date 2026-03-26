@@ -93,6 +93,12 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         
         public bool StaticTest(WorkParams workParams)
         {
+            RebootDevice(workParams);
+#if DEBUG
+            Console.WriteLine("rebooted.");
+#endif
+            return false;
+
             const byte testValue = 0x02;
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
@@ -283,10 +289,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             var response = ExecuteGetCommand(Constants.GetPassageCount.code);
 
-            workParams.ForwardPassageCount = BitConverter.ToInt32(response, 0);
-            workParams.BackwardPassageCount = BitConverter.ToInt32(response, 4);
-            workParams.ForwardAlarmsCount = BitConverter.ToInt32(response, 8);
-            workParams.BackwardAlarmsCount = BitConverter.ToInt32(response, 12);
+            workParams.ForwardPassageCount = BitConverter.ToUInt32(response, 0);
+            workParams.BackwardPassageCount = BitConverter.ToUInt32(response, 4);
+            workParams.ForwardAlarmsCount = BitConverter.ToUInt32(response, 8);
+            workParams.BackwardAlarmsCount = BitConverter.ToUInt32(response, 12);
         }
 
         public void RestoreSettings(WorkParams workParams)
@@ -329,6 +335,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             //ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 0x00, 0x02 });
         }
 
+        public void RebootDevice(WorkParams workParams)
+        {
+            ExecuteSetCommandRaw(Constants.RebootDevice.code, new byte[]{});
+        }
 
         public void SetZonesSensitivity(WorkParams workParams)
         {
@@ -413,7 +423,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public bool SimulateAlarm()
         {
-            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x01, 0x11,0x11,0x11,0x11, 0x88,0x88,0x88,0x88 });
+            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x01, 0x2A,0x2A,0x00,0x00, 0x2A,0x2A,0x00,0x00 });
 
             return true;
         }
@@ -515,7 +525,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private bool RestoreSettingsTest(WorkParams workParams)
         {
-            return true;
 #if DEBUG
             Console.WriteLine($"\nRestoreSettingsTest: testing \"Restore Factory Settings\"...");
 #endif

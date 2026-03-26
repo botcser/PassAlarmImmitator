@@ -53,9 +53,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             LastPassage.Clean();
         }
 
-        public override int ZonesCount
+        public override byte ZonesCount
         {
-            get => WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode];
+            get => (byte)(WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode]);
             set
             { 
                 if (WorkParams == null || value >= Constants.Models[ModelName].AvailableZonesCount.Count) return;      
@@ -179,13 +179,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         private void UpdatePassageCounters(MetalDetectorPassage newPassage)
         {
-            if (!newPassage.IsAlarm)
-            {
-                _lastPassage.EnterPassagesCount = newPassage.EnterPassagesCount;
-                _lastPassage.EnterAlarmCount = newPassage.EnterAlarmCount;
-                _lastPassage.ExitPassagesCount = newPassage.ExitPassagesCount;
-                _lastPassage.ExitAlarmCount = newPassage.ExitAlarmCount;
-            }
+            _lastPassage.EnterPassagesCount = newPassage.EnterPassagesCount;
+            _lastPassage.EnterAlarmCount = newPassage.EnterAlarmCount;
+            _lastPassage.ExitPassagesCount = newPassage.ExitPassagesCount;
+            _lastPassage.ExitAlarmCount = newPassage.ExitAlarmCount;
 
             _lastPassage.Time = newPassage.Time;
             _lastPassage.LastPassageTime = newPassage.LastPassageTime;
@@ -205,14 +202,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 _lastPassage.AlarmCells.Clear();
             }
 
+            //Console.WriteLine($"UpdatePassageCounters: sensors {sensors.Length}");
+            //Console.WriteLine($"UpdatePassageCounters: RowsCount {RowsCount}");
+
             switch (Model)
             {
-                case Constants.Model.PCGOST3300:
-                case Constants.Model.PCGOSTx3300:
-                case Constants.Model.PCGOST6300:        // TODO hz
-                case Constants.Model.PCGOSTx6300:       // TODO hz
-                    ParseSensors33(sensors, RowsCount, RealCoilsCount);
-                    break;
                 default:
                     ParseSensors(sensors, RowsCount, RealCoilsCount);
                     break;
@@ -225,13 +219,18 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             {
                 using (var binaryReader = new BinaryReader(memoryStream))
                 {
-                    var leftPanelSensors = binaryReader.ReadBytes(realCoilsCount).Reverse().ToArray();
+                    var leftAlarmZones = binaryReader.ReadInt32();
+                    //Console.WriteLine($"UpdatePassageCounters: LeftAlarmZones {leftAlarmZones}");
+
+                    var leftPanelSensors = new BitArray(new int[] { leftAlarmZones });
+                    //Console.WriteLine($"UpdatePassageCounters: leftPanelSensors {leftPanelSensors.Length}");
+
                     var leftAlarmCells = new List<bool>();
                     var halve = realCoilsCount / rowsCount;
 
-                    for (var i = 0; i < realCoilsCount; i += halve)
+                    for (var i = 0; i < rowsCount; i += halve)
                     {
-                        leftAlarmCells.Add(leftPanelSensors[i] == 1);
+                        leftAlarmCells.Add(leftPanelSensors[i]);
                     }
 
                     var rightAlarmCells = new List<bool>();
@@ -239,22 +238,26 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
                     if (binaryReader.BaseStream.CanRead)
                     {
-                        var rightPanelSensors = binaryReader.ReadBytes(realCoilsCount).Reverse().ToArray();
-                        
-                        for (var i = 0; i < rightPanelSensors.Length; i += halve)
+                        var rightAlarmZones = binaryReader.ReadInt32();
+                        //Console.WriteLine($"UpdatePassageCounters: rightAlarmZones {rightAlarmZones}");
+
+                        var rightPanelSensors = new BitArray(new int[] { rightAlarmZones });
+                        //Console.WriteLine($"UpdatePassageCounters: rightPanelSensors {rightPanelSensors.Length}");
+
+                        for (var i = 0; i < rowsCount; i += halve)
                         {
-                            rightAlarmCells.Add(rightPanelSensors[i] == 1);
+                            rightAlarmCells.Add(rightPanelSensors[i]);
                         }
 
-                        if (binaryReader.BaseStream.CanRead)
-                        {
-                            var centerSensors = binaryReader.ReadBytes(realCoilsCount).Reverse().ToArray();
+                        //if (binaryReader.BaseStream.CanRead)
+                        //{
+                        //    var centerSensors = binaryReader.ReadBytes(realCoilsCount).Reverse().ToArray();
 
-                            for (var i = 0; i < centerSensors.Length; i += halve)
-                            {
-                                centerAlarmCells.Add(centerSensors[i] == 1);
-                            }
-                        }
+                        //    for (var i = 0; i < centerSensors.Length; i += halve)
+                        //    {
+                        //        centerAlarmCells.Add(centerSensors[i] == 1);
+                        //    }
+                        //}
                     }
 
                     _lastPassage.AlarmCells.Clear();

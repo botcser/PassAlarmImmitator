@@ -10,10 +10,10 @@ namespace IRAPROM.MyCore.Model
         public string Text { get => _text; set { _text = value; OnPropertyChanged(); } }
         public int Id { get; set; }
 
-        public int LeftFirstNumber { get => _leftFirstNumber; set { _leftFirstNumber = value; OnPropertyChanged(); } }
-        public int LeftSecondNumber { get => _leftSecondNumber; set { _leftSecondNumber = value; OnPropertyChanged(); } }
-        public int RightFirstNumber { get => _rightFirstNumber; set { _rightFirstNumber = value; OnPropertyChanged(); } }
-        public int RightSecondNumber { get => _rightSecondNumber; set { _rightSecondNumber = value; OnPropertyChanged(); } }
+        public uint LeftFirstNumber { get => _leftFirstNumber; set { _leftFirstNumber = value; OnPropertyChanged(); } }
+        public uint LeftSecondNumber { get => _leftSecondNumber; set { _leftSecondNumber = value; OnPropertyChanged(); } }
+        public uint RightFirstNumber { get => _rightFirstNumber; set { _rightFirstNumber = value; OnPropertyChanged(); } }
+        public uint RightSecondNumber { get => _rightSecondNumber; set { _rightSecondNumber = value; OnPropertyChanged(); } }
         public bool Trigger { get => _trigger; set { _trigger = value; OnPropertyChanged(); } }
         
         public bool OnlineStatus
@@ -26,10 +26,10 @@ namespace IRAPROM.MyCore.Model
             }
         }
 
-        private int _leftFirstNumber;
-        private int _leftSecondNumber;
-        private int _rightFirstNumber;
-        private int _rightSecondNumber;
+        private uint _leftFirstNumber;
+        private uint _leftSecondNumber;
+        private uint _rightFirstNumber;
+        private uint _rightSecondNumber;
         private bool _trigger;
         private string _centerBottomText;
         private string _titleName;

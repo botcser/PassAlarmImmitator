@@ -31,10 +31,10 @@ namespace IRAPROM.MyCore.Model.WP
         public string Gateway { get; set; }
         public int PortTCP { get; set; }
         public int PortUDP { get; set; }
-        public int ForwardPassageCount { get; set; }
-        public int BackwardPassageCount { get; set; }
-        public int ForwardAlarmsCount { get; set; }
-        public int BackwardAlarmsCount { get; set; }
+        public uint ForwardPassageCount { get; set; }
+        public uint BackwardPassageCount { get; set; }
+        public uint ForwardAlarmsCount { get; set; }
+        public uint BackwardAlarmsCount { get; set; }
         public int Password { get; set; }
         public string FirmwareVersion { get; set; }
         public string SerialNumber { get; set; }

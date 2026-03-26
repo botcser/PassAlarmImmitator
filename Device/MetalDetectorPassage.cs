@@ -29,16 +29,16 @@ namespace IRAPROM.MyCore.Device
         public bool IsAlarm { get => _isAlarm; set { _isAlarm = value; OnPropertyChanged(); } }
         public DateTime Time { get; set; }
 
-        public int EnterPassagesCount { get => _enterPassagesCount; set { _enterPassagesCount = value; OnPropertyChanged(); } }
-        public int EnterAlarmCount { get => _enterAlarmCount; set { _enterAlarmCount = value; OnPropertyChanged(); } }
-        public int ExitPassagesCount { get => _exitPassagesCount; set { _exitPassagesCount = value; OnPropertyChanged(); } }
-        public int ExitAlarmCount { get => _exitAlarmCount; set { _exitAlarmCount = value; OnPropertyChanged(); } }
+        public uint EnterPassagesCount { get => _enterPassagesCount; set { _enterPassagesCount = value; OnPropertyChanged(); } }
+        public uint EnterAlarmCount { get => _enterAlarmCount; set { _enterAlarmCount = value; OnPropertyChanged(); } }
+        public uint ExitPassagesCount { get => _exitPassagesCount; set { _exitPassagesCount = value; OnPropertyChanged(); } }
+        public uint ExitAlarmCount { get => _exitAlarmCount; set { _exitAlarmCount = value; OnPropertyChanged(); } }
 
 
-        private int _enterPassagesCount;
-        private int _enterAlarmCount;
-        private int _exitPassagesCount;
-        private int _exitAlarmCount;
+        private uint _enterPassagesCount;
+        private uint _enterAlarmCount;
+        private uint _exitPassagesCount;
+        private uint _exitAlarmCount;
         private bool _isAlarm;
         private List<List<bool>> _alarmCells;
 
@@ -54,7 +54,7 @@ namespace IRAPROM.MyCore.Device
             IsAlarm = true;
         }
 
-        public MetalDetectorPassage(string mac, DateTime time, short sensorMode, int enterPassagesCount, int enterAlarmCount, int exitPassagesCount, int exitAlarmCount)
+        public MetalDetectorPassage(string mac, DateTime time, short sensorMode, uint enterPassagesCount, uint enterAlarmCount, uint exitPassagesCount, uint exitAlarmCount)
         {
             MAC = mac;
             SensorMode = sensorMode;

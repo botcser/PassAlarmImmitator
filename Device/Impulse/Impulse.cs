@@ -19,9 +19,9 @@ namespace IRAPROM.MyCore.Device.Impulse
         public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
 
         [JsonIgnore]
-        public override int ZonesCount
+        public override byte ZonesCount
         {
-            get => WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode];
+            get => (byte)(WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode]);
             set
             {
                 if (WorkParams == null || value >= Constants.Models[ModelName].AvailableZonesCount.Count) return;  

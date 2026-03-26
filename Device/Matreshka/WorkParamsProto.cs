@@ -308,10 +308,10 @@ namespace IRAPROM.MyCore.Device.Matreshka
             var responsePeoplePassingAlarms = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x02 });
             var responsePeopleReturningAlarms = ExecuteGetCommand(Constants.GetPassageCount.code, new byte[] { 0x03 });
 
-            workParams.ForwardPassageCount = BitConverter.ToInt32(responsePeoplePassing, 1);
-            workParams.BackwardPassageCount = BitConverter.ToInt32(responsePeopleReturning, 1);
-            workParams.ForwardAlarmsCount = BitConverter.ToInt32(responsePeoplePassingAlarms, 1);
-            workParams.BackwardAlarmsCount = BitConverter.ToInt32(responsePeopleReturningAlarms, 1);
+            workParams.ForwardPassageCount = BitConverter.ToUInt32(responsePeoplePassing, 1);
+            workParams.BackwardPassageCount = BitConverter.ToUInt32(responsePeopleReturning, 1);
+            workParams.ForwardAlarmsCount = BitConverter.ToUInt32(responsePeoplePassingAlarms, 1);
+            workParams.BackwardAlarmsCount = BitConverter.ToUInt32(responsePeopleReturningAlarms, 1);
         }
         
         public void SetZonesSensitivity(WorkParams workParams)

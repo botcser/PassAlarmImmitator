@@ -51,9 +51,9 @@ namespace IRAPROM.MyCore.Device.Matreshka
             LastPassage.Clean();
         }
 
-        public override int ZonesCount
+        public override byte ZonesCount
         {
-            get => WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode];
+            get => (byte)(WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode]);
             set
             { 
                 if (WorkParams == null || value >= Constants.Models[ModelName].AvailableZonesCount.Count) return;      

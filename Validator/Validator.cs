@@ -4,6 +4,7 @@ using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace PassAlarmSimulator.Validator
 {
@@ -155,10 +156,29 @@ namespace PassAlarmSimulator.Validator
         private async Task Validate()
         {
             if (FoundDevices.Count == 0) return;
+            
+            var success = FoundDevices.All(device =>
+            {
+#if DEBUG
+                Console.WriteLine($"___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}... ");
+#endif
+
+                var workParams = device.GetWorkParams();
+
+                workParams.MAC = device.MAC;
+                workParams.IP = device.IP;
+                device.WorkParams = workParams;
+
+#if DEBUG
+                Console.WriteLine("...OK ");
+#endif
+
+                return workParams != null;
+            });
 
             if (!StaticTests()) return;
 
-            //if (!await DynamicTests()) return;
+            if (!await DynamicTests()) return;
         }
 
         private async Task<bool> DynamicTests()                             // assume to start after Static tests!
@@ -182,12 +202,12 @@ namespace PassAlarmSimulator.Validator
         private bool StaticTests()
         {
             _watchdog.Start();
-
+            
             var success = FoundDevices.All(device => device.StaticTest());
 
             _watchdog.Stop();
 
-            Console.WriteLine("Have all device's pass counters been reset? (press 'y' if yes)");
+            //Console.WriteLine("Have all device's pass counters been reset? (press 'y' if yes)");
 
             if (Console.ReadLine() != "y")
             {
@@ -195,8 +215,6 @@ namespace PassAlarmSimulator.Validator
             }
 
             Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
-            
-            Console.WriteLine($"\nStatic Tests done____________");
 
             return success;
         }
