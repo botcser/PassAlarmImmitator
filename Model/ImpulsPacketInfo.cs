@@ -7,10 +7,10 @@ namespace IRAPROM.MyCore.Model
 {
     public class ImpulsPacketInfo : MDSaveInfo
     {
-        public int NormalPassNum = 0;
-        public int NormalReturnNum = 0;
-        public int AlarmPassNum = 0;
-        public int AlarmReturnNum = 0;
+        public uint NormalPassNum = 0;
+        public uint NormalReturnNum = 0;
+        public uint AlarmPassNum = 0;
+        public uint AlarmReturnNum = 0;
 
 
         public byte sensorMode = 0;
@@ -29,11 +29,6 @@ namespace IRAPROM.MyCore.Model
         //public byte[] sensors = new byte[72]; 
         public byte[] sensors = new byte[33];
 
-        public static bool CheckHeader(byte[] arr)
-        {
-            return arr[0] == Constants.HeaderMagicNumber[0] && (arr[1] == Constants.HeaderMagicNumber[1]) && (arr[2] == Constants.HeaderMagicNumber[2]);
-        }
-
         public bool ExistAlarm()
         {
             for (int i = 0; i < sensors.Length; i++) 
@@ -51,7 +46,7 @@ namespace IRAPROM.MyCore.Model
             if (arr.Length != 31)
                 return null;
 
-            if (!CheckHeader(arr))
+            if (!Constants.CheckImpulseHeader(arr))
                 return null;
 
             var rec = new ImpulsPacketInfo();
@@ -65,26 +60,26 @@ namespace IRAPROM.MyCore.Model
                     var artmp = br.ReadBytes(5); //0-4
 
                     var passBytes = br.ReadBytes(3); //5-7 
-                    rec.NormalPassNum = (((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000)
-                                        + (((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100)
-                                        + ((passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
+                    rec.NormalPassNum = (uint)(((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000
+                                               + ((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100
+                                               + (passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
 
 
                     //artmp = br.ReadBytes(3); 
                     passBytes = br.ReadBytes(3); //8-10
                     //if (md.IdModel == MDModel.enItems.PCV1800_thermoMB)
-                    rec.NormalReturnNum = (((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000)
-                                        + (((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100)
-                                        + ((passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
+                    rec.NormalReturnNum = (uint)(((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000
+                                                 + ((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100
+                                                 + (passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
 
 
 
                     passBytes = br.ReadBytes(3); //11-13
-                    rec.AlarmPassNum = (((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000) + (((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100) + ((passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
+                    rec.AlarmPassNum = (uint)(((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000 + ((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100 + (passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
 
                     //artmp = br.ReadBytes(3); //14-16
                     passBytes = br.ReadBytes(3); 
-                    rec.AlarmReturnNum = (((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000) + (((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100) + ((passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
+                    rec.AlarmReturnNum = (uint)(((passBytes[0] >> 4) * 10 + (passBytes[0] & 0x0f)) * 10000 + ((passBytes[1] >> 4) * 10 + (passBytes[1] & 0x0f)) * 100 + (passBytes[2] >> 4) * 10 + (passBytes[2] & 0x0f));
 
                     //Левый ряд
                     var sen = br.ReadBytes(3); //17-19
@@ -112,7 +107,7 @@ namespace IRAPROM.MyCore.Model
                     for (int i = 0; i < rec.Left.Length; i++)
                     {
 
-                        if ((rec.Left[i] == 1) && (rec.Right[i] == 1))
+                        if (rec.Left[i] == 1 && rec.Right[i] == 1)
                             rec.Center[i] = 1;
                     }
 

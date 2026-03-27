@@ -6,10 +6,17 @@ using IRAPROM.MyCore.Device.Matreshka;
 using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.MD;
 using PassAlarmSimulator.Validator;
+//using IRAPROM.MyCore.MyEnum;
+//using IRAPROM.MyCore.MyNetwork.Observer;
+//using MyCore.Abstractions;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IRAPROM.MyCore.MyNetwork
 {
@@ -26,8 +33,6 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             _lgMsg = lgMessages ?? new ObservableCollection<string>();
             _port = port;
-
-            Console.WriteLine($"Validator: listening ports: {_port}...");
             _udpClient = new UdpClient(port);
             _udpClient.EnableBroadcast = true;
         }
@@ -38,12 +43,13 @@ namespace IRAPROM.MyCore.MyNetwork
             return;
 #endif
 
-            var error = false;
+#if DEBUG
+            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}");
+#endif
 
             try
             {
                 //_timeoutTimer = new Timer(BeginReceiveTimeout, null, 5000, 5000);
-                
                 _udpClient.BeginReceive(RequestCallback, new object());
             }
             catch (SocketException ex)
@@ -69,7 +75,13 @@ namespace IRAPROM.MyCore.MyNetwork
 
         public static void ParseResponse(byte[] response, IPEndPoint remoteIpEndPoint)
         {
-            //---------- ответы поиска ---------------
+            //if (App.LoaderLogMode == enLoaderLogMode.All)
+            //{
+            //    var str = MyTools.ConvertByteArrayToHexString(response);
+
+            //    File.AppendAllText(App.LoaderFilePathSaveMsg, str + Environment.NewLine);
+            //}
+
             if (MatreshkaResponseXPROGOST(response, remoteIpEndPoint, out var rec))
             {
                 DebugResponse("MatreshkaResponseXPROGOST");
@@ -168,38 +180,79 @@ namespace IRAPROM.MyCore.MyNetwork
             var remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             var bytes = _udpClient.EndReceive(result, ref remoteIpEndPoint);
 
-#if DEBUGG
-            Console.WriteLine($"Received: response from port {remoteIpEndPoint.Port}!\n" +
-                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
-#endif
-
-#if !USE_DEVICE_SIMULATOR
+#if USE_DEVICE_SIMULATOR
+            if (_port == Device.Matreshka.XGOST.Constants.PortUDPDefault && bytes.Length == Device.Matreshka.XGOST.Constants.FindDatagram.Length)
+            {
+                ResendToSimulatorUDP(bytes, remoteIpEndPoint.Address.ToString(), _port + 1);
+                return;
+            }
+#else
             if (IsSentByServer(remoteIpEndPoint)) return;
 #endif
 
             ParseResponse(bytes, remoteIpEndPoint);
         }
 
+        private void ResendToSimulatorUDP(byte[] bytes, string ip, int port)
+        {
+            UDPSender.Instance.Send(bytes, port, ip);
+        }
+        
         private static bool ImpulseOrCommonResponse(byte[] bytes, MetalDetectPacketInfo rec)
         {
             var rec2 = MonopanelPacketInfo.ParseImpulseMessageUDP(bytes);
 
             if (rec2 == null) return false;
             
+            //if (MyARM.Instance.AddedDevicesTryGetValue(rec2.MAC, out var md, out var onChanged))
+            //{
+            //    var dopInf = md.GetDopInf();
+
+            //    if (dopInf?.Temperature != null)
+            //    {
+            //        rec2.Temperature = dopInf.Temperature;
+            //    }
+            //}
+
+            //if (!App.FreeVersion)
+            //{
+            //    MDSaveInfoManager.Export(rec2);
+            //}
+
+            //if (App.xmlUnloadingRegim == (short)XMLUnloadingRegim.enItems.SaveEachEventInSeparateFile && rec2.ExistAlarm())
+            //{
+            //    rec2.SaveEventToXML(MDCommands.METDET_CMD_ALARM);
+            //}
+
             var message = $"WorkInf -> MAC:{rec2.MAC}  -  {rec2.NormalInfName}";
 
             if (rec2.ExistAlarm())
             {
                 message += $"         ALARM -> ({rec2.SensorModeName}) - ({rec2.SensorsStrMsg.Trim()})";
             }
-           
+
+            //if (App.LoaderLogMode == enLoaderLogMode.Work)
+            //{
+            //    var str = MyTools.ConvertByteArrayToHexString(bytes);
+
+            //    File.AppendAllText(App.LoaderFilePathSaveMsg, str + Environment.NewLine);
+            //}
+
             if (App.Loader_UDPPortRetransmission > 0)
             {
-                if (MetalDetectPacketInfo.CheckMatreshkaHeader(bytes) || (bytes.Length == 22))
+                if (Device.Impulse.Constants.CheckImpulseHeader(bytes) || (bytes.Length == 22))
                 {
                     UDPSender.Instance.Send(bytes, App.Loader_UDPPortRetransmission);
                 }
             }
+
+            //Tracker.Instance.OnGetLogEvent(new LogServer()
+            //{
+            //    Message = message
+            //}, new TrackerEventArg()
+            //{
+            //    Mac = rec?.MAC ?? string.Empty
+            //});
 
             return true;
         }
@@ -208,17 +261,6 @@ namespace IRAPROM.MyCore.MyNetwork
         {
             _localAddresses ??= Dns.GetHostEntry(Dns.GetHostName()).AddressList.ToList();
             _localAddresses.Add(IPAddress.Parse("127.0.0.1"));
-
-//#if REMOTE_DEBUG
-//            Console.WriteLine($"_localAddresses :\n");
-//            _localAddresses.ForEach(i =>
-//            {
-//                Console.WriteLine($"\t{i}!\n");
-//            });
-
-//            Console.WriteLine($"\tremoteIpEndPoint.AddressFamily {remoteIpEndPoint.AddressFamily}!\n");
-//            Console.WriteLine($"\tremoteIpEndPoint.Address {remoteIpEndPoint.Address}!\n");
-//#endif
 
             return _localAddresses.Any(i => remoteIpEndPoint.AddressFamily == i.AddressFamily && remoteIpEndPoint.Address.Equals(i))
                    && remoteIpEndPoint.Port != App.Loader_UDPPortRetransmission;
@@ -237,6 +279,24 @@ namespace IRAPROM.MyCore.MyNetwork
             {
                 return false;
             }
+
+            if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var metDetector, out var onChanged))
+            {
+                rec.MetDetector = metDetector;
+
+                if (rec.ExistAlarm())
+                {
+                    metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.sensors, rec.logTime, rec.sensorMode);
+                }
+                else
+                {
+                    metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.logTime, rec.sensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
+                }
+
+                onChanged(metDetector);
+            }
+
+            UpdateDbInfo(rec);
 
             if (App.Loader_UDPPortRetransmission > 0)
             {
@@ -269,7 +329,7 @@ namespace IRAPROM.MyCore.MyNetwork
                 IPGateway = rec.Gateway,
                 mac = rec.mac,
                 PortTCP = rec.TCPPort,
-                PortUDP = rec.TCPPort,
+                PortUDP = rec.UDPPort,
                 Model = rec.ProductModel
             };
 
@@ -436,6 +496,10 @@ namespace IRAPROM.MyCore.MyNetwork
                 Console.WriteLine(e);
                 throw;
             }
+            finally
+            {
+                UpdateDbInfo(rec);
+            }
 
             if (App.Loader_UDPPortRetransmission > 0)
             {
@@ -452,7 +516,32 @@ namespace IRAPROM.MyCore.MyNetwork
                 }
             }
 
+            //Tracker.Instance.OnGetLogEvent(new LogServer()
+            //{
+            //    Message = message
+            //}, new TrackerEventArg()
+            //{
+            //    Mac = rec.MAC
+            //});
+
             return true;
+        }
+
+        private static void UpdateDbInfo(MDSaveInfo rec)
+        {
+            rec.AddInfToDB();
+
+            //MetDetector.UpdateMainInf(rec.MetDetector);
+
+            //switch (App.xmlUnloadingRegim)
+            //{
+            //    case (short)XMLUnloadingRegim.enItems.SaveEachEventInSeparateFile:
+            //        rec.SaveEventToXML();
+            //        //MDSaveInfoManager.WriteSrasu(rec);
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
     }
 }

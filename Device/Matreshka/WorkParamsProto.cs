@@ -131,7 +131,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             Console.WriteLine($"\nYou must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
 
             var timer = milliSecondsTimeout;
-            MetalDetectorPassage alarmPassage;
+            MetalDetectorPassage alarmPassage = null;
 
             do
             {
@@ -154,7 +154,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
             alarmPassage = alarmPassage.Clone();
             timer = milliSecondsTimeout;
-            MetalDetectorPassage lastPassage;
+            MetalDetectorPassage lastPassage = null;
 
             Console.WriteLine($"\nOK. Now you must make a passage (clean) through all devices at once. You have 20 seconds to do this!");
             Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;

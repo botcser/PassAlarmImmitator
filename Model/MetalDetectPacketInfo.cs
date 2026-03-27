@@ -198,12 +198,10 @@ namespace IRAPROM.MyCore.Model
                 }
             }
 
-            //С 15 байта
             using (var ms = new MemoryStream(rec.body))
             {
                 using (var br = new BinaryReader(ms))
                 {
-                    //с 15 байта
                     if (rec.body.Length >= 6)
                     {
                         rec.mac = br.ReadBytes(6);
@@ -214,16 +212,15 @@ namespace IRAPROM.MyCore.Model
                         return rec;
                     }
 
-
                     MetDetector md = null;
                     short modelId = 0;
                     var MAC = Convert.ToHexString(rec.mac);
 
-                    //if (MyARM.Instance.AddedDevicesTryGetValue(MAC, out md, out var onChanged))
-                    //{
-                    //    rec.IdModel = modelId = md.ModelId;
-                    //    rec.MetDetector = md;
-                    //}
+                    if (MyARM.Instance.AddedDevicesTryGetValue(MAC, out md, out var onChanged))
+                    {
+                        rec.IdModel = modelId = md.ModelId;
+                        rec.MetDetector = md;
+                    }
 
                     switch (rec.command)
                     {
@@ -235,7 +232,7 @@ namespace IRAPROM.MyCore.Model
                             if (md != null)
                             {
                                 md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
-                                //onChanged(md);
+                                onChanged(md);
                             }
                             break;
 
@@ -248,7 +245,7 @@ namespace IRAPROM.MyCore.Model
                             if (md != null)
                             {
                                 md.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
-                                //onChanged(md);
+                                onChanged(md);
                             }
                             break;
 

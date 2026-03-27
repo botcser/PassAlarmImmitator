@@ -5,6 +5,11 @@ using System.Xml.Linq;
 using Casualbunker.Server.Common;
 using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Model.MD;
+using System.Xml.Linq;
+using Casualbunker.Server.Common;
+using IRAPROM.MyCore.Device;
+using System.Net;
+using System.Text;
 
 namespace IRAPROM.MyCore.Model
 {
@@ -15,10 +20,10 @@ namespace IRAPROM.MyCore.Model
 
         //public DateTime logTime;
 
-        public int NormalPassNum = 0;
-        public int NormalReturnNum = 0;
-        public int AlarmPassNum = 0;
-        public int AlarmReturnNum = 0;
+        public uint NormalPassNum = 0;
+        public uint NormalReturnNum = 0;
+        public uint AlarmPassNum = 0;
+        public uint AlarmReturnNum = 0;
 
 
         public byte ZonesSensorMode = 0;
@@ -49,8 +54,8 @@ namespace IRAPROM.MyCore.Model
         {
             get
             {
-                string result = "";
-                for (int i = 1; i <= sensors.Length; i++)
+                var result = "";
+                for (var i = 1; i <= sensors.Length; i++)
                 {
                     if (sensors[i - 1] == 0)
                         continue;
@@ -67,8 +72,8 @@ namespace IRAPROM.MyCore.Model
         {
             get
             {
-                string result = "";
-                for (int i = 1; i <= sensors.Length; i++)
+                var result = "";
+                for (var i = 1; i <= sensors.Length; i++)
                 {
                     if (sensors[i - 1] == 0)
                         continue;
@@ -121,11 +126,8 @@ namespace IRAPROM.MyCore.Model
         public static int GetCount(byte[] arCnt)
         {
             var st = Convert.ToHexString(arCnt);
-            int val = 0;
-            if (!int.TryParse(st, out val))
-                return val;
-            else
-                return 0;
+
+            return !int.TryParse(st, out var val) ? val : 0;
         }
 
         public static MonopanelPacketInfo ParseImpulseMessageUDP(byte[] arr)
@@ -133,7 +135,7 @@ namespace IRAPROM.MyCore.Model
             if (arr.Length != 29)
                 return null;
 
-            if (!MetalDetectPacketInfo.CheckMatreshkaHeader(arr))
+            if (!Device.Impulse.Constants.CheckImpulseHeader(arr))
                 return null;
 
             var rec = new MonopanelPacketInfo();
@@ -147,24 +149,24 @@ namespace IRAPROM.MyCore.Model
                     var artmp = br.ReadBytes(5); //0-4
                     
                     var byAlarmPassNum = br.ReadBytes(3); //5-7 
-                    rec.NormalPassNum = (((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000)
-                                        + (((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100)
-                                        + ((byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
+                    rec.NormalPassNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000
+                                               + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100
+                                               + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
 
                     
                     byAlarmPassNum = br.ReadBytes(3); //8-10
 
-                    rec.NormalReturnNum = (((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000)
-                                        + (((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100)
-                                        + ((byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
+                    rec.NormalReturnNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000
+                                                 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100
+                                                 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
 
 
 
                     byAlarmPassNum = br.ReadBytes(3); //11-13
-                    rec.AlarmPassNum = (((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000) + (((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100) + ((byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
+                    rec.AlarmPassNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
                     
                     byAlarmPassNum = br.ReadBytes(3); //8-10
-                    rec.AlarmReturnNum = (((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000) + (((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100) + ((byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
+                    rec.AlarmReturnNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
 
                     var sen = br.ReadBytes(4); //17-20
 
@@ -182,6 +184,23 @@ namespace IRAPROM.MyCore.Model
                     var btmp = br.ReadByte(); //22
 
                     rec.mac = br.ReadBytes(6); //23-28
+
+                    if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var metDetector, out var onChanged))
+                    {
+                        rec.MetDetector = metDetector;
+                        //MDAlarm.SetSensorsProcessedImpulse(metDetector.Model, metDetector.ModelSeries, rec.sensors, rec.sensorsProcessed);  // PC 1800 MK
+
+                        if (rec.ExistAlarm())
+                        {
+                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                        }
+                        else
+                        {
+                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
+                        }
+
+                        onChanged(metDetector);
+                    }
                 }
             }
 
@@ -208,7 +227,7 @@ namespace IRAPROM.MyCore.Model
 
         public string InfForXML(short command, byte[] sensors)
         {
-            string res = "";
+            var res = "";
             switch (command)
             {
                 case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
@@ -217,7 +236,7 @@ namespace IRAPROM.MyCore.Model
 
                 case MDCommands.METDET_CMD_ALARM:
                     //0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0
-                    for (int i = 0; i < sensors.Length; i++)
+                    for (var i = 0; i < sensors.Length; i++)
                     {
                         if (i > 0)
                             res += ",";

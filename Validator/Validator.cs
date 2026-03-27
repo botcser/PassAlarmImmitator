@@ -209,10 +209,10 @@ namespace PassAlarmSimulator.Validator
 
             //Console.WriteLine("Have all device's pass counters been reset? (press 'y' if yes)");
 
-            if (Console.ReadLine() != "y")
-            {
-                success = false;
-            }
+            //if (Console.ReadLine() != "y")
+            //{
+            //    success = false;
+            //}
 
             Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
 

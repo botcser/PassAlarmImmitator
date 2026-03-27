@@ -1,5 +1,8 @@
-﻿using System.Net;
+﻿using IRAPROM.MyCore.Model;
+using System;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace IRAPROM.MyCore.MyNetwork
 {
@@ -13,7 +16,7 @@ namespace IRAPROM.MyCore.MyNetwork
         public void Send(byte[] bytes, int port, string ip = "192.168.16.255", TaskCompletionSource done = null)
         {
 #if CLIENT_DISABLED
-            if (port == ApplMain.Loader_UDPPortRetransmission)                                          
+            if (port == App.Loader_UDPPortRetransmission)                                          
             {
                 return;
             }
@@ -31,7 +34,7 @@ namespace IRAPROM.MyCore.MyNetwork
 #endif
 
 #if USE_COMMAND_CENTER
-            if (port != ApplMain.Loader_UDPPortRetransmission)
+            if (port != App.Loader_UDPPortRetransmission)
             {
                 NetworkProtoHttp.Instance.SendTcp(bytes, ip, port, ProtocolType.Udp, (string response) =>
                 {

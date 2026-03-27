@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using IRAPROM.MyCore.Model;
 
+//using PassAlarmSimulator.Model;
+
 namespace IRAPROM.MyCore.Device.KPP
 {
     public class KPPDevice : DeviceMetalDetector, INotifyPropertyChanged
@@ -154,7 +156,7 @@ namespace IRAPROM.MyCore.Device.KPP
             if (_prevOnlineStatus != OnlineStatus)
             {
                 _prevOnlineStatus = OnlineStatus;
-                //MyARM.Instance.CallBindKpp(this);           // avalonia не хочет биндить поэтому кастыль
+                MyARM.Instance.CallBindKpp(this);           // avalonia не хочет биндить поэтому кастыль
             }
         }
         

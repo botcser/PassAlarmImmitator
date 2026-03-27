@@ -139,7 +139,7 @@ namespace IRAPROM.MyCore.Device
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
 
 #if DEBUG
-            Console.WriteLine($"___StaticTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")}");
+            Console.WriteLine($"___StaticTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")} {ModelName} {WorkParams.SerialNumber}");
 #endif
 
             return result;
@@ -148,7 +148,7 @@ namespace IRAPROM.MyCore.Device
         public virtual async Task<bool> DynamicTest(int milliSecondsTimeout)
         {
 #if DEBUG
-            Console.WriteLine($"\n___DynamicTest: {_ip}:{MAC}");
+            Console.WriteLine($"\n___DynamicTest: {_ip}:{MAC} ModelName={ModelName} SerialNumber={WorkParams.SerialNumber}");
 #endif
 
             var enterPassagesCount = LastPassage?.EnterPassagesCount ?? 0;
@@ -209,6 +209,10 @@ namespace IRAPROM.MyCore.Device
 #endif
                 return false;
             }
+
+#if DEBUG
+            Console.WriteLine($"___StaticTest: {_ip}:{MAC} OK {ModelName} {WorkParams.SerialNumber}");
+#endif
 
             return true;
         }
