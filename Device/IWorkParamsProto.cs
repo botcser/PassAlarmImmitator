@@ -10,6 +10,8 @@ namespace IRAPROM.MyCore.Device
 
         bool SetWorkParams(WorkParams workParams);
 
+        void SetNetworkParams(WorkParams workParams);
+
         void ScanCommands(byte startCode, byte endCode);
 
         void CallPassage();

@@ -127,7 +127,12 @@ namespace IRAPROM.MyCore.Device.Impulse
                 ExecuteSetCommandRaw(Constants.SetNetworkParams.code, argv.ToArray());
             }
         }
-        
+
+        public void SetNetworkParams(WorkParams workParams)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ClearPassageCount()
         {
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { });

@@ -44,7 +44,7 @@ namespace IRAPROM.MyCore.MyNetwork
 #endif
 
 #if DEBUG
-            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}");
+            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}\n{_udpClient.Client}\n");
 #endif
 
             try
@@ -189,6 +189,8 @@ namespace IRAPROM.MyCore.MyNetwork
 #else
             if (IsSentByServer(remoteIpEndPoint)) return;
 #endif
+            Console.WriteLine($"Received: UDP Response: {remoteIpEndPoint.Address.ToString()}\n" +
+                              $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
 
             ParseResponse(bytes, remoteIpEndPoint);
         }

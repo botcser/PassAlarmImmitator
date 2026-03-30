@@ -62,7 +62,8 @@ namespace PassAlarmSimulator.Validator
                 try
                 {
                     StartListeners();
-                    FindDevices(_ip);
+
+                    FixIpCollisions();
 
                     await Validate();
 
@@ -79,6 +80,51 @@ namespace PassAlarmSimulator.Validator
             task.Start();
 
             return task;
+        }
+
+        private void FixIpCollisions()
+        {
+            var randomSubIPs = GenerateUniqueRandomNumbers(25, 3, 254);
+            var randomIPs = randomSubIPs.Select(i => $"192.168.1.{i}").ToList();
+            
+            do
+            {
+                FindDevices(_ip);
+                InitAllFoundDevices();
+
+                var collisionsIps = FoundDevices.Select(i => i.IP).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key);
+
+                Console.WriteLine($"\nCollision IP are:");
+                foreach (var ip in collisionsIps)
+                {
+                    Console.WriteLine($"\t{ip}");
+                }
+
+                var collisionDevices = FoundDevices.Where(i => collisionsIps.Contains(i.IP)).ToList();
+
+                Console.WriteLine($"\nCollisionDevices IP are:");
+                foreach (var deviceMetalDetector in collisionDevices)
+                {
+                    Console.WriteLine($"\t{deviceMetalDetector.IP}");
+                }
+
+                if (!collisionDevices.Any())
+                {
+                    Console.WriteLine($"\n\t\tNo CollisionDevices IP!!!!!!");
+                    break;
+                }
+
+                FoundDevices.ForEach(i =>
+                {
+                    var ip = randomIPs.FirstOrDefault();
+
+                    randomIPs.Remove(ip);
+                    Console.WriteLine($"\nChanging IP from {i.IP} to {ip}");
+                    i.SetIp(ip);
+                });
+
+                Thread.Sleep(12000);
+            } while (true);
         }
 
         private void StartListeners()
@@ -114,6 +160,7 @@ namespace PassAlarmSimulator.Validator
 
         private void FindDevices(string ip)
         {
+            FoundDevices.Clear();
             DeviceMetalDetector.FamilyInfoVariants.ForEach(i =>
             {
                 i.Find(_ip, UDPSender.Instance);
@@ -156,8 +203,15 @@ namespace PassAlarmSimulator.Validator
         private async Task Validate()
         {
             if (FoundDevices.Count == 0) return;
-            
-            var success = FoundDevices.All(device =>
+
+            if (!StaticTests()) return;
+
+            if (!await DynamicTests()) return;
+        }
+
+        private bool InitAllFoundDevices()
+        {
+            FoundDevices.All(device =>
             {
 #if DEBUG
                 Console.WriteLine($"___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}... ");
@@ -176,9 +230,7 @@ namespace PassAlarmSimulator.Validator
                 return workParams != null;
             });
 
-            if (!StaticTests()) return;
-
-            if (!await DynamicTests()) return;
+            return false;
         }
 
         private async Task<bool> DynamicTests()                             // assume to start after Static tests!
@@ -217,6 +269,19 @@ namespace PassAlarmSimulator.Validator
             Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
 
             return success;
+        }
+
+        public static IEnumerable<int> GenerateUniqueRandomNumbers(int count, int minValue, int maxValue)
+        {
+            if (maxValue - minValue + 1 < count)
+            {
+                throw new ArgumentException("Range is too small to generate the requested number of unique elements.");
+            }
+
+            var rnd = new Random();
+            var uniqueNumbers = Enumerable.Range(minValue, maxValue - minValue + 1).OrderBy(x => rnd.Next()).Where(i => i % 2 == 0).Take(count);
+
+            return uniqueNumbers;
         }
 
     }

@@ -73,7 +73,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public byte[] GetResult(short cmd, byte[] response)
         {
-            if (response == null) return Array.Empty<byte>();
+            if (response == null)
+            {
+                throw new Exception("GetResult: response null");
+            }
 
             if (cmd != 0x81 && !ValidateChecksum(response))                         // TODO: Matreshka BUG Return Ethernet Parameters
             {

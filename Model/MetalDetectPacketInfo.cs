@@ -10,6 +10,7 @@ using IRAPROM.MyCore.DBModel;
 using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Device.Matreshka;
 using IRAPROM.MyCore.Model.MD;
+using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 //using Npgsql;
 //using NpgsqlTypes;
@@ -328,15 +329,15 @@ namespace IRAPROM.MyCore.Model
                             var metalQuantity = br.ReadUInt16();
                             var sensors = rec.sensors = br.ReadBytes(8);
 
-                            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
-                                              $"\n\tEnterPassagesCount {enterPassagesCount}" +
-                                              $"\n\tExitPassagesCount {exitPassagesCount}" +
-                                              $"\n\tEnterAlarmCount {enterAlarmCount}" +
-                                              $"\n\tExitAlarmCount {exitAlarmCount}" +
-                                              $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
-                                              $"\n\tAlarmZoneMode {alarmZoneMode}" +
-                                              $"\n\tmetalQuantity {metalQuantity}" +
-                                              $"\n\tsensors {Convert.ToHexString(sensors)}");
+                            //Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
+                            //                  $"\n\tEnterPassagesCount {enterPassagesCount}" +
+                            //                  $"\n\tExitPassagesCount {exitPassagesCount}" +
+                            //                  $"\n\tEnterAlarmCount {enterAlarmCount}" +
+                            //                  $"\n\tExitAlarmCount {exitAlarmCount}" +
+                            //                  $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
+                            //                  $"\n\tAlarmZoneMode {alarmZoneMode}" +
+                            //                  $"\n\tmetalQuantity {metalQuantity}" +
+                            //                  $"\n\tsensors {Convert.ToHexString(sensors)}");
                             
                             if (metDetector != null)
                             {
@@ -357,7 +358,12 @@ namespace IRAPROM.MyCore.Model
                                 {
                                     metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.Mac, rec.logTime, alarmZoneMode, enterPassagesCount, enterAlarmCount, exitPassagesCount, exitAlarmCount);
                                 }
-                                
+
+                                metDetector.DeviceMetalDetector.WorkParams.ForwardPassageCount = enterPassagesCount;
+                                metDetector.DeviceMetalDetector.WorkParams.ForwardAlarmsCount = enterAlarmCount;
+                                metDetector.DeviceMetalDetector.WorkParams.BackwardPassageCount = exitPassagesCount;
+                                metDetector.DeviceMetalDetector.WorkParams.BackwardAlarmsCount = exitAlarmCount;
+
                                 metDetectorOnChanged?.Invoke(metDetector);
                             }
                         }

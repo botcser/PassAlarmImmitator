@@ -24,7 +24,12 @@ namespace IRAPROM.MyCore.Device.KPP
         {
             throw new NotImplementedException();
         }
-        
+
+        public void SetNetworkParams(WorkParams workParams)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ScanCommands(byte startCode, byte endCode)
         {
             throw new NotImplementedException();

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Assets.Common;
+using IRAPROM.MyCore.Device.Matreshka.XGOST;
 using IRAPROM.MyCore.Model;
 using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
@@ -151,10 +153,11 @@ namespace IRAPROM.MyCore.Device
             Console.WriteLine($"\n___DynamicTest: {_ip}:{MAC} ModelName={ModelName} SerialNumber={WorkParams.SerialNumber}");
 #endif
 
-            var enterPassagesCount = LastPassage?.EnterPassagesCount ?? 0;
-            var enterAlarmCount = LastPassage?.EnterAlarmCount ?? 0;
-            var exitPassagesCount = LastPassage?.ExitPassagesCount ?? 0;
-            var exitAlarmCount = LastPassage?.ExitAlarmCount ?? 0;
+            var enterPassagesCount = WorkParams?.ForwardPassageCount ?? 0;
+            var enterAlarmCount = WorkParams?.ForwardAlarmsCount ?? 0;
+            var exitPassagesCount = WorkParams?.BackwardPassageCount ?? 0;
+            var exitAlarmCount = WorkParams?.BackwardAlarmsCount ?? 0;
+
 #if DEBUG
             Console.WriteLine($"\n___DynamicTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
                               $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
@@ -230,6 +233,12 @@ namespace IRAPROM.MyCore.Device
         public virtual DeviceMetalDetector Clone()
         {
             return (DeviceMetalDetector)MemberwiseClone();
+        }
+
+        public virtual void SetIp(string ip)
+        {
+            WorkParams.IP = IP = ip;
+            WorkParamsProto.SetNetworkParams(WorkParams);
         }
 
         public bool Equals(DeviceMetalDetector other)

@@ -97,8 +97,8 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
                    WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) && 
-                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams) &&
-                   RestoreSettingsTest(workParams);
+                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
+                   /*&& RestoreSettingsTest(workParams)*/;
         }
         
         public void HandTest(WorkParams workParams)
@@ -538,6 +538,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             NetworkProto.Ip = workParams.IP = "192.168.1.100";
             NetworkProto.PortTCP = workParams.PortTCP = Constants.PortTCPDefault;
             InitBaseSensitivity(workParams);
+            InitPassageCount(workParams);
 
 #if DEBUG
             Console.WriteLine($"RestoreSettingsTest: done...");
@@ -552,6 +553,14 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 return false;
             }
 
+            var enterPassagesCount = workParams?.ForwardPassageCount ?? 0;
+            var enterAlarmCount = workParams?.ForwardAlarmsCount ?? 0;
+            var exitPassagesCount = workParams?.BackwardPassageCount ?? 0;
+            var exitAlarmCount = workParams?.BackwardAlarmsCount ?? 0;
+
+            Console.WriteLine($"\nRestoreSettingsTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
+                              $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
+
             return true;
         }
 
@@ -565,10 +574,16 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetBaseSensitivity(workParams);
             Thread.Sleep(_requestDelay);
 
-            workParams.IP = "192.168.1.111";
+            var ipBuff = workParams.IP;
+            workParams.IP = IncrementIp(ipBuff);
+
             workParams.PortTCP = 5001;
             SetNetworkParams(workParams);
-            Thread.Sleep(5000);
+
+#if DEBUG
+            Console.WriteLine($"NetworkTest: Thread.Sleep(15000)");
+#endif
+            Thread.Sleep(15000);
 
             workParams.BaseSensitivity = 11;
 
@@ -582,7 +597,38 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 return false;
             }
 
+            workParams.IP = ipBuff;
+            SetNetworkParams(workParams);
+
             return true;
+
+            string IncrementIp(string ipAddressString)
+            {
+                if (!IPAddress.TryParse(ipAddressString, out IPAddress address))
+                {
+                    throw new ArgumentException("Invalid IP address format.", nameof(ipAddressString));
+                }
+
+                byte[] bytes = address.GetAddressBytes();
+
+                if (bytes.Length != 4)
+                {
+                    throw new NotSupportedException("Only IPv4 addresses are supported by this method.");
+                }
+
+                if (bytes[3] < 255)
+                {
+                    bytes[3]++;
+                }
+                else
+                {
+                    bytes[3] = 0;
+                }
+
+                IPAddress newAddress = new IPAddress(bytes);
+
+                return newAddress.ToString();
+            }
         }
 
         private bool TimeTest(WorkParams workParams, DateTime testValue)

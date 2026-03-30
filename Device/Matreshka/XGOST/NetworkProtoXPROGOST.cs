@@ -117,13 +117,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 try
                 {
 #if DEBUGG
-                    Console.Write($"Writing {Ip}:{_port}..");
+//                    Console.Write($"Writing {Ip}:{_port}..");
 #endif
 
                     Stream.Write(bytes, 0, bytes.Length);
 
 #if DEBUGG
-                    Console.WriteLine("success");
+//                    Console.WriteLine("success");
 #endif
                 }
                 catch (Exception e)
@@ -144,7 +144,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (Stream == null || !Stream.CanRead) return null;
 
 #if DEBUGG
-            Console.WriteLine($"Reading {Ip}:{_port} Header {Constants.FrameSequenceOffset} bytes...");
+//            Console.WriteLine($"Reading {Ip}:{_port} Header {Constants.FrameSequenceOffset} bytes...");
 #endif
 
             var headerBytes = new byte[Constants.FrameSequenceOffset];
