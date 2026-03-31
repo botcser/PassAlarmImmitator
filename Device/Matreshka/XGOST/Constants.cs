@@ -116,18 +116,18 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public override List<string> WorkPrograms => _workPrograms;
 
 
-        private const string PCX600PROName = "PC X 600 PRO";
-        private const string PCX1100PROName = "PC X 1100 PRO";
-        private const string PCGOST900Name = "PC V 900 GOST";
-        private const string PCGOST1800Name = "PC V 1800 GOST";
-        private const string PCGOST3300Name = "PC V 3300 GOST";
-        private const string PCGOST6300Name = "PC V 6300 GOST";
-        private const string PCGOSTx900Name = "PC Vx 900 GOST";
-        private const string PCGOSTx1800Name = "PC Vx 1800 GOST";
-        private const string PCGOSTx3300Name = "PC Vx 3300 GOST";
-        private const string PCGOSTx6300Name = "PC Vx 6300 GOST";
-        private const string MGOST6Name = "M V 6 GOST";
-        private const string UnknownName = "Unknown GOST Matreshka";
+        public const string PCX600PROName = "PC X 600 PRO";
+        public const string PCX1100PROName = "PC X 1100 PRO";
+        public const string PCGOST900Name = "PC V 900 GOST";
+        public const string PCGOST1800Name = "PC V 1800 GOST";
+        public const string PCGOST3300Name = "PC V 3300 GOST";
+        public const string PCGOST6300Name = "PC V 6300 GOST";
+        public const string PCGOSTx900Name = "PC Vx 900 GOST";
+        public const string PCGOSTx1800Name = "PC Vx 1800 GOST";
+        public const string PCGOSTx3300Name = "PC Vx 3300 GOST";
+        public const string PCGOSTx6300Name = "PC Vx 6300 GOST";
+        public const string MGOST6Name = "M V 6 GOST";
+        public const string UnknownName = "Unknown GOST Matreshka";
 
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {

@@ -1,0 +1,1801 @@
+
+C:\Users\NAME\Desktop\BlockpostConnect>IF EXIST "net8.0.7z" (
+rmdir /s /q net8.0
+ "C:\Program Files\7-Zip\7z.exe" e "net8.0.7z" -o"net8.0" -y   && DEL "net8.0.7z"
+)
+
+C:\Users\NAME\Desktop\BlockpostConnect>.\net8.0\PassAlarmSimulator.exe
+Hello, World!
+Choose the program, press number:
+         1 = PC Pass Alarm Simulator
+         2 = PC Validator
+         0 = Exit
+
+2
+Testing in 192.168.16.255 network...
+Choose the ip subnetwork:
+
+        0 = 192.168.16.255
+        1 = 192.168.1.255
+        2 = 192.168.31.255
+        3 = FF02::1
+1
+Enter lower computer UDP port
+
+
+Enter higher computer UDP port to listen
+
+
+Validator: started
+UDPServer: CreateUdpClient: Listening port = 5016
+System.Net.Sockets.Socket
+
+UDPServer: CreateUdpClient: Listening port = 9999
+System.Net.Sockets.Socket
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+UDPSender: Send:
+        to 192.168.1.255:9998:
+                bytes = 40-23-24-00-0A-00-00-00-00-00-00-00-40-00-30-30-0D-0A
+
+UDPSender: Send:
+        to 192.168.1.255:5015:
+                bytes = 5B-AA-40
+
+UDPSender: Send:
+        to 192.168.1.255:1021:
+                bytes = 40-23-24-FF-FF-0E-00-00-00-00-00-00-00-00-01-8B-69-3C-5A-CB-D7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-27-00-00-00-00-11-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-E4-66-E5-57-B7-82-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-A1-60-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.243
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-27-00-00-00-00-11-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-E4-66-E5-57-B7-82-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-A1-60-0D-0A
+        IdModel = 110,
+        MAC = E466E557B782,
+        IP = 192.168.1.243,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-E6-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C1-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-49-DE-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.230
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-A0-08-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-E6-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C1-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-49-DE-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9C1,
+        IP = 192.168.1.230,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+... wait for 1
+... wait for 2
+... wait for 3
+... wait for 4
+
+Found 2 devices:
+        Series: XPROGOST        Model: Unknown XPROGOST         IP: 192.168.1.243       MAC: E466E557B782
+        Series: XPROGOST        Model: Unknown XPROGOST         IP: 192.168.1.230       MAC: E466E557B9C1
+___PreStaticTest: GetWorkParams 192.168.1.243:E466E557B782...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Connecting 192.168.1.243:5001 ...success
+Response: 28-00-00-00-83-10-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-53-2B-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 29-00-00-00-81-10-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-E4-66-E5-57-B7-82-DD-F5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 2A-00-00-00-82-10-00-16-00-45-9C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 2B-00-00-00-84-10-00-21-2E-CD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 2C-00-00-00-86-10-00-02-02-02-A8-AB-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 2D-00-00-00-85-10-00-06-02-02-CD-D6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 2E-00-00-00-87-10-00-E1-10-00-00-04-E0-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Response: 2F-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-30-7A-93-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 30-00-00-00-8A-10-00-A5-32-5C-00-00-40-36-30-03-A7-45-05-E4-66-E5-57-D1-DD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 31-00-00-00-88-10-00-1A-02-02-02-06-39-97-83-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 32-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-3E-1F-0D-0A
+
+close socket 1288 192.168.1.243:5001.
+GetWorkParams: complete 192.168.1.243:E466E557B782:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.230:E466E557B9C1...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Connecting 192.168.1.230:5000 ...success
+Response: 01-00-00-00-83-10-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-32-00-92-63-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 02-00-00-00-81-10-00-C0-A8-01-E6-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C1-8E-7E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 03-00-00-00-82-10-00-16-00-65-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 04-00-00-00-84-10-00-21-84-6F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 05-00-00-00-86-10-00-02-02-02-AB-B7-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 06-00-00-00-85-10-00-0B-02-02-15-56-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 07-00-00-00-87-10-00-E1-10-00-00-B9-30-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Response: 08-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-30-DF-C9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 09-00-00-00-8A-10-00-A5-32-5C-00-00-40-36-30-03-A7-11-05-E4-66-E5-57-4E-86-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-02-02-02-02-39-70-B0-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-94-32-0D-0A
+
+close socket 1288 192.168.1.230:5000.
+GetWorkParams: complete 192.168.1.230:E466E557B9C1:PC X 1100 PRO
+...OK
+
+
+____________Starting Static Tests ModelName=PC X 600 PRO SerialNumber=A5325C000040363003A74505E466E557 FirmwareVersion=0001.001.000
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.243:5001 ...success
+Response: 33-00-00-00-02-10-00-1C-EC-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 34-00-00-00-82-10-00-02-00-7B-73-0D-0A
+
+Waiting 15 seconds for next test!1
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 35-00-00-00-03-10-00-09-7A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 36-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-6F-06-0D-0A
+
+Waiting 15 seconds for next test!2
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-27-79-A0-0D-0A...
+Response: 37-00-00-00-04-10-00-7A-9F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 38-00-00-00-84-10-00-27-29-58-0D-0A
+
+Waiting 15 seconds for next test!3
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-02-02-02-F5-32-0D-0A...
+Response: 39-00-00-00-05-10-00-C2-9A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 3A-00-00-00-85-10-00-06-02-02-A1-5E-0D-0A
+
+Waiting 15 seconds for next test!4
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 3B-00-00-00-06-10-00-71-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 3C-00-00-00-86-10-00-02-02-02-3E-3F-0D-0A
+
+Waiting 15 seconds for next test!5
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 3D-00-00-00-07-10-00-64-35-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 3E-00-00-00-87-10-00-E1-10-00-00-39-B5-0D-0A
+
+Waiting 15 seconds for next test!6
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 3F-00-00-00-40-10-00-BA-CD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 40-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-D0-43-0D-0A
+
+Waiting 15 seconds for next test!7
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 41-00-00-00-08-10-00-5F-CF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 42-00-00-00-88-10-00-1A-02-02-02-02-02-C2-66-0D-0A
+
+Waiting 15 seconds for next test!8
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 43-00-00-00-02-10-00-7D-68-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-F4-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-9E-37-0D-0A...
+Response: 44-00-00-00-01-10-00-69-28-0D-0A
+
+close socket 1304 192.168.1.243:5001.
+NetworkTest: Thread.Sleep(15000)
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.244:5001 ...success
+Response: 46-00-00-00-82-10-00-16-00-70-D1-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5001 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-96-FD-0D-0A...
+Response: 47-00-00-00-01-10-00-EB-F0-0D-0A
+
+close socket 1324 192.168.1.244:5001.
+___StaticTest: 192.168.1.243:E466E557B782  OK. PC X 600 PRO A5325C000040363003A74505E466E557
+
+
+____________Starting Static Tests ModelName=PC X 1100 PRO SerialNumber=A5325C000040363003A71105E466E557 FirmwareVersion=0001.001.000
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.230:5000 ...success
+Response: 0C-00-00-00-02-10-00-78-3F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0D-00-00-00-82-10-00-02-00-A5-45-0D-0A
+
+Waiting 15 seconds for next test!1
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 0E-00-00-00-03-10-00-AB-68-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 0F-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-1A-49-0D-0A
+
+Waiting 15 seconds for next test!2
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-1B-A6-57-0D-0A...
+Response: 10-00-00-00-04-10-00-C8-E8-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 11-00-00-00-84-10-00-1B-97-8D-0D-0A
+
+Waiting 15 seconds for next test!3
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-02-02-02-F5-32-0D-0A...
+Response: 12-00-00-00-05-10-00-1B-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 13-00-00-00-85-10-00-0B-02-02-F3-00-0D-0A
+
+Waiting 15 seconds for next test!4
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 14-00-00-00-06-10-00-6E-47-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 15-00-00-00-86-10-00-02-02-02-3D-23-0D-0A
+
+Waiting 15 seconds for next test!5
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 16-00-00-00-07-10-00-BD-10-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 17-00-00-00-87-10-00-E1-10-00-00-84-65-0D-0A
+
+Waiting 15 seconds for next test!6
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 18-00-00-00-40-10-00-08-BA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 19-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-4E-CF-0D-0A
+
+Waiting 15 seconds for next test!7
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1A-00-00-00-08-10-00-E7-6E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 1B-00-00-00-88-10-00-1A-02-02-02-02-02-9F-64-0D-0A
+
+Waiting 15 seconds for next test!8
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 1C-00-00-00-02-10-00-03-08-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5000 :
+Request:  40-23-24-A0-08-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-E7-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-8F-EE-0D-0A...
+Response: 1D-00-00-00-01-10-00-32-E9-0D-0A
+
+close socket 1340 192.168.1.230:5000.
+NetworkTest: Thread.Sleep(15000)
+
+NetworkProtoCommonDual: Send: 192.168.1.231:5001 :
+Request:  40-23-24-A0-08-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.231:5001 ...success
+Response: 1F-00-00-00-82-10-00-16-00-8B-1F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.231:5001 :
+Request:  40-23-24-A0-08-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-E6-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-EC-AB-0D-0A...
+Response: 20-00-00-00-01-10-00-B5-5A-0D-0A
+
+close socket 1340 192.168.1.231:5001.
+___StaticTest: 192.168.1.230:E466E557B9C1  OK. PC X 1100 PRO A5325C000040363003A71105E466E557
+...Static Tests OK. 277.4805093s
+
+____________Starting Dynamic Tests...
+
+___DynamicTest: 192.168.1.243:E466E557B782 ModelName=PC X 600 PRO SerialNumber=A5325C000040363003A74505E466E557
+
+___DynamicTest:
+         EnterPassagesCount 0
+         EnterAlarmCount 0
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-17-00-00-00-00-00-00-00-42-00-8B-69-3C-5A-01-2A-2A-00-00-2A-2A-00-00-1C-41-0D-0A...
+Connecting 192.168.1.243:5001 ...success
+Response: 49-00-00-00-42-10-00-9E-86-0D-0A
+
+close socket 1368 192.168.1.243:5001.
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2D-00-00-00-4A-00-00-00-02-11-0B-1A-02-02-02-04-34-01-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-06-02-00-00-2A-00-00-00-2A-00-00-00-6C-69-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+
+___DynamicTest After:
+         EnterPassagesCount 1
+         EnterAlarmCount 1
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5001 :
+Request:  40-23-24-90-E1-17-00-00-00-00-00-00-00-42-00-8B-69-3C-5A-00-00-00-00-00-00-00-00-00-71-C3-0D-0A...
+Connecting 192.168.1.243:5001 ...success
+Response: 4B-00-00-00-42-10-00-7D-E6-0D-0A
+
+close socket 1384 192.168.1.243:5001.
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2D-00-00-00-4C-00-00-00-02-11-00-1A-02-02-02-04-35-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-06-02-00-00-2A-00-00-00-2A-00-00-00-81-F6-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-22-00-00-00-10-11-01-15-6D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-4D-00-00-00-10-11-01-E6-54-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-23-00-00-00-10-11-01-74-D5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-4E-00-00-00-10-11-01-64-8C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-24-00-00-00-10-11-01-30-CC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-4F-00-00-00-10-11-01-05-34-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-25-00-00-00-10-11-01-51-74-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-50-00-00-00-10-11-01-97-89-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-26-00-00-00-10-11-01-D3-AC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-51-00-00-00-10-11-01-F6-31-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-27-00-00-00-10-11-01-B2-14-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-52-00-00-00-10-11-01-74-E9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-28-00-00-00-10-11-01-5B-9E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-53-00-00-00-10-11-01-15-51-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-29-00-00-00-10-11-01-3A-26-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-54-00-00-00-10-11-01-51-48-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-2A-00-00-00-10-11-01-B8-FE-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-55-00-00-00-10-11-01-30-F0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-2B-00-00-00-10-11-01-D9-46-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-56-00-00-00-10-11-01-B2-28-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+DynamicTest: Error: missing simulate passage or it was alarm!
+
+___DynamicTest: 192.168.1.230:E466E557B9C1 ModelName=PC X 1100 PRO SerialNumber=A5325C000040363003A71105E466E557
+
+___DynamicTest:
+         EnterPassagesCount 0
+         EnterAlarmCount 0
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+
+NetworkProtoCommonDual: Send: 192.168.1.230:5001 :
+Request:  40-23-24-A0-08-17-00-00-00-00-00-00-00-42-00-8B-69-3C-5A-01-2A-2A-00-00-2A-2A-00-00-1C-41-0D-0A...
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-2C-00-00-00-10-11-01-9D-5F-0D-0A
+
+Connecting 192.168.1.230:5001 ...UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+success
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-57-00-00-00-10-11-01-D3-90-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Response: 2D-00-00-00-42-10-00-42-F4-0D-0A
+
+close socket 1392 192.168.1.230:5001.
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-2E-00-00-00-10-11-01-7E-3F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-58-00-00-00-10-11-01-3A-1A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-2F-00-00-00-10-11-01-1F-87-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-59-00-00-00-10-11-01-5B-A2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-30-00-00-00-10-11-01-8D-3A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5A-00-00-00-10-11-01-D9-7A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-31-00-00-00-10-11-01-EC-82-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5B-00-00-00-10-11-01-B8-C2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-33-00-00-00-10-11-01-0F-E2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5C-00-00-00-10-11-01-FC-DB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-34-00-00-00-10-11-01-4B-FB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5D-00-00-00-10-11-01-9D-63-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-35-00-00-00-10-11-01-2A-43-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5E-00-00-00-10-11-01-1F-BB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-36-00-00-00-10-11-01-A8-9B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-5F-00-00-00-10-11-01-7E-03-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-37-00-00-00-10-11-01-C9-23-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-60-00-00-00-10-11-01-1A-D0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-38-00-00-00-10-11-01-20-A9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-61-00-00-00-10-11-01-7B-68-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-39-00-00-00-10-11-01-41-11-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+
+___DynamicTest After:
+         EnterPassagesCount 2
+         EnterAlarmCount 1
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+DynamicTest: Error: missing simulate alarm or it was not alarm!
+...Dynamic Tests FAIL!
+
+Dynamic Tests done____________
+
+Validator: job is done. Press any key to exit.
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-62-00-00-00-10-11-01-F9-B0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3A-00-00-00-10-11-01-C3-C9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-63-00-00-00-10-11-01-98-08-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3B-00-00-00-10-11-01-A2-71-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-64-00-00-00-10-11-01-DC-11-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3C-00-00-00-10-11-01-E6-68-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-65-00-00-00-10-11-01-BD-A9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3D-00-00-00-10-11-01-87-D0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-66-00-00-00-10-11-01-3F-71-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3E-00-00-00-10-11-01-05-08-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-67-00-00-00-10-11-01-5E-C9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-3F-00-00-00-10-11-01-64-B0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-68-00-00-00-10-11-01-B7-43-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-40-00-00-00-10-11-01-EC-BE-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-69-00-00-00-10-11-01-D6-FB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-41-00-00-00-10-11-01-8D-06-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6A-00-00-00-10-11-01-54-23-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-42-00-00-00-10-11-01-0F-DE-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6B-00-00-00-10-11-01-35-9B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-43-00-00-00-10-11-01-6E-66-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6C-00-00-00-10-11-01-71-82-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-44-00-00-00-10-11-01-2A-7F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6D-00-00-00-10-11-01-10-3A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-45-00-00-00-10-11-01-4B-C7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6E-00-00-00-10-11-01-92-E2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-46-00-00-00-10-11-01-C9-1F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-6F-00-00-00-10-11-01-F3-5A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-47-00-00-00-10-11-01-A8-A7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-70-00-00-00-10-11-01-61-E7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-48-00-00-00-10-11-01-41-2D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-71-00-00-00-10-11-01-00-5F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-49-00-00-00-10-11-01-20-95-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-72-00-00-00-10-11-01-82-87-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4A-00-00-00-10-11-01-A2-4D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-73-00-00-00-10-11-01-E3-3F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4B-00-00-00-10-11-01-C3-F5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-74-00-00-00-10-11-01-A7-26-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4C-00-00-00-10-11-01-87-EC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-75-00-00-00-10-11-01-C6-9E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4D-00-00-00-10-11-01-E6-54-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-76-00-00-00-10-11-01-44-46-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4E-00-00-00-10-11-01-64-8C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-77-00-00-00-10-11-01-25-FE-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-4F-00-00-00-10-11-01-05-34-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-78-00-00-00-10-11-01-CC-74-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-50-00-00-00-10-11-01-97-89-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-79-00-00-00-10-11-01-AD-CC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-51-00-00-00-10-11-01-F6-31-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7A-00-00-00-10-11-01-2F-14-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-52-00-00-00-10-11-01-74-E9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7B-00-00-00-10-11-01-4E-AC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-53-00-00-00-10-11-01-15-51-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7C-00-00-00-10-11-01-0A-B5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-54-00-00-00-10-11-01-51-48-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7D-00-00-00-10-11-01-6B-0D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-55-00-00-00-10-11-01-30-F0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7E-00-00-00-10-11-01-E9-D5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-56-00-00-00-10-11-01-B2-28-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-7F-00-00-00-10-11-01-88-6D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-57-00-00-00-10-11-01-D3-90-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-80-00-00-00-10-11-01-F9-C8-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-58-00-00-00-10-11-01-3A-1A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-81-00-00-00-10-11-01-98-70-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-59-00-00-00-10-11-01-5B-A2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-82-00-00-00-10-11-01-1A-A8-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5A-00-00-00-10-11-01-D9-7A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-83-00-00-00-10-11-01-7B-10-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5B-00-00-00-10-11-01-B8-C2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-84-00-00-00-10-11-01-3F-09-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5C-00-00-00-10-11-01-FC-DB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-85-00-00-00-10-11-01-5E-B1-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5D-00-00-00-10-11-01-9D-63-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-86-00-00-00-10-11-01-DC-69-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5E-00-00-00-10-11-01-1F-BB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-87-00-00-00-10-11-01-BD-D1-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-5F-00-00-00-10-11-01-7E-03-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-88-00-00-00-10-11-01-54-5B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-60-00-00-00-10-11-01-1A-D0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-89-00-00-00-10-11-01-35-E3-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-61-00-00-00-10-11-01-7B-68-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8A-00-00-00-10-11-01-B7-3B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-62-00-00-00-10-11-01-F9-B0-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8B-00-00-00-10-11-01-D6-83-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-63-00-00-00-10-11-01-98-08-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8C-00-00-00-10-11-01-92-9A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-64-00-00-00-10-11-01-DC-11-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8D-00-00-00-10-11-01-F3-22-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-65-00-00-00-10-11-01-BD-A9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8E-00-00-00-10-11-01-71-FA-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-66-00-00-00-10-11-01-3F-71-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-8F-00-00-00-10-11-01-10-42-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-67-00-00-00-10-11-01-5E-C9-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-90-00-00-00-10-11-01-82-FF-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-68-00-00-00-10-11-01-B7-43-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-91-00-00-00-10-11-01-E3-47-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-69-00-00-00-10-11-01-D6-FB-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-92-00-00-00-10-11-01-61-9F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6A-00-00-00-10-11-01-54-23-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-93-00-00-00-10-11-01-00-27-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6B-00-00-00-10-11-01-35-9B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-94-00-00-00-10-11-01-44-3E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6C-00-00-00-10-11-01-71-82-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-95-00-00-00-10-11-01-25-86-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6D-00-00-00-10-11-01-10-3A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-96-00-00-00-10-11-01-A7-5E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6E-00-00-00-10-11-01-92-E2-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-97-00-00-00-10-11-01-C6-E6-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-6F-00-00-00-10-11-01-F3-5A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-98-00-00-00-10-11-01-2F-6C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-70-00-00-00-10-11-01-61-E7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-99-00-00-00-10-11-01-4E-D4-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-71-00-00-00-10-11-01-00-5F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9A-00-00-00-10-11-01-CC-0C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-72-00-00-00-10-11-01-82-87-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9B-00-00-00-10-11-01-AD-B4-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-73-00-00-00-10-11-01-E3-3F-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9C-00-00-00-10-11-01-E9-AD-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-74-00-00-00-10-11-01-A7-26-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9D-00-00-00-10-11-01-88-15-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-75-00-00-00-10-11-01-C6-9E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9E-00-00-00-10-11-01-0A-CD-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-76-00-00-00-10-11-01-44-46-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-9F-00-00-00-10-11-01-6B-75-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-77-00-00-00-10-11-01-25-FE-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A0-00-00-00-10-11-01-0F-A6-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-78-00-00-00-10-11-01-CC-74-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A1-00-00-00-10-11-01-6E-1E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-79-00-00-00-10-11-01-AD-CC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A2-00-00-00-10-11-01-EC-C6-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7A-00-00-00-10-11-01-2F-14-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A3-00-00-00-10-11-01-8D-7E-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7B-00-00-00-10-11-01-4E-AC-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A4-00-00-00-10-11-01-C9-67-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7C-00-00-00-10-11-01-0A-B5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A5-00-00-00-10-11-01-A8-DF-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7D-00-00-00-10-11-01-6B-0D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A6-00-00-00-10-11-01-2A-07-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7E-00-00-00-10-11-01-E9-D5-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A7-00-00-00-10-11-01-4B-BF-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-7F-00-00-00-10-11-01-88-6D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A8-00-00-00-10-11-01-A2-35-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-80-00-00-00-10-11-01-F9-C8-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-A9-00-00-00-10-11-01-C3-8D-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-81-00-00-00-10-11-01-98-70-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AA-00-00-00-10-11-01-41-55-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-82-00-00-00-10-11-01-1A-A8-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AB-00-00-00-10-11-01-20-ED-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-83-00-00-00-10-11-01-7B-10-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AC-00-00-00-10-11-01-64-F4-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-84-00-00-00-10-11-01-3F-09-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AD-00-00-00-10-11-01-05-4C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-85-00-00-00-10-11-01-5E-B1-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AE-00-00-00-10-11-01-87-94-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-86-00-00-00-10-11-01-DC-69-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-AF-00-00-00-10-11-01-E6-2C-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-87-00-00-00-10-11-01-BD-D1-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-B0-00-00-00-10-11-01-74-91-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-88-00-00-00-10-11-01-54-5B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-B1-00-00-00-10-11-01-15-29-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-89-00-00-00-10-11-01-35-E3-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-B2-00-00-00-10-11-01-97-F1-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-8A-00-00-00-10-11-01-B7-3B-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-B3-00-00-00-10-11-01-F6-49-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.230
+        response bytes: 41-59-3E-A0-08-0B-00-00-00-8B-00-00-00-10-11-01-D6-83-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-0B-00-00-00-B4-00-00-00-10-11-01-B2-50-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+^CTerminate batch job (Y/N)?
+^C
+C:\Users\NAME\Desktop\BlockpostConnect>exit /b
+
+C:\Users\NAME\Desktop\BlockpostConnect>
+
+C:\Users\NAME\Desktop\BlockpostConnect>
+
+C:\Users\NAME\Desktop\BlockpostConnect>
+
+C:\Users\NAME\Desktop\BlockpostConnect>
+
+C:\Users\NAME\Desktop\BlockpostConnect>

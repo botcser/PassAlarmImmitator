@@ -1,0 +1,184 @@
+
+C:\Users\NAME\Desktop\BlockpostConnect>IF EXIST "net8.0.7z" (
+rmdir /s /q net8.0
+ "C:\Program Files\7-Zip\7z.exe" e "net8.0.7z" -o"net8.0" -y   && DEL "net8.0.7z"
+)
+
+C:\Users\NAME\Desktop\BlockpostConnect>.\net8.0\PassAlarmSimulator.exe
+Hello, World!
+Choose the program, press number:
+         1 = PC Pass Alarm Simulator
+         2 = PC Validator
+         0 = Exit
+
+2
+Testing in 192.168.16.255 network...
+Choose the ip subnetwork:
+
+        0 = 192.168.16.255
+        1 = 192.168.1.255
+        2 = 192.168.31.255
+        3 = FF02::1
+1
+Enter lower computer UDP port
+
+
+Enter higher computer UDP port to listen
+
+
+Validator: started
+UDPServer: CreateUdpClient: Listening port = 5016
+System.Net.Sockets.Socket
+
+UDPServer: CreateUdpClient: Listening port = 9999
+System.Net.Sockets.Socket
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+UDPSender: Send:
+        to 192.168.1.255:9998:
+                bytes = 40-23-24-00-0A-00-00-00-00-00-00-00-40-00-30-30-0D-0A
+
+UDPSender: Send:
+        to 192.168.1.255:5015:
+                bytes = 5B-AA-40
+
+UDPSender: Send:
+        to 192.168.1.255:1021:
+                bytes = 40-23-24-FF-FF-0E-00-00-00-00-00-00-00-00-01-8B-69-3C-5A-CB-D7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B7-82-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-D8-D2-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.243
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B7-82-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-D8-D2-0D-0A
+        IdModel = 110,
+        MAC = E466E557B782,
+        IP = 192.168.1.243,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+... wait for 1
+... wait for 2
+... wait for 3
+... wait for 4
+
+Found 1 devices:
+        Series: XPROGOST        Model: Unknown XPROGOST         IP: 192.168.1.243       MAC: E466E557B782
+___PreStaticTest: GetWorkParams 192.168.1.243:E466E557B782...
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Connecting 192.168.1.243:5000 ...success
+Response: 01-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-AE-71-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 02-00-00-00-81-10-00-C0-A8-01-F3-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B7-82-7B-83-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 03-00-00-00-82-10-00-5F-00-31-4E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 04-00-00-00-84-10-00-32-D6-4D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 05-00-00-00-86-10-00-01-32-06-EA-AB-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 06-00-00-00-85-10-00-06-46-03-6D-C5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 07-00-00-00-87-10-00-E8-03-00-00-FD-D9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Response: 08-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-30-DF-C9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 09-00-00-00-8A-10-00-A5-32-5C-00-00-40-36-30-03-A7-45-05-E4-66-E5-57-7B-F0-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-00-2E-AA-AF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1268 192.168.1.243:5000.
+GetWorkParams: complete 192.168.1.243:E466E557B782:PC X 600 PRO
+...OK
+
+____________Starting Dynamic Tests...
+
+___DynamicTest: 192.168.1.243:E466E557B782 ModelName=PC X 600 PRO SerialNumber=A5325C000040363003A74505E466E557
+
+___DynamicTest:
+         EnterPassagesCount 0
+         EnterAlarmCount 0
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-17-00-00-00-00-00-00-00-42-00-8B-69-3C-5A-01-2A-2A-00-00-2A-2A-00-00-1C-41-0D-0A...
+Connecting 192.168.1.243:5000 ...success
+Response: 0C-00-00-00-42-10-00-D5-22-0D-0A
+
+close socket 1276 192.168.1.243:5000.
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2D-00-00-00-0D-00-00-00-02-11-0B-1A-01-01-00-00-30-01-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-06-03-06-00-2A-00-00-00-2A-00-00-00-8E-93-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+
+___DynamicTest After:
+         EnterPassagesCount 1
+         EnterAlarmCount 1
+         ExitPassagesCount 0
+         ExitAlarmCount 0
+
+NetworkProtoCommonDual: Send: 192.168.1.243:5000 :
+Request:  40-23-24-90-E1-17-00-00-00-00-00-00-00-42-00-8B-69-3C-5A-00-00-00-00-00-00-00-00-00-71-C3-0D-0A...
+Connecting 192.168.1.243:5000 ...success
+Response: 0E-00-00-00-42-10-00-36-42-0D-0A
+
+close socket 1284 192.168.1.243:5000.
+Received: UDP Response: 192.168.1.243
+        response bytes: 41-59-3E-90-E1-2D-00-00-00-0F-00-00-00-02-11-00-1A-01-01-00-00-31-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-06-03-32-00-00-00-00-00-00-00-00-00-FE-7A-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+System.Net.Sockets.Socket
+
+___StaticTest: 192.168.1.243:E466E557B782 OK PC X 600 PRO A5325C000040363003A74505E466E557
+...Dynamic Tests OK.
+
+Dynamic Tests done____________
+
+Validator: job is done. Press any key to exit.

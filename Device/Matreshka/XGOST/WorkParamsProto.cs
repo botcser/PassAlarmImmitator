@@ -1,6 +1,8 @@
-﻿using IRAPROM.MyCore.Model.WP;
+﻿using Assets.Common;
+using IRAPROM.MyCore.Model.WP;
 using PassAlarmSimulator.Device;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -10,6 +12,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Extensions;
 using static System.Net.Mime.MediaTypeNames;
 //using PassAlarmSimulator.Validator;
 
@@ -96,9 +99,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             const byte testValue = 0x02;
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
-                   WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) && 
+                   WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) &&
                    ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
-                   /*&& RestoreSettingsTest(workParams)*/;
+                   && RestoreSettingsTest(workParams);
         }
         
         public void HandTest(WorkParams workParams)
@@ -427,6 +430,31 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if DEBUG
             Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
+            var zonesSensorMode = testValue;
+            byte[] byteArray = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+
+            switch (workParams.ModelId)
+            {
+                case (byte)Constants.Model.PCX600PRO:
+                    zonesSensorMode = XGOST.Constants.Models[Constants.PCX600PROName].AvailableZonesCount.Random();
+                    break;
+                case (byte)Constants.Model.PCX1100PRO:
+                    break;
+                case (byte)Constants.Model.PCGOST900:
+                case (byte)Constants.Model.PCGOSTx900:
+                    break;
+                    break;
+                case (byte)Constants.Model.PCGOST1800:
+                case (byte)Constants.Model.PCGOSTx1800:
+                    break;
+                case (byte)Constants.Model.PCGOST3300:
+                case (byte)Constants.Model.PCGOSTx3300
+                    break;
+                case (byte)Constants.Model.PCGOST6300:
+                case (byte)Constants.Model.PCGOSTx6300
+                    break;
+            }
+
             workParams.WorkProgram = testValue;
             workParams.ZonesSensorMode = testValue;
             workParams.InfraredPassCounterMode = testValue;

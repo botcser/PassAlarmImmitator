@@ -41,10 +41,11 @@ namespace IRAPROM.MyCore.Device.Impulse
             try
             {
                 SetWorkParamsDo();
-                Task.Delay(200);
-                SetWorkParamsDo();
-                Task.Delay(200);
+                Task.Delay(1500);
+                //SetWorkParamsDo();
+                //Task.Delay(200);
                 SetNetworkParams();
+                Task.Delay(10000);
             }
             catch (Exception e)
             {
@@ -209,7 +210,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             workParams.WorkingFreq = workingFreq;
 
             SetWorkParams(workParams);
-            Thread.Sleep(_requestDelay);
+            Thread.Sleep(_requestDelay * 100);
 
             workParams = GetWorkParams();
 

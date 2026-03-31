@@ -121,15 +121,15 @@ namespace IRAPROM.MyCore.Device
 
                 try
                 {
-#if DEBUGG
-                    Console.Write($"Writing {Ip}:{_port})...");
-#endif
+//#if DEBUGG
+//                    Console.Write($"Writing {Ip}:{_port})...");
+//#endif
                     
                     Stream.Write(bytes, 0, bytes.Length);
 
-#if DEBUGG
-                    Console.Write("success\n");
-#endif
+//#if DEBUGG
+//                    Console.Write("success\n");
+//#endif
                 }
                 catch (Exception e)
                 {
@@ -150,19 +150,15 @@ namespace IRAPROM.MyCore.Device
             
             var bytes = new byte[count];
 
-#if DEBUGG
-            Console.Write($"Reading {Ip}:{_port} {count} bytes...");
-#endif
+//#if DEBUGG
+//            Console.Write($"Reading {Ip}:{_port} {count} bytes...");
+//#endif
 
             var nRead = Stream.Read(bytes, 0, count);
 
-#if DEBUGG
-            Console.Write("success\n");
-#endif
-
-#if DEBUG
-            Console.WriteLine($"Response: {BitConverter.ToString(bytes, 0, nRead)}\n");
-#endif
+//#if DEBUGG
+//            Console.Write("success\n");
+//#endif
 
             return nRead != count ? bytes.Take(nRead).ToArray() : bytes;
         }

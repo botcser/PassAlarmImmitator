@@ -24,33 +24,6 @@ namespace PassAlarmSimulator.Validator
         {
             _ip = ip;
             _cancellationTokenSource = new CancellationTokenSource();
-
-            //_networkServerMatreshka = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPDefault, 
-            //    IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault,
-            //    IRAPROM.MyCore.Device.Matreshka.Constants.PortTCPDefault,
-            //    new IRAPROM.MyCore.Device.Matreshka.DatagramProto(), _cancellationTokenSource,
-            //    $"{Directory.GetCurrentDirectory()}/MatreshkaSimulator");
-
-            //DeviceMetalDetector.FamilyInfoVariants[0].PortUDPAdditional = (short)port;
-            //DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional = (short)listenPort;
-
-            //_networkServerMatreshkaXPROGOST = new DeviceNetworkServer(IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPDefault,
-            //    IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPListenDefault,
-            //    IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortTCPDefault,
-            //    new IRAPROM.MyCore.Device.Matreshka.XGOST.DatagramProto(), _cancellationTokenSource,
-            //    $"{Directory.GetCurrentDirectory()}/XPROGOSTSimulator");
-
-            //DeviceMetalDetector.FamilyInfoVariants[2].PortUDPAdditional = (short)port;
-            //DeviceMetalDetector.FamilyInfoVariants[2].PortUDPListenAdditional = (short)listenPort;
-
-            //_networkServerImpulse = new DeviceNetworkServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPDefault,
-            //    IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, 
-            //    IRAPROM.MyCore.Device.Impulse.Constants.PortTCPDefault,
-            //    new IRAPROM.MyCore.Device.Impulse.DatagramProto(), _cancellationTokenSource,
-            //    $"{Directory.GetCurrentDirectory()}/ImpulseSimulator");
-
-            //DeviceMetalDetector.FamilyInfoVariants[1].PortUDPAdditional = (short)port;
-            //DeviceMetalDetector.FamilyInfoVariants[1].PortUDPListenAdditional = (short)listenPort;
         }
 
         public Task Start()
@@ -63,9 +36,16 @@ namespace PassAlarmSimulator.Validator
                 {
                     StartListeners();
 
-                    FixIpCollisions();
+                    FindDevices(_ip);
 
-                    await Validate();
+                    if (FoundDevices.Count > 0)
+                    {
+                        FixIpCollisions();
+
+                        InitAllFoundDevices();
+
+                        await Validate();
+                    }
 
                     Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
                     Console.ReadLine();
@@ -89,29 +69,16 @@ namespace PassAlarmSimulator.Validator
             
             do
             {
-                FindDevices(_ip);
-                InitAllFoundDevices();
-
                 var collisionsIps = FoundDevices.Select(i => i.IP).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key);
+                var collisionDevices = FoundDevices.Where(i => collisionsIps.Contains(i.IP)).ToList();
+
+                if (!collisionDevices.Any()) break;
 
                 Console.WriteLine($"\nCollision IP are:");
+
                 foreach (var ip in collisionsIps)
                 {
                     Console.WriteLine($"\t{ip}");
-                }
-
-                var collisionDevices = FoundDevices.Where(i => collisionsIps.Contains(i.IP)).ToList();
-
-                Console.WriteLine($"\nCollisionDevices IP are:");
-                foreach (var deviceMetalDetector in collisionDevices)
-                {
-                    Console.WriteLine($"\t{deviceMetalDetector.IP}");
-                }
-
-                if (!collisionDevices.Any())
-                {
-                    Console.WriteLine($"\n\t\tNo CollisionDevices IP!!!!!!");
-                    break;
                 }
 
                 FoundDevices.ForEach(i =>
