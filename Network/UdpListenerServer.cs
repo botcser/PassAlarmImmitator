@@ -44,7 +44,7 @@ namespace IRAPROM.MyCore.MyNetwork
 #endif
 
 #if DEBUG
-            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}\n{_udpClient.Client}\n");
+            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}\n");
 #endif
 
             try

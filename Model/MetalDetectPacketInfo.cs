@@ -13,7 +13,6 @@ using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 //using Npgsql;
-//using NpgsqlTypes;
 
 namespace IRAPROM.MyCore.Model
 {
@@ -307,14 +306,13 @@ namespace IRAPROM.MyCore.Model
                             //                  $"\n\tsomeDate {Convert.ToHexString(someDate)}");
 
                             var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
-                            short modelId = 0;
                             MetDetector metDetector = null;
                             Action<MetDetector> metDetectorOnChanged = null;
 
                             if (md.Value != null)
                             {
                                 MyARM.Instance.AddedDevicesTryGetValue(md.Value.MAC, out metDetector, out metDetectorOnChanged);
-                                rec.IdModel = modelId = md.Value.ModelId;
+                                rec.IdModel = md.Value.ModelId;
                                 rec.MetDetector = md.Value;
                                 rec.Ip = md.Value.IP;
                                 rec.Mac = md.Value.MAC;

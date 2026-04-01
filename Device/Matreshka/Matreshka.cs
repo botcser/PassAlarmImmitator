@@ -18,11 +18,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public override string SeriesName => "Матрешка";
         public override ushort ModelId { get; set; }
-        public override string ModelName => WorkParams == null ? "Unknown Matreshka" : Constants.GetModelName(Model);
+        public override string ModelName => Constants.GetModelName(Model);
         public override string ProductModelName { get; set; }
 
-        public Constants.Model Model => WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model)WorkParams.ModelId;
-        public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
+        public Constants.Model Model => ModelId == 0 ? WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model)WorkParams.ModelId :(Constants.Model)ModelId;
+        public override List<short> AvailableZonesCount =>  WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
         public override ushort PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
         public override ushort PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;

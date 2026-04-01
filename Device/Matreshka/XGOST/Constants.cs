@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
@@ -361,7 +362,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                     var modelId = br.ReadBytes(4).Select(i => (char)i).ToList();
 
                     deviceMetalDetector.ModelId = (ushort)(Convert.FromHexString($"{modelId[0]}{modelId[1]}")[0]/* + Convert.FromHexString($"{modelId[2]}{modelId[3]}")[0] * 0x100*/);
-                    deviceMetalDetector.Model = (Model)deviceMetalDetector.ModelId;
 
                     result = deviceMetalDetector;
                 }

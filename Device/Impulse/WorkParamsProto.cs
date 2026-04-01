@@ -373,8 +373,8 @@ namespace IRAPROM.MyCore.Device.Impulse
             }
             catch (Exception)
             {
+                throw new Exception($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
                 Console.WriteLine($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
-                return "0";
             }
         }
 

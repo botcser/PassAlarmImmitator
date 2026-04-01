@@ -3,8 +3,9 @@ using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 using PassAlarmSimulator.Device.Simulator;
+using System;
 using System.Diagnostics;
-using System.Security.Cryptography;
+using System.Linq;
 
 namespace PassAlarmSimulator.Validator
 {
@@ -183,6 +184,21 @@ namespace PassAlarmSimulator.Validator
 #if DEBUG
                 Console.WriteLine($"___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}... ");
 #endif
+                var deviceType = device.FamilyInfo.GetType();
+
+                if (deviceType != typeof(IRAPROM.MyCore.Device.Matreshka.XGOST.Constants))
+                {
+                    Console.WriteLine("Enter device Model:");
+                    
+                    if (deviceType == typeof(IRAPROM.MyCore.Device.Impulse.Constants))
+                    {
+                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.Impulse.Constants.Models);
+                    }
+                    else
+                    {
+                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.Matreshka.Constants.Models);
+                    }
+                }
 
                 var workParams = device.GetWorkParams();
 
@@ -198,6 +214,24 @@ namespace PassAlarmSimulator.Validator
             });
 
             return false;
+        }
+
+        private short AskModelId(Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
+        {
+            var index = 0;
+            var indexes = Enumerable.Range(0, models.Count).ToArray();
+            var modelsList = new List<string>();
+
+            foreach (var model in models)
+            {
+                if (model.Value.ModelId >= 0xFE) continue;
+                Console.WriteLine($"{indexes[index++]} - {model.Key}");
+                modelsList.Add(model.Key);
+            }
+
+            index = int.Parse(Console.ReadLine() ?? string.Empty);
+
+            return models[modelsList[index]].ModelId;
         }
 
         private async Task<bool> DynamicTests()                             // assume to start after Static tests!

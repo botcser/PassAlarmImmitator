@@ -88,6 +88,11 @@ namespace IRAPROM.MyCore.Device
         {
             var bufModelId = WorkParams?.ModelId ?? (byte)0xfe;
 
+            if (bufModelId == 0xfe && ModelId != 0 && ModelId != 0xFE && ModelId != 0xFF)
+            {
+                bufModelId = (byte)ModelId;
+            }
+
             WorkParams = WorkParamsProto.GetWorkParams();
 
             if (WorkParams != null)

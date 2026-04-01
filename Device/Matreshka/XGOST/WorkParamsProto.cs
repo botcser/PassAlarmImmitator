@@ -21,6 +21,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
+        private readonly int _networkSetupTimeout = TimeSpan.FromMilliseconds(10000).Milliseconds;
 
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
@@ -430,39 +431,16 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if DEBUG
             Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
-            var zonesSensorMode = testValue;
-            byte[] byteArray = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+            var zonesSensorModeTest = (byte)Constants.Models.FirstOrDefault(i => i.Value.ModelId == workParams.ModelId).Value.AvailableZonesCount.Random(); ;
 
-            switch (workParams.ModelId)
-            {
-                case (byte)Constants.Model.PCX600PRO:
-                    zonesSensorMode = XGOST.Constants.Models[Constants.PCX600PROName].AvailableZonesCount.Random();
-                    break;
-                case (byte)Constants.Model.PCX1100PRO:
-                    break;
-                case (byte)Constants.Model.PCGOST900:
-                case (byte)Constants.Model.PCGOSTx900:
-                    break;
-                    break;
-                case (byte)Constants.Model.PCGOST1800:
-                case (byte)Constants.Model.PCGOSTx1800:
-                    break;
-                case (byte)Constants.Model.PCGOST3300:
-                case (byte)Constants.Model.PCGOSTx3300
-                    break;
-                case (byte)Constants.Model.PCGOST6300:
-                case (byte)Constants.Model.PCGOSTx6300
-                    break;
-            }
-
+            workParams.ZonesSensorMode = zonesSensorModeTest;
             workParams.WorkProgram = testValue;
-            workParams.ZonesSensorMode = testValue;
             workParams.InfraredPassCounterMode = testValue;
             SetWorkProgramScene(workParams);
             Thread.Sleep(_requestDelay);
             InitZonesWorkMode(workParams);
 
-            if (workParams.WorkProgram != testValue && workParams.ZonesSensorMode != testValue && workParams.InfraredPassCounterMode != testValue)
+            if (workParams.WorkProgram != testValue && workParams.ZonesSensorMode != zonesSensorModeTest && workParams.InfraredPassCounterMode != testValue)
             {
 #if DEBUG
                 Console.WriteLine($"WorkProgramSceneTest: {workParams.IP}:\t WorkProgram test fail!");
@@ -556,14 +534,14 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             workParams.BaseSensitivity = 33;
             SetBaseSensitivity(workParams);
             Thread.Sleep(_requestDelay);
-            workParams.PortTCP = 5001;
-            SetNetworkParams(workParams);
-            Thread.Sleep(5000);
-            
-            RestoreSettings(workParams);
-            Thread.Sleep(5000);
 
-            NetworkProto.Ip = workParams.IP = "192.168.1.100";
+            RestoreSettings(workParams);
+#if DEBUG
+            Console.WriteLine($"RestoreSettingsTest: Waiting for device reset timeout ({_networkSetupTimeout})");
+#endif
+            Thread.Sleep(_networkSetupTimeout);
+
+            NetworkProto.Ip = workParams.IP = oldIp;
             NetworkProto.PortTCP = workParams.PortTCP = Constants.PortTCPDefault;
             InitBaseSensitivity(workParams);
             InitPassageCount(workParams);
@@ -586,9 +564,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             var exitPassagesCount = workParams?.BackwardPassageCount ?? 0;
             var exitAlarmCount = workParams?.BackwardAlarmsCount ?? 0;
 
-            Console.WriteLine($"\nRestoreSettingsTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
-                              $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
-
             return true;
         }
 
@@ -609,9 +584,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetNetworkParams(workParams);
 
 #if DEBUG
-            Console.WriteLine($"NetworkTest: Thread.Sleep(15000)");
+            Console.WriteLine($"NetworkTest: Waiting for device network setup timeout ({_networkSetupTimeout})");
 #endif
-            Thread.Sleep(15000);
+            Thread.Sleep(_networkSetupTimeout);
 
             workParams.BaseSensitivity = 11;
 
@@ -627,6 +602,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             workParams.IP = ipBuff;
             SetNetworkParams(workParams);
+
+#if DEBUG
+            Console.WriteLine($"NetworkTest: Waiting for restore device network setup timeout ({_networkSetupTimeout})");
+#endif
+            Thread.Sleep(_networkSetupTimeout);
 
             return true;
 

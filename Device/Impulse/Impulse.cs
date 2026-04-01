@@ -11,9 +11,9 @@ namespace IRAPROM.MyCore.Device.Impulse
     {
         public override string SeriesName => "Импульс";
         public override ushort ModelId { get; set; }
-        public override string ModelName => WorkParams == null ? "Unknown Impulse" : Constants.GetModelName(Model);
+        public override string ModelName => Constants.GetModelName(Model);
         public override string ProductModelName { get; set; }
-        public Constants.Model Model => WorkParams == null ? Constants.Model.Unknown : (Constants.Model)WorkParams.ModelId;
+        public Constants.Model Model => ModelId == 0 ? WorkParams == null ? Constants.Model.Unknown : (Constants.Model)WorkParams.ModelId : (Constants.Model)ModelId;
         public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
         public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
         public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
