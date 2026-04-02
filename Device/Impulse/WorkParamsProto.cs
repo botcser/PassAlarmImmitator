@@ -139,7 +139,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { });
         }
 
-        public void SetWorkProgramScene(WorkParams workParams)
+        public void SetWorkingMode(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
         }
@@ -154,7 +154,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             throw new NotImplementedException();
         }
 
-        public void HandTest(WorkParams workParams)
+        public bool BruteTest(WorkParams workParams)
         {
             byte testValue = 0x09;
 
@@ -162,9 +162,11 @@ namespace IRAPROM.MyCore.Device.Impulse
             Thread.Sleep(_requestDelay);
 
             workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
 
             ClearPassageCount();
+
+            return true;
         }
 
         public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
@@ -231,7 +233,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             }
 
             workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
 
             workParams = GetWorkParams();

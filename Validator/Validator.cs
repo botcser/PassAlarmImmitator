@@ -70,8 +70,8 @@ namespace PassAlarmSimulator.Validator
             
             do
             {
-                var collisionsIps = FoundDevices.Select(i => i.IP).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key);
-                var collisionDevices = FoundDevices.Where(i => collisionsIps.Contains(i.IP)).ToList();
+                var collisionsIps = FoundDevices.Select(i => i.IP).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
+                var collisionDevices = FoundDevices.Where(i => collisionsIps.Contains(i.IP));
 
                 if (!collisionDevices.Any()) break;
 
@@ -84,9 +84,16 @@ namespace PassAlarmSimulator.Validator
 
                 FoundDevices.ForEach(i =>
                 {
+                    randomIPs.Remove(i.IP);
+
+                    if (collisionsIps.Contains(i.IP)) return;
+
+                    collisionsIps.Remove(i.IP);
+
                     var ip = randomIPs.FirstOrDefault();
 
                     randomIPs.Remove(ip);
+                    
                     Console.WriteLine($"\nChanging IP from {i.IP} to {ip}");
                     i.SetIp(ip);
                 });
@@ -172,9 +179,28 @@ namespace PassAlarmSimulator.Validator
         {
             if (FoundDevices.Count == 0) return;
 
+            WaitForSeconds(3);
+
+            if (HaveUndocumentedFeatures()) return;
+
             if (!StaticTests()) return;
 
             if (!await DynamicTests()) return;
+        }
+
+        private bool HaveUndocumentedFeatures()
+        {
+            Console.WriteLine($"____Testing for Undocumented Features____");
+
+            _watchdog.Start();
+
+            var success = FoundDevices.FirstOrDefault().BruteTest();
+
+            _watchdog.Stop();
+            
+            Console.WriteLine($"____Testing Undocumented Features {(success ? "OK." : "FAIL!")} {_watchdog.Elapsed.TotalSeconds}s____");
+
+            return success;
         }
 
         private bool InitAllFoundDevices()

@@ -53,7 +53,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public bool SetWorkParams(WorkParams workParams)
         {
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
             
             SetZonesWorkMode(workParams);
@@ -87,12 +87,12 @@ namespace IRAPROM.MyCore.Device.Matreshka
                    BaseSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) && AlarmParamsTest(workParams, testValue) && ClearPassageTest(workParams);
         }
         
-        public void HandTest(WorkParams workParams)
+        public bool BruteTest(WorkParams workParams)
         {
             byte testValue = 0x09;
 
             workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
 
             workParams.SensorsSensitivity = new[]
@@ -124,6 +124,8 @@ namespace IRAPROM.MyCore.Device.Matreshka
             Thread.Sleep(_requestDelay);
 
             ClearPassageCount();
+
+            return true;
         }
 
         public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
@@ -342,7 +344,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x03 });
         }
 
-        public void SetWorkProgramScene(WorkParams workParams)
+        public void SetWorkingMode(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
         }
@@ -364,7 +366,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         private bool WorkProgramTest(WorkParams workParams, byte testValue)
         {
             workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
             InitWorkProgramScene(workParams);
 

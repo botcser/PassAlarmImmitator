@@ -38,7 +38,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, MetaInfoLength, "SetAlarmParams");
         public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, MetaInfoLength, "SetTime");
         public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, MetaInfoLength, "SetSerialNumber");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, MetaInfoLength, "SetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, MetaInfoLength, "SetWorkingMode");
         public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, MetaInfoLength, "ClearPassageCount");
         public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, MetaInfoLength, "CallPassage");
         public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, MetaInfoLength, "CallAlarm");

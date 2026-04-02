@@ -57,7 +57,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, ResponseMetaInfoLength, "SetBaseSensitivity");
         public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, ResponseMetaInfoLength, "SetZonesSensitivity");
         public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, ResponseMetaInfoLength, "SetWorkFrequency");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x0005, 0x0005, ResponseMetaInfoLength, "SetWorkProgramScene");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkingMode = (0x0005, 0x0005, ResponseMetaInfoLength, "SetWorkingMode");
         public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, ResponseMetaInfoLength, "SetAlarmParams");
         public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0008, 0x0008, ResponseMetaInfoLength, "SetTime");
         public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, ResponseMetaInfoLength, "SetSerialNumber");
@@ -139,7 +139,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static List<(short, short, int, string)> SetCommands = new List<(short, short, int, string)>()
         {
             SetZonesSensitivity, SetBaseSensitivity, SetWorkFrequency, SetAlarmParams, SetNetworkParams, SetTime, SetPassword,
-            SetSerialNumber, SetWorkProgramScene, ClearPassageCount, RebootDevice, ResetSettings
+            SetSerialNumber, SetWorkingMode, ClearPassageCount, RebootDevice, ResetSettings
         }; 
 
         private static readonly List<string> _workPrograms = new List<string>() {

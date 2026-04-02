@@ -7,7 +7,7 @@ namespace PassAlarmSimulator.Device
     {
         bool StaticTest(WorkParams workParams);
 
-        void HandTest(WorkParams workParams);
+        bool BruteTest(WorkParams workParams);
 
         bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm);
     }

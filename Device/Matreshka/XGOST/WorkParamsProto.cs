@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,8 +21,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
-        private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
-        private readonly int _networkSetupTimeout = TimeSpan.FromMilliseconds(10000).Milliseconds;
+        private readonly int _requestDelay = (int)TimeSpan.FromMilliseconds(150).TotalMilliseconds;
+        private readonly int _networkSetupTimeout = (int)TimeSpan.FromMilliseconds(10000).TotalMilliseconds;
+        private readonly int _rebootTimeout = (int)TimeSpan.FromMilliseconds(16000).TotalMilliseconds;
 
         public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
         {
@@ -67,10 +69,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public bool SetWorkParams(WorkParams workParams)
         {
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
             
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
 
             SetZonesSensitivity(workParams);
@@ -102,46 +104,20 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
                    WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) &&
                    ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
-                   && RestoreSettingsTest(workParams);
+                   && RestoreSettingsTest(workParams) && RebootTest(workParams) && InvalidParamsTest(workParams);
         }
-        
-        public void HandTest(WorkParams workParams)
+
+        public bool BruteTest(WorkParams workParams)
         {
-            byte testValue = 0x09;
-
-            workParams.WorkProgram = testValue;
-            SetWorkProgramScene(workParams);
-            Thread.Sleep(_requestDelay);
-
-            workParams.SensorsSensitivity = new[]
+            foreach (var i in Enumerable.Range(500, 65535))
             {
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-            };
-            SetZonesSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
+                Console.Write($"try {i}...");
+                workParams.PortTCP = i;
+                InitBaseSensitivity(workParams);
+                Console.WriteLine($"done.");
+            }
 
-            workParams.BaseSensitivity = testValue;
-            SetBaseSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
-
-            do
-            {
-                workParams.WorkingFreq = (byte)new Random().Next(51);
-            } while (workParams.WorkingFreq % 3 != 0);
-
-            SetWorkFrequency(workParams);
-            Thread.Sleep(_requestDelay);
-
-            workParams.AlarmDuration = testValue;
-            workParams.AlarmVolume = testValue;
-            workParams.AlarmTone = testValue;
-            SetAlarmParams(workParams);
-            Thread.Sleep(_requestDelay);
-
-            ClearPassageCount();
+            return true;
         }
 
         public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
@@ -336,6 +312,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public void RebootDevice(WorkParams workParams)
         {
             ExecuteSetCommandRaw(Constants.RebootDevice.code, new byte[]{});
+            NetworkProto.Disconnect();
         }
 
         public void SetZonesSensitivity(WorkParams workParams)
@@ -407,9 +384,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             NetworkProto.PortTCP = workParams.PortTCP;
         }
 
-        public void SetWorkProgramScene(WorkParams workParams)
+        public void SetWorkingMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
+            ExecuteSetCommandRaw(Constants.SetWorkingMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
         }
 
         public bool SimulatePass()
@@ -436,7 +413,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             workParams.ZonesSensorMode = zonesSensorModeTest;
             workParams.WorkProgram = testValue;
             workParams.InfraredPassCounterMode = testValue;
-            SetWorkProgramScene(workParams);
+            SetWorkingMode(workParams);
             Thread.Sleep(_requestDelay);
             InitZonesWorkMode(workParams);
 
@@ -563,6 +540,151 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             var enterAlarmCount = workParams?.ForwardAlarmsCount ?? 0;
             var exitPassagesCount = workParams?.BackwardPassageCount ?? 0;
             var exitAlarmCount = workParams?.BackwardAlarmsCount ?? 0;
+
+            return true;
+        }
+
+        private bool RebootTest(WorkParams workParams)
+        {
+#if DEBUG
+            Console.WriteLine($"\nRebootTest: testing \"Restart Device\"...");
+#endif
+            
+            var baseSensitivityCurrent = workParams.BaseSensitivity;
+
+            RebootDevice(workParams);
+
+#if DEBUG
+            Console.WriteLine($"RebootTest: waiting for {_rebootTimeout}msec...");
+#endif
+            Thread.Sleep(_rebootTimeout);
+
+            InitBaseSensitivity(workParams);
+            Thread.Sleep(_requestDelay);    
+
+            if (workParams.BaseSensitivity != baseSensitivityCurrent)
+            {
+#if DEBUG
+                Console.WriteLine($"RebootTest: {workParams.IP}:\tRestart Device test fail!");
+#endif
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool InvalidParamsTest(WorkParams workParams)
+        {
+#if DEBUG
+            Console.WriteLine($"\nInvalidParamsTest: testing invalid settings...");
+#endif
+
+            var zonesSensitivityValid = (short[])workParams.SensorsSensitivity.Clone();
+            var baseSensitivityValid = workParams.BaseSensitivity;
+            var workFrequencyValid = workParams.WorkingFreq;
+            var alarmToneValid = workParams.AlarmTone;
+            var alarmDurationValid = workParams.AlarmDuration;
+            var alarmVolumeValid = workParams.AlarmVolume;
+            var zonesSensorModeValid = workParams.ZonesSensorMode;
+            var workProgramValid = workParams.WorkProgram;
+            var infraredPassCounterModeValid = workParams.InfraredPassCounterMode;
+
+            for (var i = 0; i < workParams.SensorsSensitivity.Length; i++)
+            {
+                workParams.SensorsSensitivity[i] = 0x7FFF;
+            }
+
+            workParams.BaseSensitivity = 0x7FFF;
+            workParams.WorkingFreq = 0xFF;
+            workParams.AlarmTone = 0xFF;
+            workParams.AlarmDuration = 0xFF;
+            workParams.AlarmVolume = 0xFF;
+            workParams.ZonesSensorMode = 0xFF;
+            workParams.WorkProgram = 0xFF;
+            workParams.InfraredPassCounterMode = 0xFF;
+
+            SetZonesSensitivity(workParams);
+            Thread.Sleep(_requestDelay * 10);
+            SetBaseSensitivity(workParams);
+            Thread.Sleep(_requestDelay * 10);
+            SetWorkFrequency(workParams);
+            Thread.Sleep(_requestDelay * 10);
+            SetAlarmParams(workParams);
+            Thread.Sleep(_requestDelay * 10);
+            SetWorkingMode(workParams);
+            Thread.Sleep(_requestDelay * 10);
+
+            InitZonesSensitivity(workParams);
+            InitBaseSensitivity(workParams);
+            InitWorkFrequency(workParams);
+            InitAlarmParams(workParams);
+            InitZonesWorkMode(workParams);
+
+            if (baseSensitivityValid != workParams.BaseSensitivity)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! baseSensitivityValid {baseSensitivityValid} != {workParams.BaseSensitivity}");
+#endif
+                return false;
+            }
+            else if (workFrequencyValid != workParams.WorkingFreq)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! workFrequencyValid {workFrequencyValid} != {workParams.WorkingFreq}");
+#endif
+                return false;
+            } 
+            else if (alarmToneValid != workParams.AlarmTone)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! alarmToneValid {alarmToneValid} != {workParams.AlarmTone}");
+#endif
+                return false;
+            } 
+            else if (alarmDurationValid != workParams.AlarmDuration)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! alarmDurationValid {alarmDurationValid} != {workParams.AlarmDuration}");
+#endif
+                return false;
+            } 
+            else if (alarmVolumeValid != workParams.AlarmVolume)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! alarmVolumeValid {alarmVolumeValid} != {workParams.AlarmVolume}");
+#endif
+                return false;
+            } 
+            else if (zonesSensorModeValid != workParams.ZonesSensorMode)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! zonesSensorModeValid {zonesSensorModeValid} != {workParams.ZonesSensorMode}");
+#endif
+                return false;
+            } 
+            else if (workProgramValid != workParams.WorkProgram)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! workProgramValid {workProgramValid} != {workParams.WorkProgram}");
+#endif
+                return false;
+            } 
+            else if (infraredPassCounterModeValid != workParams.InfraredPassCounterMode)
+            {
+#if DEBUG
+                Console.WriteLine($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail! infraredPassCounterModeValid {infraredPassCounterModeValid} != {workParams.InfraredPassCounterMode}");
+#endif
+                return false;
+            }
+
+            if (workParams.SensorsSensitivity.Where((item, index) => item == zonesSensitivityValid[index]).Any())
+            {
+#if DEBUG
+                Console.Write($"InvalidParamsTest: {workParams.IP}:\tInvalid settings Test fail!");
+                Console.WriteLine($"{Convert.ToHexString(workParams.SensorsSensitivity.SelectMany(BitConverter.GetBytes).ToArray())}");
+#endif
+                return false;
+            }
 
             return true;
         }

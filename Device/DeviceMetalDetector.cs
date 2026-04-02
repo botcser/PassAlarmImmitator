@@ -133,9 +133,9 @@ namespace IRAPROM.MyCore.Device
 
         public virtual void SetWorkProgramScene()
         {
-            WorkParamsProto.SetWorkProgramScene(WorkParams);
+            WorkParamsProto.SetWorkingMode(WorkParams);
 #if DEBUG
-            Console.WriteLine($"SetWorkProgramScene: complete {_ip}:{MAC}:{ModelName}");
+            Console.WriteLine($"SetWorkingMode: complete {_ip}:{MAC}:{ModelName}");
 #endif
         }
 
@@ -147,6 +147,19 @@ namespace IRAPROM.MyCore.Device
 
 #if DEBUG
             Console.WriteLine($"___StaticTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")} {ModelName} {WorkParams.SerialNumber}");
+#endif
+
+            return result;
+        }
+
+        public virtual bool BruteTest()
+        {
+            Console.WriteLine($"\n\n____________Starting Brute Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}\n");
+
+            var result = ((ITestsProto)WorkParamsProto).BruteTest(WorkParams);
+
+#if DEBUG
+            Console.WriteLine($"___BruteTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")} {ModelName} {WorkParams.SerialNumber}");
 #endif
 
             return result;
@@ -242,7 +255,14 @@ namespace IRAPROM.MyCore.Device
 
         public virtual void SetIp(string ip)
         {
-            WorkParams.IP = IP = ip;
+            WorkParams = new WorkParams
+            {
+                IP = IP = ip,
+                PortTCP = PortTCP = 0,
+                Mask = Mask,
+                Gateway = Gateway
+            };
+
             WorkParamsProto.SetNetworkParams(WorkParams);
         }
 
