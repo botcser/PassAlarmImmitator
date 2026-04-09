@@ -21,8 +21,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         [JsonProperty]
         private readonly int _portDefault;
+
         [JsonProperty]
-        private readonly int _timeOut = 15000;
+        public int Timeout { get; set; } = 5000;
 
         private int _port => PortTCP == 0 ? _portDefault : PortTCP;
 
@@ -35,9 +36,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             Ip = ip;
             _portDefault = portTCP;
-            _timeOut = timeOut == 0 ? _timeOut : timeOut;
+            Timeout = timeOut == 0 ? Timeout : timeOut;
             Socket = new TcpClient();
-            Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+            Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
         }
 
         public bool Connect()
@@ -58,7 +59,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 }
 
                 Socket = new TcpClient();
-                Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+                Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
 
 #if DEBUGG
                 Console.Write($"Connecting {Ip}:{_port} ...");
@@ -117,13 +118,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 try
                 {
 #if DEBUGG
-//                    Console.Write($"Writing {Ip}:{_port}..");
+                    Console.Write($"Writing {Ip}:{_port}..");
 #endif
 
                     Stream.Write(bytes, 0, bytes.Length);
 
 #if DEBUGG
-//                    Console.WriteLine("success");
+                    Console.WriteLine("success");
 #endif
                 }
                 catch (Exception e)
@@ -144,7 +145,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             if (Stream == null || !Stream.CanRead) return null;
 
 #if DEBUGG
-//            Console.WriteLine($"Reading {Ip}:{_port} Header {Constants.FrameSequenceOffset} bytes...");
+            Console.WriteLine($"Reading {Ip}:{_port} Header {Constants.FrameSequenceOffset} bytes...");
 #endif
 
             var headerBytes = new byte[Constants.FrameSequenceOffset];

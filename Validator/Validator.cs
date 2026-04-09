@@ -25,6 +25,11 @@ namespace PassAlarmSimulator.Validator
         {
             _ip = ip;
             _cancellationTokenSource = new CancellationTokenSource();
+
+            if (port != 0)
+            {
+                DeviceMetalDetector.FamilyInfoVariants.ForEach(i => i.PortUDPAdditional = (short)port);
+            }
         }
 
         public Task Start()
@@ -65,9 +70,11 @@ namespace PassAlarmSimulator.Validator
 
         private void FixIpCollisions()
         {
-            var randomSubIPs = GenerateUniqueRandomNumbers(25, 3, 254);
+            var randomSubIPs = GenerateUniqueRandomNumbers(25, 4, 254);
             var randomIPs = randomSubIPs.Select(i => $"192.168.1.{i}").ToList();
-            
+
+            FoundDevices.ForEach(i => randomIPs.Remove(i.IP));
+
             do
             {
                 var collisionsIps = FoundDevices.Select(i => i.IP).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
@@ -82,11 +89,15 @@ namespace PassAlarmSimulator.Validator
                     Console.WriteLine($"\t{ip}");
                 }
 
+                if (randomIPs.Count < collisionsIps.Count)
+                {
+                    throw new Exception(
+                        $"Validator: FixIpCollisions: randomIPs.Count{randomIPs.Count} !< collisionsIps.Count{collisionsIps.Count} IP collisions are too many than free IPs!");
+                }
+
                 FoundDevices.ForEach(i =>
                 {
-                    randomIPs.Remove(i.IP);
-
-                    if (collisionsIps.Contains(i.IP)) return;
+                    if (!collisionsIps.Contains(i.IP)) return;         // If changed, change in other places!
 
                     collisionsIps.Remove(i.IP);
 
@@ -96,10 +107,25 @@ namespace PassAlarmSimulator.Validator
                     
                     Console.WriteLine($"\nChanging IP from {i.IP} to {ip}");
                     i.SetIp(ip);
+                    Console.WriteLine($"Waiting for device setup IP {10000}");
                 });
 
-                Thread.Sleep(12000);
+                Thread.Sleep(10000);
             } while (true);
+
+            var device = FoundDevices.FirstOrDefault(i => i.IP == "192.168.1.3");
+
+            if (device != null)
+            {
+                var ip = randomIPs.FirstOrDefault();
+
+                Console.WriteLine($"\nChanging IP from {device.IP} to {ip} because this IP is reserved for test");
+
+                device.SetIp(ip);
+
+                Console.WriteLine($"Waiting for device setup IP {10000}");
+                Thread.Sleep(10000);
+            }
         }
 
         private void StartListeners()
@@ -136,6 +162,7 @@ namespace PassAlarmSimulator.Validator
         private void FindDevices(string ip)
         {
             FoundDevices.Clear();
+            //DeviceMetalDetector.FamilyInfoVariants[2].Find(_ip, UDPSender.Instance);
             DeviceMetalDetector.FamilyInfoVariants.ForEach(i =>
             {
                 i.Find(_ip, UDPSender.Instance);
@@ -181,8 +208,8 @@ namespace PassAlarmSimulator.Validator
 
             WaitForSeconds(3);
 
-            if (HaveUndocumentedFeatures()) return;
-
+            //if (HaveUndocumentedFeatures()) return;
+            
             if (!StaticTests()) return;
 
             if (!await DynamicTests()) return;
@@ -218,11 +245,11 @@ namespace PassAlarmSimulator.Validator
                     
                     if (deviceType == typeof(IRAPROM.MyCore.Device.Impulse.Constants))
                     {
-                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.Impulse.Constants.Models);
+                        device.ModelId = (ushort)FindOutModelId(IRAPROM.MyCore.Device.Impulse.Constants.Models);
                     }
                     else
                     {
-                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.Matreshka.Constants.Models);
+                        device.ModelId = (ushort)FindOutModelId(IRAPROM.MyCore.Device.Matreshka.Constants.Models);
                     }
                 }
 
@@ -242,7 +269,7 @@ namespace PassAlarmSimulator.Validator
             return false;
         }
 
-        private short AskModelId(Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
+        private short FindOutModelId(Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
         {
             var index = 0;
             var indexes = Enumerable.Range(0, models.Count).ToArray();
@@ -265,6 +292,7 @@ namespace PassAlarmSimulator.Validator
             Console.WriteLine($"\n____________Starting Dynamic Tests...");
 
             var testTasks = FoundDevices.Select(x => x.DynamicTest(20000));
+            //var testTasks = FoundDevices.FirstOrDefault()!.DynamicTest(20000);
 
             var results = await Task.WhenAll(testTasks);
 
@@ -283,6 +311,7 @@ namespace PassAlarmSimulator.Validator
             _watchdog.Start();
             
             var success = FoundDevices.All(device => device.StaticTest());
+            //var success = FoundDevices.FirstOrDefault()!.StaticTest();
 
             _watchdog.Stop();
 

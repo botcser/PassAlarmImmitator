@@ -21,10 +21,13 @@ public class App
 
         var programNumber = "?";
         IStart task = null;
+        
+        Console.WriteLine($"Current PID: {Environment.ProcessId}");
 
         while (programNumber != "0")
         {
-            programNumber = Console.ReadLine();
+            programNumber = "2";
+            //programNumber = Console.ReadLine();
 
             switch (programNumber)
             {
@@ -32,17 +35,17 @@ public class App
                     task = new PassAlarmSimulator.PassAlarmSimulator();
                     break;
                 case "2":
-                    Console.WriteLine($"Testing in 192.168.16.255 network...");
+                    var ip = "192.168.1.255";
+                    //var ip = InitIP();
+                    Console.WriteLine($"Testing in {ip} network...");
 
-                    var ip = InitIP();
+                    //Console.WriteLine($"Enter lower computer UDP port\n");
+                    //int.TryParse(Console.ReadLine(), out var port);
 
-                    Console.WriteLine($"Enter lower computer UDP port\n");
-                    int.TryParse(Console.ReadLine(), out var port);
+                    //Console.WriteLine($"Enter higher computer UDP port to listen\n");
+                    //int.TryParse(Console.ReadLine(), out var portListen);
 
-                    Console.WriteLine($"Enter higher computer UDP port to listen\n");
-                    int.TryParse(Console.ReadLine(), out var portListen);
-
-                    task = new Validator(ip, port, portListen);
+                    task = new Validator(ip, 0, 0);
                     break;
                 case "0":
                     task?.Shutdown();

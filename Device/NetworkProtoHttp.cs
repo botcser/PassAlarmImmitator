@@ -19,6 +19,7 @@ namespace IRAPROM.MyCore.Device
         public string Ip { get; set; }
         [JsonProperty]
         public int PortTCP { get; set; }
+        public int Timeout { get; set; } = 5000;
 
         private const string UrlServer = "http://commandcenter.runasp.net/api/commandcenter/ping";
         private const string UrlSend = 1 == 0 ? UrlDebug : UrlRelease;

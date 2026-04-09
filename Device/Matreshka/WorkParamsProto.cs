@@ -87,7 +87,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
                    BaseSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) && AlarmParamsTest(workParams, testValue) && ClearPassageTest(workParams);
         }
         
-        public bool BruteTest(WorkParams workParams)
+        public bool BrutePortsTest(WorkParams workParams)
         {
             byte testValue = 0x09;
 

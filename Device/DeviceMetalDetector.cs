@@ -156,8 +156,8 @@ namespace IRAPROM.MyCore.Device
         {
             Console.WriteLine($"\n\n____________Starting Brute Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}\n");
 
-            var result = ((ITestsProto)WorkParamsProto).BruteTest(WorkParams);
-
+            //var result = ((ITestsProto)WorkParamsProto).BruteTest(WorkParams);
+            var result = ((ITestsProto)WorkParamsProto).BrutePortsTest(WorkParams);
 #if DEBUG
             Console.WriteLine($"___BruteTest: {_ip}:{MAC} {(result ? " OK." : "FAIL!")} {ModelName} {WorkParams.SerialNumber}");
 #endif
@@ -184,6 +184,7 @@ namespace IRAPROM.MyCore.Device
             
             Thread.Sleep(2000);
 
+
 #if DEBUG
             Console.WriteLine($"\n___DynamicTest After: \n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\n\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
                               $"\n\t ExitPassagesCount {LastPassage.ExitPassagesCount}\n\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
@@ -192,7 +193,7 @@ namespace IRAPROM.MyCore.Device
             if (LastPassage == null || !LastPassage.IsAlarm || !success)
             {
 #if DEBUG
-                Console.WriteLine($"DynamicTest: Error: missing simulate alarm or it was not alarm!");
+                Console.WriteLine($"DynamicTest: Error: missing simulate alarm or it was not alarm! {LastPassage} {LastPassage.IsAlarm} {success}");
 #endif
                 return false;
             }
@@ -213,6 +214,9 @@ namespace IRAPROM.MyCore.Device
             success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, false);
 
             Thread.Sleep(2000);
+
+
+
 
             if (LastPassage == null || LastPassage.IsAlarm || !success)
             {

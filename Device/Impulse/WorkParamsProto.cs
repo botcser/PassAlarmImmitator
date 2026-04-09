@@ -154,7 +154,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             throw new NotImplementedException();
         }
 
-        public bool BruteTest(WorkParams workParams)
+        public bool BrutePortsTest(WorkParams workParams)
         {
             byte testValue = 0x09;
 
@@ -375,8 +375,8 @@ namespace IRAPROM.MyCore.Device.Impulse
             }
             catch (Exception)
             {
-                throw new Exception($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
                 Console.WriteLine($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
+                throw new Exception($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
             }
         }
 

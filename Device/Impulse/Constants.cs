@@ -97,41 +97,41 @@ namespace IRAPROM.MyCore.Device.Impulse
         public override List<string> WorkPrograms => _workPrograms;
 
         private static readonly List<string> _workPrograms = new List<string>() {
-            "1 МЧС",
-            "2 Склад",
-            "3 Ювелирная",
-            "4 Тех. Помещение",
-            "5 Спец бюро",
-            "6 Офисы",
-            "7 Комната отдыха",
-            "8 Клубы",
-            "9 Библиотека",
-            "10 Радио",
-            "11 Телевидение",
-            "12 Метеостанция",
-            "13 Пост",
-            "14 КПП 1",
-            "15 Военная база",
-            "16 Посольство",
-            "17 Электростанции",
-            "18 Гостиница",
-            "19 Бассейны",
-            "20 Бюро пропусков",
-            "21 Блок-пост",
-            "22 КПП 2",
-            "23 Диспансер",
-            "24 Комната Экзамена",
-            "25 Суды",
-            "26 Автокомбинат",
-            "27 Банк",
-            "28 Хранилище",
-            "29 СИЗО",
-            "30 Тюрьма",
-            "31 Прокуратура",
-            "32 Таможня",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31а",
+            "32",
             "33",
             "34" };
-        
+
         private const string PC600MKName = "PC 600MK (6)";
         private const string PC1800MKName = "PC 1800MK (18/12/6)";
         private const string PC4400MKName = "PC 4400MK (33/22/11)";
@@ -229,9 +229,11 @@ namespace IRAPROM.MyCore.Device.Impulse
         {
             var taskCompletionSource = new TaskCompletionSource();
 
-            sender.Send(FindDatagram, PortUDP, ip, taskCompletionSource);
+            sender.Send(FindDatagram, PortUDP, ip);
 
-            if (PortUDPAdditional != 0) sender.Send(FindDatagram, PortUDPAdditional, ip, taskCompletionSource);
+            if (PortUDPAdditional != 0) sender.Send(FindDatagram, PortUDPAdditional, ip);
+
+            taskCompletionSource.SetResult();
 
             return taskCompletionSource.Task;
         }

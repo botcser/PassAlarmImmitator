@@ -22,7 +22,7 @@ namespace IRAPROM.MyCore.Device
         [JsonProperty]
         private readonly int _port;
         [JsonProperty]
-        private readonly int _timeOut = 15000;
+        public int Timeout { get; set; } = 5000;
 
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);
@@ -36,9 +36,9 @@ namespace IRAPROM.MyCore.Device
         {
             Ip = ip;
             _port = portTCP;
-            _timeOut = timeOut == 0 ? _timeOut : timeOut;
+            Timeout = timeOut == 0 ? Timeout : timeOut;
             Socket = new TcpClient();
-            Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+            Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
         }
 
         public bool Connect()
@@ -59,7 +59,7 @@ namespace IRAPROM.MyCore.Device
                 } 
 
                 Socket = new TcpClient();
-                Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+                Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
 
 #if DEBUGG
                 Console.Write($"Connecting {Ip}:{_port}...");
@@ -150,15 +150,15 @@ namespace IRAPROM.MyCore.Device
             
             var bytes = new byte[count];
 
-//#if DEBUGG
-//            Console.Write($"Reading {Ip}:{_port} {count} bytes...");
-//#endif
+#if DEBUGG
+            Console.Write($"Reading {Ip}:{_port} {count} bytes...");
+#endif
 
             var nRead = Stream.Read(bytes, 0, count);
 
-//#if DEBUGG
-//            Console.Write("success\n");
-//#endif
+#if DEBUGG
+            Console.Write("success\n");
+#endif
 
             return nRead != count ? bytes.Take(nRead).ToArray() : bytes;
         }

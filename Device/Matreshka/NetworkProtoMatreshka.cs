@@ -23,7 +23,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         [JsonProperty]
         private readonly int _port;
         [JsonProperty]
-        private readonly int _timeOut = 15000;
+        public int Timeout { get; set; } = 5000;
 
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);
@@ -34,9 +34,9 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             Ip = ip;
             _port = portTCP;
-            _timeOut = timeOut == 0 ? _timeOut : timeOut;
+            Timeout = timeOut == 0 ? Timeout : timeOut;
             Socket = new TcpClient();
-            Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+            Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
         }
 
         public bool Connect()
@@ -57,7 +57,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 }
 
                 Socket = new TcpClient();
-                Socket.SendTimeout = Socket.ReceiveTimeout = _timeOut;
+                Socket.SendTimeout = Socket.ReceiveTimeout = Timeout;
 
 #if DEBUGG
                 Console.Write($"Connecting {Ip}:{_port}...");

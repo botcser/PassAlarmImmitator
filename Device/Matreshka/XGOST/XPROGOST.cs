@@ -55,13 +55,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public override byte ZonesCount
         {
-            get => (byte)(WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode]);
+            get => WorkParams?.ZonesSensorMode ?? 0;
             set
-            { 
-                if (WorkParams == null || value >= Constants.Models[ModelName].AvailableZonesCount.Count) return;      
-                
-                WorkParams.ZonesSensorMode = (byte)value;
-                WorkParams.ZoneMode = Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode].ToString();
+            {
+                if (WorkParams == null) return;
+
+                WorkParams.ZonesSensorMode = value;
+                WorkParams.ZoneMode = WorkParams.ZonesSensorMode.ToString();
             }
         }
 

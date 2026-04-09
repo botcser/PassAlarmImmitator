@@ -7,6 +7,7 @@ namespace IRAPROM.MyCore.Device
         public string Ip { get; set; }
 
         public int PortTCP { get; set; }
+        public int Timeout { get; set; }
 
         bool Connect();
 

@@ -1,0 +1,2764 @@
+
+C:\Users\NAME\Desktop\BlockpostConnect>IF EXIST "net8.0.7z" (
+rmdir /s /q net8.0
+ "C:\Program Files\7-Zip\7z.exe" e "net8.0.7z" -o"net8.0" -y   && DEL "net8.0.7z"
+)
+
+C:\Users\NAME\Desktop\BlockpostConnect>.\net8.0\PassAlarmSimulator.exe
+Hello, World!
+Choose the program, press number:
+         1 = PC Pass Alarm Simulator
+         2 = PC Validator
+         0 = Exit
+
+2
+Testing in 192.168.16.255 network...
+Choose the ip subnetwork:
+
+        0 = 192.168.16.255
+        1 = 192.168.1.255
+        2 = 192.168.31.255
+        3 = FF02::1
+1
+Enter lower computer UDP port
+
+
+Enter higher computer UDP port to listen
+
+
+Validator: started
+UDPServer: CreateUdpClient: Listening port = 5016
+
+UDPServer: CreateUdpClient: Listening port = 9999
+
+UDPServer: CreateUdpClient: Listening port = 1021
+
+UDPSender: Send:
+        to 192.168.1.255:1021:
+                bytes = 40-23-24-FF-FF-0E-00-00-00-00-00-00-00-00-01-8B-69-3C-5A-CB-D7-0D-0A
+
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.157
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-9D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-72-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-E9-07-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.157
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-9D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-72-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-E9-07-0D-0A
+        IdModel = 110,
+        MAC = E466E557B572,
+        IP = 192.168.1.157,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.14
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-0E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-40-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-74-BE-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.14
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-0E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-40-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-74-BE-0D-0A
+        IdModel = 111,
+        MAC = E466E557B840,
+        IP = 192.168.1.14,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.200
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-C8-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C0-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-EA-FB-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.200
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-C8-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C0-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-EA-FB-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9C0,
+        IP = 192.168.1.200,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.7
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-07-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-A6-0C-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-06-79-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.7
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-07-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-A6-0C-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-06-79-0D-0A
+        IdModel = 111,
+        MAC = E466E557A60C,
+        IP = 192.168.1.7,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.238
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-EE-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EE-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-CD-30-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.238
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-EE-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EE-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-CD-30-0D-0A
+        IdModel = 110,
+        MAC = E466E557B9EE,
+        IP = 192.168.1.238,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.125
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-7D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-41-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-94-10-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.125
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-7D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-41-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-94-10-0D-0A
+        IdModel = 111,
+        MAC = E466E557B841,
+        IP = 192.168.1.125,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.177
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-B1-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-39-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-5E-BA-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.177
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-B1-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-39-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-5E-BA-0D-0A
+        IdModel = 111,
+        MAC = E466E557BB39,
+        IP = 192.168.1.177,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.86
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-56-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-3F-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-BA-0B-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.86
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-56-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-3F-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-BA-0B-0D-0A
+        IdModel = 110,
+        MAC = E466E557B83F,
+        IP = 192.168.1.86,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.22
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-16-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-79-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-AA-AD-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.22
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-16-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-79-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-AA-AD-0D-0A
+        IdModel = 110,
+        MAC = E466E557B579,
+        IP = 192.168.1.22,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.79
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-4F-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-39-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-87-20-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.79
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-4F-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-39-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-87-20-0D-0A
+        IdModel = 111,
+        MAC = E466E557B839,
+        IP = 192.168.1.79,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.91
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-5B-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BA-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-6E-74-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.91
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-5B-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BA-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-6E-74-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9BA,
+        IP = 192.168.1.91,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.239
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-EF-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-3B-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-81-FA-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.239
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-EF-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-3B-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-81-FA-0D-0A
+        IdModel = 111,
+        MAC = E466E557BB3B,
+        IP = 192.168.1.239,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.244
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-F4-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B6-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-18-08-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.244
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-F4-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B6-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-18-08-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9B6,
+        IP = 192.168.1.244,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.126
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-7E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EB-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-49-9F-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.126
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-7E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EB-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-49-9F-0D-0A
+        IdModel = 110,
+        MAC = E466E557B9EB,
+        IP = 192.168.1.126,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.67
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-43-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B0-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-5E-6C-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.67
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-43-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B0-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-5E-6C-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9B0,
+        IP = 192.168.1.67,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.70
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-46-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-E8-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-50-B7-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.70
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-46-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-E8-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-50-B7-0D-0A
+        IdModel = 110,
+        MAC = E466E557B9E8,
+        IP = 192.168.1.70,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.154
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-9A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-26-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-DC-50-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.154
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-9A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-26-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-DC-50-0D-0A
+        IdModel = 110,
+        MAC = E466E557B826,
+        IP = 192.168.1.154,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.236
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-EC-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-E1-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-CB-8C-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.236
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-EC-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-E1-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-CB-8C-0D-0A
+        IdModel = 110,
+        MAC = E466E557BAE1,
+        IP = 192.168.1.236,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.10
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-0A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-76-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-E6-97-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.10
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-0A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-76-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-E6-97-0D-0A
+        IdModel = 110,
+        MAC = E466E557B576,
+        IP = 192.168.1.10,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.96
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-60-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-2E-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-19-10-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.96
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-60-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-2E-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-19-10-0D-0A
+        IdModel = 111,
+        MAC = E466E557B82E,
+        IP = 192.168.1.96,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.215
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-D7-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BC-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-51-5D-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.215
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-90-E1-2F-00-00-00-00-00-00-00-00-11-00-C0-A8-01-D7-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BC-50-43-58-31-31-30-30-50-52-4F-36-46-00-00-51-5D-0D-0A
+        IdModel = 111,
+        MAC = E466E557B9BC,
+        IP = 192.168.1.215,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.145
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-91-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-DD-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-71-D1-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.145
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-91-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-DD-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-71-D1-0D-0A
+        IdModel = 110,
+        MAC = E466E557BADD,
+        IP = 192.168.1.145,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+Received: UDP Response: 192.168.1.4
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-04-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-64-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-7A-A6-0D-0A
+
+MatreshkaResponse: FoundDevices: 192.168.1.4
+Received: MatreshkaResponseXPROGOST:
+        response bytes: 41-59-3E-00-00-2F-00-00-00-05-00-00-00-00-11-00-C0-A8-01-04-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-64-50-43-58-36-30-30-50-52-4F-00-36-45-00-00-7A-A6-0D-0A
+        IdModel = 110,
+        MAC = E466E557B564,
+        IP = 192.168.1.4,
+        IPGateway = 192.168.1.1,
+        PortUDP = 1021,
+        PortTCP = 5000,
+        Version =
+UDPServer: CreateUdpClient: Listening port = 1021
+
+... wait for 1
+... wait for 2
+... wait for 3
+... wait for 4
+
+Found 23 devices:
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.157       MAC: E466E557B572
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.14        MAC: E466E557B840
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.200       MAC: E466E557B9C0
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.7         MAC: E466E557A60C
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.238       MAC: E466E557B9EE
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.125       MAC: E466E557B841
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.177       MAC: E466E557BB39
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.86        MAC: E466E557B83F
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.22        MAC: E466E557B579
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.79        MAC: E466E557B839
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.91        MAC: E466E557B9BA
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.239       MAC: E466E557BB3B
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.244       MAC: E466E557B9B6
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.126       MAC: E466E557B9EB
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.67        MAC: E466E557B9B0
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.70        MAC: E466E557B9E8
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.154       MAC: E466E557B826
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.236       MAC: E466E557BAE1
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.10        MAC: E466E557B576
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.96        MAC: E466E557B82E
+        Series: XPROGOST        Model: PC X 1100 PRO    IP: 192.168.1.215       MAC: E466E557B9BC
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.145       MAC: E466E557BADD
+        Series: XPROGOST        Model: PC X 600 PRO     IP: 192.168.1.4         MAC: E466E557B564
+___PreStaticTest: GetWorkParams 192.168.1.157:E466E557B572...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.157:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8A-31-5C-00-00-40-36-30-03-A7-09-05-E4-66-E5-57-83-1B-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-9D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-72-2A-29-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-34-0F-76-12-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.157:5000.
+GetWorkParams: complete 192.168.1.157:E466E557B572:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.14:E466E557B840...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.14:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-A6-32-5C-00-00-40-36-30-03-A7-AD-05-E4-66-E5-57-6A-29-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-0E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-40-39-6D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-15-D0-18-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.14:5000.
+GetWorkParams: complete 192.168.1.14:E466E557B840:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.200:E466E557B9C0...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.200:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-8E-32-5C-00-00-40-36-30-03-27-31-05-E4-66-E5-57-45-10-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-C8-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-C0-3D-78-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-07-A3-2A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1348 192.168.1.200:5000.
+GetWorkParams: complete 192.168.1.200:E466E557B9C0:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.7:E466E557A60C...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.7:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-8C-32-5C-00-00-40-36-30-03-A7-A9-05-E4-66-E5-57-33-38-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-07-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-A6-0C-2C-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-02-06-7A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.7:5000.
+GetWorkParams: complete 192.168.1.7:E466E557A60C:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.238:E466E557B9EE...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.238:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8E-32-5C-00-00-40-36-30-03-A7-49-05-E4-66-E5-57-64-12-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-EE-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EE-E1-CD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-3A-38-CD-77-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.238:5000.
+GetWorkParams: complete 192.168.1.238:E466E557B9EE:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.125:E466E557B841...
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.125:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-8A-31-5C-00-00-40-36-30-03-27-09-05-E4-66-E5-57-7C-51-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-7D-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-41-8B-9E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-19-5C-D9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.125:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.125:5000.
+GetWorkParams: complete 192.168.1.125:E466E557B841:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.177:E466E557BB39...
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.177:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-88-31-5C-00-00-40-36-30-03-A7-59-05-E4-66-E5-57-78-CA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-B1-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-39-DB-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-05-E1-0A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.177:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-01-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-D9-DA-0D-0A
+
+close socket 1336 192.168.1.177:5000.
+GetWorkParams: complete 192.168.1.177:E466E557BB39:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.86:E466E557B83F...
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.86:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8D-31-5C-00-00-40-36-30-03-27-68-05-E4-66-E5-57-5D-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-56-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-3F-9C-77-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-3A-02-D4-E0-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.86:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.86:5000.
+GetWorkParams: complete 192.168.1.86:E466E557B83F:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.22:E466E557B579...
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.22:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-89-32-5C-00-00-40-36-30-03-A7-E9-05-E4-66-E5-57-D3-9B-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-16-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-79-B6-E8-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-39-07-22-E5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.22:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.22:5000.
+GetWorkParams: complete 192.168.1.22:E466E557B579:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.79:E466E557B839...
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.79:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-89-31-5C-00-00-40-36-30-03-27-50-05-E4-66-E5-57-47-81-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-4F-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-39-EC-9D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-08-4C-DB-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.79:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.79:5000.
+GetWorkParams: complete 192.168.1.79:E466E557B839:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.91:E466E557B9BA...
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.91:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-88-31-5C-00-00-40-36-30-03-27-80-05-E4-66-E5-57-D7-8D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-5B-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BA-74-77-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-1E-BB-A9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.91:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.91:5000.
+GetWorkParams: complete 192.168.1.91:E466E557B9BA:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.239:E466E557BB3B...
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.239:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-89-32-5C-00-00-40-36-30-03-27-D1-05-E4-66-E5-57-E2-F3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-EF-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BB-3B-8E-1A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-20-26-7E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.239:5000.
+GetWorkParams: complete 192.168.1.239:E466E557BB3B:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.244:E466E557B9B6...
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.244:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-A7-32-5C-00-00-40-36-30-03-A7-49-05-E4-66-E5-57-D7-0C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-F4-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B6-AA-EE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-0C-C8-9B-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.244:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1392 192.168.1.244:5000.
+GetWorkParams: complete 192.168.1.244:E466E557B9B6:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.126:E466E557B9EB...
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.126:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-88-31-5C-00-00-40-36-30-03-A7-8C-05-E4-66-E5-57-CB-CC-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-7E-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-EB-D0-3F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-38-10-C5-B4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.126:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1392 192.168.1.126:5000.
+GetWorkParams: complete 192.168.1.126:E466E557B9EB:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.67:E466E557B9B0...
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.67:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-8B-31-5C-00-00-40-36-30-03-27-20-05-E4-66-E5-57-B2-84-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-43-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-B0-5D-76-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-23-45-4E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.67:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1392 192.168.1.67:5000.
+GetWorkParams: complete 192.168.1.67:E466E557B9B0:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.70:E466E557B9E8...
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.70:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8B-31-5C-00-00-40-36-30-03-27-2C-05-E4-66-E5-57-57-6E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-46-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-E8-6A-CF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-37-15-5E-F4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.70:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1392 192.168.1.70:5000.
+GetWorkParams: complete 192.168.1.70:E466E557B9E8:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.154:E466E557B826...
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.154:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8A-31-5C-00-00-40-36-30-03-27-7D-05-E4-66-E5-57-47-F3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-9A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-26-18-7F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-01-00-06-3E-7D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.154:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.154:5000.
+GetWorkParams: complete 192.168.1.154:E466E557B826:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.236:E466E557BAE1...
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.236:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-8A-32-5C-00-00-40-36-30-03-A7-45-05-E4-66-E5-57-55-99-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-EC-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-E1-42-C5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-35-1E-57-23-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.236:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.236:5000.
+GetWorkParams: complete 192.168.1.236:E466E557BAE1:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.10:E466E557B576...
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.10:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-A4-32-5C-00-00-40-36-30-03-A7-9D-05-E4-66-E5-57-89-A7-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-0A-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-76-25-F1-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-36-1C-46-56-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.10:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.10:5000.
+GetWorkParams: complete 192.168.1.10:E466E557B576:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.96:E466E557B82E...
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.96:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-8D-31-5C-00-00-40-36-30-03-27-90-05-E4-66-E5-57-A5-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-60-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B8-2E-A1-35-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-13-16-78-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.96:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.96:5000.
+GetWorkParams: complete 192.168.1.96:E466E557B82E:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.215:E466E557B9BC...
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.215:5000 ...success
+Response: 01-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-DF-97-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 02-00-00-00-8A-10-00-B7-31-5C-00-00-40-36-30-03-A7-C5-05-E4-66-E5-57-3B-13-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 03-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-48-F9-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 04-00-00-00-81-10-00-C0-A8-01-D7-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B9-BC-5A-5D-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 05-00-00-00-82-10-00-5F-00-B9-14-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 06-00-00-00-84-10-00-32-70-C2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 07-00-00-00-86-10-00-01-32-06-60-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 08-00-00-00-85-10-00-0B-46-03-C8-BE-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 09-00-00-00-87-10-00-E8-03-00-00-87-8A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0A-00-00-00-88-10-00-1A-01-01-00-11-15-D0-18-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.215:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 0B-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-2E-35-0D-0A
+
+close socket 1336 192.168.1.215:5000.
+GetWorkParams: complete 192.168.1.215:E466E557B9BC:PC X 1100 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.145:E466E557BADD...
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.145:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-B8-31-5C-00-00-40-36-30-03-27-29-05-E4-66-E5-57-05-A0-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-91-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-BA-DD-30-A5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-32-2C-D1-AC-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.145:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.145:5000.
+GetWorkParams: complete 192.168.1.145:E466E557BADD:PC X 600 PRO
+...OK
+___PreStaticTest: GetWorkParams 192.168.1.4:E466E557B564...
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-89-00-8B-69-3C-5A-58-E1-0D-0A...
+Connecting 192.168.1.4:5000 ...success
+Response: 06-00-00-00-89-10-00-30-30-30-31-2E-30-30-31-2E-30-30-31-C0-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8A-00-8B-69-3C-5A-B8-2F-0D-0A...
+Response: 07-00-00-00-8A-10-00-A5-32-5C-00-00-40-36-30-03-A7-85-05-E4-66-E5-57-6B-18-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 08-00-00-00-83-10-00-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-86-01-07-36-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-81-00-8B-69-3C-5A-1A-EC-0D-0A...
+Response: 09-00-00-00-81-10-00-C0-A8-01-04-FF-FF-FF-00-C0-A8-01-01-88-13-FD-03-E4-66-E5-57-B5-64-68-B7-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0A-00-00-00-82-10-00-5F-00-ED-8C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 0B-00-00-00-84-10-00-32-14-94-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 0C-00-00-00-86-10-00-01-32-06-E4-8E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 0D-00-00-00-85-10-00-06-02-03-E1-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 0E-00-00-00-87-10-00-E8-03-00-00-3A-A3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 0F-00-00-00-88-10-00-1A-01-01-00-33-2A-26-FF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.4:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 10-00-00-00-8B-10-00-02-00-00-00-00-00-00-00-01-00-00-00-00-00-00-00-C4-B5-0D-0A
+
+close socket 1336 192.168.1.4:5000.
+GetWorkParams: complete 192.168.1.4:E466E557B564:PC X 600 PRO
+...OK
+... wait for 1
+... wait for 2
+... wait for 3
+
+
+____________Starting Static Tests ModelName=PC X 600 PRO SerialNumber=8A315C000040363003A70905E466E557 FirmwareVersion=0001.001.001
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.157:5000 ...success
+Response: 11-00-00-00-02-10-00-09-E2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 12-00-00-00-82-10-00-02-00-0F-8E-0D-0A
+
+
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 13-00-00-00-03-10-00-DA-B5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 14-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-E1-81-0D-0A
+
+
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-0F-13-05-0D-0A...
+Response: 15-00-00-00-04-10-00-6F-91-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 16-00-00-00-84-10-00-0F-3A-18-0D-0A
+
+
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-06-02-02-35-EE-0D-0A...
+Response: 17-00-00-00-05-10-00-BC-C6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 18-00-00-00-85-10-00-06-02-02-26-B9-0D-0A
+
+
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 19-00-00-00-06-10-00-64-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 1A-00-00-00-86-10-00-02-02-02-8C-75-0D-0A
+
+
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 1B-00-00-00-07-10-00-B7-FA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 1C-00-00-00-87-10-00-E1-10-00-00-F0-BF-0D-0A
+
+
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 1D-00-00-00-40-10-00-AF-C3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 1E-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-5E-E4-0D-0A
+
+
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1F-00-00-00-08-10-00-40-17-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 20-00-00-00-88-10-00-1A-02-02-02-02-02-BC-9B-0D-0A
+
+
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 21-00-00-00-02-10-00-84-BB-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-9E-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-BA-C1-0D-0A...
+Response: 22-00-00-00-01-10-00-56-3A-0D-0A
+
+close socket 1472 192.168.1.157:5000.
+NetworkTest: Waiting for device network setup timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.158:5001 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.158:5001 ...success
+Response: 24-00-00-00-82-10-00-16-00-32-EF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.158:5001 :
+Request:  40-23-24-00-00-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-9D-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-1F-0E-0D-0A...
+Response: 25-00-00-00-01-10-00-12-23-0D-0A
+
+close socket 1472 192.168.1.158:5001.
+NetworkTest: Waiting for restore device network setup timeout (10000)
+
+RestoreSettingsTest: testing "Restore Factory Settings"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-21-00-87-E6-0D-0A...
+Connecting 192.168.1.157:5001 ...success
+Response: 27-00-00-00-02-10-00-A1-1A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-04-00-31-21-0D-0A...
+Response: 28-00-00-00-41-10-00-B5-D4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-08-00-5C-64-0D-0A...
+Response: 29-00-00-00-41-10-00-D4-6C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-10-00-86-EE-0D-0A...
+Response: 2A-00-00-00-41-10-00-56-B4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-20-00-13-EB-0D-0A...
+Response: 2B-00-00-00-41-10-00-37-0C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-40-00-39-E0-0D-0A...
+Response: 2C-00-00-00-41-10-00-73-15-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-80-00-6D-F6-0D-0A...
+Response: 2D-00-00-00-41-10-00-12-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-01-D4-FD-0D-0A...
+Response: 2E-00-00-00-41-10-00-90-75-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-02-B7-CD-0D-0A...
+Response: 2F-00-00-00-41-10-00-F1-CD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5001 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-02-00-97-8B-0D-0A...
+Response: 30-00-00-00-41-10-00-63-70-0D-0A
+
+close socket 1472 192.168.1.157:5001.
+RestoreSettingsTest: Waiting for device reset timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.157:5000 ...success
+Response: 32-00-00-00-82-10-00-5F-00-10-51-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 33-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-8F-7D-0D-0A
+
+RestoreSettingsTest: done...
+
+RebootTest: testing "Restart Device"...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-43-00-8B-69-3C-5A-6A-D9-0D-0A...
+Response: 34-00-00-00-43-10-00-C5-DF-0D-0A
+
+close socket 1460 192.168.1.157:5000.
+RebootTest: waiting for 19000msec...
+
+NetworkProtoCommonDual: Send: 192.168.1.157:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.157:5000 ...success
+Response: 00-00-00-00-82-10-00-5F-00-75-63-0D-0A
+
+___StaticTest: 192.168.1.157:E466E557B572  OK. PC X 600 PRO 8A315C000040363003A70905E466E557
+
+
+____________Starting Static Tests ModelName=PC X 1100 PRO SerialNumber=A6325C000040363003A7AD05E466E557 FirmwareVersion=0001.001.001
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.14:5000 ...success
+Response: 0C-00-00-00-02-10-00-78-3F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0D-00-00-00-82-10-00-02-00-A5-45-0D-0A
+
+
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 0E-00-00-00-03-10-00-AB-68-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 0F-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-1A-49-0D-0A
+
+
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-0C-70-35-0D-0A...
+Response: 10-00-00-00-04-10-00-C8-E8-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 11-00-00-00-84-10-00-0C-41-EF-0D-0A
+
+
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-0B-02-02-64-AC-0D-0A...
+Response: 12-00-00-00-05-10-00-1B-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 13-00-00-00-85-10-00-0B-02-02-F3-00-0D-0A
+
+
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 14-00-00-00-06-10-00-6E-47-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 15-00-00-00-86-10-00-02-02-02-3D-23-0D-0A
+
+
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 16-00-00-00-07-10-00-BD-10-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 17-00-00-00-87-10-00-E1-10-00-00-84-65-0D-0A
+
+
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 18-00-00-00-40-10-00-08-BA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 19-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-4E-CF-0D-0A
+
+
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1A-00-00-00-08-10-00-E7-6E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 1B-00-00-00-88-10-00-1A-02-02-02-02-02-9F-64-0D-0A
+
+
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 1C-00-00-00-02-10-00-03-08-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-0F-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-CD-27-0D-0A...
+Response: 1D-00-00-00-01-10-00-32-E9-0D-0A
+
+close socket 1516 192.168.1.14:5000.
+NetworkTest: Waiting for device network setup timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.15:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.15:5001 ...success
+Response: 1F-00-00-00-82-10-00-16-00-8B-1F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.15:5001 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-0E-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-AE-62-0D-0A...
+Response: 20-00-00-00-01-10-00-B5-5A-0D-0A
+
+close socket 1524 192.168.1.15:5001.
+NetworkTest: Waiting for restore device network setup timeout (10000)
+
+RestoreSettingsTest: testing "Restore Factory Settings"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-21-00-87-E6-0D-0A...
+Connecting 192.168.1.14:5001 ...success
+Response: 22-00-00-00-02-10-00-06-63-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-04-00-31-21-0D-0A...
+Response: 23-00-00-00-41-10-00-9A-9F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-08-00-5C-64-0D-0A...
+Response: 24-00-00-00-41-10-00-DE-86-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-10-00-86-EE-0D-0A...
+Response: 25-00-00-00-41-10-00-BF-3E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-20-00-13-EB-0D-0A...
+Response: 26-00-00-00-41-10-00-3D-E6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-40-00-39-E0-0D-0A...
+Response: 27-00-00-00-41-10-00-5C-5E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-80-00-6D-F6-0D-0A...
+Response: 28-00-00-00-41-10-00-B5-D4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-01-D4-FD-0D-0A...
+Response: 29-00-00-00-41-10-00-D4-6C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-02-B7-CD-0D-0A...
+Response: 2A-00-00-00-41-10-00-56-B4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-02-00-97-8B-0D-0A...
+Response: 2B-00-00-00-41-10-00-37-0C-0D-0A
+
+close socket 1524 192.168.1.14:5001.
+RestoreSettingsTest: Waiting for device reset timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.14:5000 ...success
+Response: 2D-00-00-00-82-10-00-5F-00-BA-9A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 2E-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-C4-B4-0D-0A
+
+RestoreSettingsTest: done...
+
+RebootTest: testing "Restart Device"...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-43-00-8B-69-3C-5A-6A-D9-0D-0A...
+Response: 2F-00-00-00-43-10-00-91-A3-0D-0A
+
+close socket 1524 192.168.1.14:5000.
+RebootTest: waiting for 19000msec...
+
+NetworkProtoCommonDual: Send: 192.168.1.14:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.14:5000 ...success
+Response: 00-00-00-00-82-10-00-5F-00-75-63-0D-0A
+
+___StaticTest: 192.168.1.14:E466E557B840  OK. PC X 1100 PRO A6325C000040363003A7AD05E466E557
+
+
+____________Starting Static Tests ModelName=PC X 1100 PRO SerialNumber=8E325C000040363003273105E466E557 FirmwareVersion=0001.001.001
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.200:5000 ...success
+Response: 0C-00-00-00-02-10-00-78-3F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0D-00-00-00-82-10-00-02-00-A5-45-0D-0A
+
+
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 0E-00-00-00-03-10-00-AB-68-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 0F-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-1A-49-0D-0A
+
+
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-09-D5-65-0D-0A...
+Response: 10-00-00-00-04-10-00-C8-E8-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 11-00-00-00-84-10-00-09-E4-BF-0D-0A
+
+
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-0B-02-02-64-AC-0D-0A...
+Response: 12-00-00-00-05-10-00-1B-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 13-00-00-00-85-10-00-0B-02-02-F3-00-0D-0A
+
+
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 14-00-00-00-06-10-00-6E-47-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 15-00-00-00-86-10-00-02-02-02-3D-23-0D-0A
+
+
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 16-00-00-00-07-10-00-BD-10-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 17-00-00-00-87-10-00-E1-10-00-00-84-65-0D-0A
+
+
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 18-00-00-00-40-10-00-08-BA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 19-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-4E-CF-0D-0A
+
+
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1A-00-00-00-08-10-00-E7-6E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 1B-00-00-00-88-10-00-1A-02-02-02-02-02-9F-64-0D-0A
+
+
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 1C-00-00-00-02-10-00-03-08-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-C9-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-D6-47-0D-0A...
+Response: 1D-00-00-00-01-10-00-32-E9-0D-0A
+
+close socket 1592 192.168.1.200:5000.
+NetworkTest: Waiting for device network setup timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.201:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.201:5001 ...success
+Response: 1F-00-00-00-82-10-00-16-00-8B-1F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.201:5001 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-C8-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-B5-02-0D-0A...
+Response: 20-00-00-00-01-10-00-B5-5A-0D-0A
+
+close socket 1620 192.168.1.201:5001.
+NetworkTest: Waiting for restore device network setup timeout (10000)
+
+RestoreSettingsTest: testing "Restore Factory Settings"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-21-00-87-E6-0D-0A...
+Connecting 192.168.1.200:5001 ...success
+Response: 22-00-00-00-02-10-00-06-63-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-04-00-31-21-0D-0A...
+Response: 23-00-00-00-41-10-00-9A-9F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-08-00-5C-64-0D-0A...
+Response: 24-00-00-00-41-10-00-DE-86-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-10-00-86-EE-0D-0A...
+Response: 25-00-00-00-41-10-00-BF-3E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-20-00-13-EB-0D-0A...
+Response: 26-00-00-00-41-10-00-3D-E6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-40-00-39-E0-0D-0A...
+Response: 27-00-00-00-41-10-00-5C-5E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-80-00-6D-F6-0D-0A...
+Response: 28-00-00-00-41-10-00-B5-D4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-01-D4-FD-0D-0A...
+Response: 29-00-00-00-41-10-00-D4-6C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-02-B7-CD-0D-0A...
+Response: 2A-00-00-00-41-10-00-56-B4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-02-00-97-8B-0D-0A...
+Response: 2B-00-00-00-41-10-00-37-0C-0D-0A
+
+close socket 1636 192.168.1.200:5001.
+RestoreSettingsTest: Waiting for device reset timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.200:5000 ...success
+Response: 2D-00-00-00-82-10-00-5F-00-BA-9A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 2E-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-C4-B4-0D-0A
+
+RestoreSettingsTest: done...
+
+RebootTest: testing "Restart Device"...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-43-00-8B-69-3C-5A-6A-D9-0D-0A...
+Response: 2F-00-00-00-43-10-00-91-A3-0D-0A
+
+close socket 1668 192.168.1.200:5000.
+RebootTest: waiting for 19000msec...
+
+NetworkProtoCommonDual: Send: 192.168.1.200:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.200:5000 ...success
+Response: 00-00-00-00-82-10-00-5F-00-75-63-0D-0A
+
+___StaticTest: 192.168.1.200:E466E557B9C0  OK. PC X 1100 PRO 8E325C000040363003273105E466E557
+
+
+____________Starting Static Tests ModelName=PC X 1100 PRO SerialNumber=8C325C000040363003A7A905E466E557 FirmwareVersion=0001.001.001
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.7:5000 ...success
+Response: 0C-00-00-00-02-10-00-78-3F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 0D-00-00-00-82-10-00-02-00-A5-45-0D-0A
+
+
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 0E-00-00-00-03-10-00-AB-68-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 0F-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-1A-49-0D-0A
+
+
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-18-C5-67-0D-0A...
+Response: 10-00-00-00-04-10-00-C8-E8-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 11-00-00-00-84-10-00-18-F4-BD-0D-0A
+
+
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-0B-02-02-64-AC-0D-0A...
+Response: 12-00-00-00-05-10-00-1B-BF-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 13-00-00-00-85-10-00-0B-02-02-F3-00-0D-0A
+
+
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 14-00-00-00-06-10-00-6E-47-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 15-00-00-00-86-10-00-02-02-02-3D-23-0D-0A
+
+
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 16-00-00-00-07-10-00-BD-10-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 17-00-00-00-87-10-00-E1-10-00-00-84-65-0D-0A
+
+
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 18-00-00-00-40-10-00-08-BA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 19-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-4E-CF-0D-0A
+
+
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1A-00-00-00-08-10-00-E7-6E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 1B-00-00-00-88-10-00-1A-02-02-02-02-02-9F-64-0D-0A
+
+
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 1C-00-00-00-02-10-00-03-08-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-08-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-C5-ED-0D-0A...
+Response: 1D-00-00-00-01-10-00-32-E9-0D-0A
+
+close socket 1680 192.168.1.7:5000.
+NetworkTest: Waiting for device network setup timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.8:5001 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.8:5001 ...success
+Response: 1F-00-00-00-82-10-00-16-00-8B-1F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.8:5001 :
+Request:  40-23-24-90-E1-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-07-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-97-2C-0D-0A...
+Response: 20-00-00-00-01-10-00-B5-5A-0D-0A
+
+close socket 1244 192.168.1.8:5001.
+NetworkTest: Waiting for restore device network setup timeout (10000)
+
+RestoreSettingsTest: testing "Restore Factory Settings"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-21-00-87-E6-0D-0A...
+Connecting 192.168.1.7:5001 ...success
+Response: 22-00-00-00-02-10-00-06-63-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-04-00-31-21-0D-0A...
+Response: 23-00-00-00-41-10-00-9A-9F-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-08-00-5C-64-0D-0A...
+Response: 24-00-00-00-41-10-00-DE-86-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-10-00-86-EE-0D-0A...
+Response: 25-00-00-00-41-10-00-BF-3E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-20-00-13-EB-0D-0A...
+Response: 26-00-00-00-41-10-00-3D-E6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-40-00-39-E0-0D-0A...
+Response: 27-00-00-00-41-10-00-5C-5E-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-80-00-6D-F6-0D-0A...
+Response: 28-00-00-00-41-10-00-B5-D4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-01-D4-FD-0D-0A...
+Response: 29-00-00-00-41-10-00-D4-6C-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-00-02-B7-CD-0D-0A...
+Response: 2A-00-00-00-41-10-00-56-B4-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5001 :
+Request:  40-23-24-90-E1-10-00-00-00-00-00-00-00-41-00-8B-69-3C-5A-02-00-97-8B-0D-0A...
+Response: 2B-00-00-00-41-10-00-37-0C-0D-0A
+
+close socket 1244 192.168.1.7:5001.
+RestoreSettingsTest: Waiting for device reset timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.7:5000 ...success
+Response: 2D-00-00-00-82-10-00-5F-00-BA-9A-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 2E-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-C4-B4-0D-0A
+
+RestoreSettingsTest: done...
+
+RebootTest: testing "Restart Device"...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-43-00-8B-69-3C-5A-6A-D9-0D-0A...
+Response: 2F-00-00-00-43-10-00-91-A3-0D-0A
+
+close socket 1088 192.168.1.7:5000.
+RebootTest: waiting for 19000msec...
+
+NetworkProtoCommonDual: Send: 192.168.1.7:5000 :
+Request:  40-23-24-90-E1-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.7:5000 ...success
+Response: 00-00-00-00-82-10-00-5F-00-75-63-0D-0A
+
+___StaticTest: 192.168.1.7:E466E557A60C  OK. PC X 1100 PRO 8C325C000040363003A7A905E466E557
+
+
+____________Starting Static Tests ModelName=PC X 600 PRO SerialNumber=8E325C000040363003A74905E466E557 FirmwareVersion=0001.001.001
+
+
+BaseSensitivityTest: testing "Set Security Level"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-02-00-32-B5-0D-0A...
+Connecting 192.168.1.238:5000 ...success
+Response: 11-00-00-00-02-10-00-09-E2-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Response: 12-00-00-00-82-10-00-02-00-0F-8E-0D-0A
+
+
+ZonesSensitivityTest: testing "Set Zone Sensitivity"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-3A-00-00-00-00-00-00-00-03-00-8B-69-3C-5A-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-AB-92-0D-0A...
+Response: 13-00-00-00-03-10-00-DA-B5-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-83-00-8B-69-3C-5A-5A-67-0D-0A...
+Response: 14-00-00-00-83-10-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-02-00-E1-81-0D-0A
+
+
+WorkingFreqTest: testing "Set Driving Frequency"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0F-00-00-00-00-00-00-00-04-00-8B-69-3C-5A-09-D5-65-0D-0A...
+Response: 15-00-00-00-04-10-00-6F-91-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-84-00-8B-69-3C-5A-1B-AF-0D-0A...
+Response: 16-00-00-00-84-10-00-09-FC-78-0D-0A
+
+
+WorkProgramSceneTest: testing "Set Working Mode"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-11-00-00-00-00-00-00-00-05-00-8B-69-3C-5A-06-02-02-35-EE-0D-0A...
+Response: 17-00-00-00-05-10-00-BC-C6-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-85-00-8B-69-3C-5A-BB-EA-0D-0A...
+Response: 18-00-00-00-85-10-00-06-02-02-26-B9-0D-0A
+
+
+AlarmParamsTest: testing "Set Alarm Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-11-00-00-00-00-00-00-00-06-00-8B-69-3C-5A-02-02-02-B1-1F-0D-0A...
+Response: 19-00-00-00-06-10-00-64-AD-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-86-00-8B-69-3C-5A-5B-24-0D-0A...
+Response: 1A-00-00-00-86-10-00-02-02-02-8C-75-0D-0A
+
+
+OperatorPasswordTest: testing "Set Operator Password"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-12-00-00-00-00-00-00-00-07-00-8B-69-3C-5A-E1-10-00-00-CC-69-0D-0A...
+Response: 1B-00-00-00-07-10-00-B7-FA-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-87-00-8B-69-3C-5A-FB-61-0D-0A...
+Response: 1C-00-00-00-87-10-00-E1-10-00-00-F0-BF-0D-0A
+
+
+ClearPassageTest: testing "Clear People Count"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0F-00-00-00-00-00-00-00-40-00-8B-69-3C-5A-0F-39-19-0D-0A...
+Response: 1D-00-00-00-40-10-00-AF-C3-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-8B-00-8B-69-3C-5A-18-6A-0D-0A...
+Response: 1E-00-00-00-8B-10-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-5E-E4-0D-0A
+
+
+TimeTest: testing "Set Time Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-14-00-00-00-00-00-00-00-08-00-8B-69-3C-5A-1A-02-02-02-02-02-7E-6D-0D-0A...
+Response: 1F-00-00-00-08-10-00-40-17-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-88-00-8B-69-3C-5A-F8-A4-0D-0A...
+Response: 20-00-00-00-88-10-00-1A-02-02-02-02-02-BC-9B-0D-0A
+
+
+NetworkTest: testing "Set Ethernet Parameters"...
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-10-00-00-00-00-00-00-00-02-00-8B-69-3C-5A-16-00-85-7A-0D-0A...
+Response: 21-00-00-00-02-10-00-84-BB-0D-0A
+
+
+NetworkProtoCommonDual: Send: 192.168.1.238:5000 :
+Request:  40-23-24-00-00-1E-00-00-00-00-00-00-00-01-00-8B-69-3C-5A-C0-A8-01-EF-FF-FF-FF-00-C0-A8-01-01-89-13-FD-03-D5-E5-0D-0A...
+Response: 22-00-00-00-01-10-00-56-3A-0D-0A
+
+close socket 1244 192.168.1.238:5000.
+NetworkTest: Waiting for device network setup timeout (10000)
+
+NetworkProtoCommonDual: Send: 192.168.1.239:5001 :
+Request:  40-23-24-00-00-0E-00-00-00-00-00-00-00-82-00-8B-69-3C-5A-FA-22-0D-0A...
+Connecting 192.168.1.239:5001 ...success
+EX: ExecuteGetCommand: parse by command GetBaseSensitivity: GetResult: response null!
+
+Validator: EX: InitNetworkParams: EX: no response from 192.168.1.239:8E325C000040363003A74905E466E557:0001.001.001!!

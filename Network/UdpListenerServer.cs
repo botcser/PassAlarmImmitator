@@ -334,9 +334,7 @@ namespace IRAPROM.MyCore.MyNetwork
                 PortUDP = rec.UDPPort,
                 Model = rec.ProductModel
             };
-
-            MetalDetectPacketInfo.MakeMetalDeviceFromPacketInfo(rec, MetalDetectorSeries.Matryoshka);
-
+            
             var message = $"rec.command = {rec.command}\n";
 
             try

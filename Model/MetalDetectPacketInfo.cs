@@ -305,7 +305,17 @@ namespace IRAPROM.MyCore.Model
                             //                  $"\n\tsomeTime {someTime}" +
                             //                  $"\n\tsomeDate {Convert.ToHexString(someDate)}");
 
-                            var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.IP == ipEndPoint.Address.ToString());
+                            var enterPassagesCount = br.ReadUInt32();
+                            var exitPassagesCount = br.ReadUInt32();
+                            var enterAlarmCount = br.ReadUInt32();
+                            var exitAlarmCount = br.ReadUInt32();
+                            var alarmZoneMode = rec.ZonesSensorMode = br.ReadByte();
+                            var infraredPassCounterMode = (byte)(br.ReadByte() & 0x0F);
+                            var metalQuantity = br.ReadUInt16();
+                            var sensors = rec.sensors = br.ReadBytes(8);
+                            var mac = br.ReadBytes(6);
+
+                            var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.MAC == Convert.ToHexString(mac));
                             MetDetector metDetector = null;
                             Action<MetDetector> metDetectorOnChanged = null;
 
@@ -316,27 +326,21 @@ namespace IRAPROM.MyCore.Model
                                 rec.MetDetector = md.Value;
                                 rec.Ip = md.Value.IP;
                                 rec.Mac = md.Value.MAC;
+                                rec.IdModel = metDetector.ModelId;
+                                rec.ProductModel = metDetector.Name;
                             }
 
-                            var enterPassagesCount = br.ReadUInt32();
-                            var exitPassagesCount = br.ReadUInt32();
-                            var enterAlarmCount = br.ReadUInt32();
-                            var exitAlarmCount = br.ReadUInt32();
-                            var alarmZoneMode = rec.ZonesSensorMode = br.ReadByte();
-                            var infraredPassCounterMode = (byte)(br.ReadByte() & 0x0F);
-                            var metalQuantity = br.ReadUInt16();
-                            var sensors = rec.sensors = br.ReadBytes(8);
+                            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
+                                              $"\n\tEnterPassagesCount {enterPassagesCount}" +
+                                              $"\n\tExitPassagesCount {exitPassagesCount}" +
+                                              $"\n\tEnterAlarmCount {enterAlarmCount}" +
+                                              $"\n\tExitAlarmCount {exitAlarmCount}" +
+                                              $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
+                                              $"\n\tAlarmZoneMode {alarmZoneMode}" +
+                                              $"\n\tmetalQuantity {metalQuantity}" +
+                                              $"\n\tsensors {Convert.ToHexString(sensors)}" +
+                                              $"\n\tmac {Convert.ToHexString(mac)}");
 
-                            //Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
-                            //                  $"\n\tEnterPassagesCount {enterPassagesCount}" +
-                            //                  $"\n\tExitPassagesCount {exitPassagesCount}" +
-                            //                  $"\n\tEnterAlarmCount {enterAlarmCount}" +
-                            //                  $"\n\tExitAlarmCount {exitAlarmCount}" +
-                            //                  $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
-                            //                  $"\n\tAlarmZoneMode {alarmZoneMode}" +
-                            //                  $"\n\tmetalQuantity {metalQuantity}" +
-                            //                  $"\n\tsensors {Convert.ToHexString(sensors)}");
-                            
                             if (metDetector != null)
                             {
                                 metDetector.AlarmZoneMode = metDetector.DeviceMetalDetector.ZonesCount = metDetector.DeviceMetalDetector.WorkParams.ZonesSensorMode = alarmZoneMode;
