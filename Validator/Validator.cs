@@ -97,7 +97,7 @@ namespace PassAlarmSimulator.Validator
 
                 FoundDevices.ForEach(i =>
                 {
-                    if (!collisionsIps.Contains(i.IP)) return;         // If changed, change in other places!
+                    if (!collisionsIps.Contains(i.IP)) return;       
 
                     collisionsIps.Remove(i.IP);
 
@@ -107,10 +107,10 @@ namespace PassAlarmSimulator.Validator
                     
                     Console.WriteLine($"\nChanging IP from {i.IP} to {ip}");
                     i.SetIp(ip);
-                    Console.WriteLine($"Waiting for device setup IP {10000}");
                 });
 
-                Thread.Sleep(10000);
+                Console.WriteLine($"Waiting for device setup IP {13000}ms");
+                Thread.Sleep(13000);
             } while (true);
 
             var device = FoundDevices.FirstOrDefault(i => i.IP == "192.168.1.3");
@@ -123,8 +123,8 @@ namespace PassAlarmSimulator.Validator
 
                 device.SetIp(ip);
 
-                Console.WriteLine($"Waiting for device setup IP {10000}");
-                Thread.Sleep(10000);
+                Console.WriteLine($"Waiting for device setup IP {13000}ms");
+                Thread.Sleep(13000);
             }
         }
 

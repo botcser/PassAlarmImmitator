@@ -24,41 +24,40 @@ public class App
         
         Console.WriteLine($"Current PID: {Environment.ProcessId}");
 
-        while (programNumber != "0")
+        programNumber = "2";
+        //programNumber = Console.ReadLine();
+
+        switch (programNumber)
         {
-            programNumber = "2";
-            //programNumber = Console.ReadLine();
+            case "1":
+                task = new PassAlarmSimulator.PassAlarmSimulator();
+                break;
+            case "2":
+                var ip = "192.168.1.255";
+                //var ip = InitIP();
+                Console.WriteLine($"Testing in {ip} network...");
 
-            switch (programNumber)
-            {
-                case "1":
-                    task = new PassAlarmSimulator.PassAlarmSimulator();
-                    break;
-                case "2":
-                    var ip = "192.168.1.255";
-                    //var ip = InitIP();
-                    Console.WriteLine($"Testing in {ip} network...");
+                //Console.WriteLine($"Enter lower computer UDP port\n");
+                //int.TryParse(Console.ReadLine(), out var port);
 
-                    //Console.WriteLine($"Enter lower computer UDP port\n");
-                    //int.TryParse(Console.ReadLine(), out var port);
+                //Console.WriteLine($"Enter higher computer UDP port to listen\n");
+                //int.TryParse(Console.ReadLine(), out var portListen);
 
-                    //Console.WriteLine($"Enter higher computer UDP port to listen\n");
-                    //int.TryParse(Console.ReadLine(), out var portListen);
-
-                    task = new Validator(ip, 0, 0);
-                    break;
-                case "0":
-                    task?.Shutdown();
-                    Console.WriteLine("Goodbye, World!");
-                    Environment.Exit(0);
-                    break;
-                default:
-                    break;
-            }
-
-            task?.Start().Wait();
+                task = new Validator(ip, 0, 0);
+                break;
+            case "0":
+                task?.Shutdown();
+                Console.WriteLine("Goodbye, World!");
+                Environment.Exit(0);
+                break;
+            default:
+                break;
         }
 
+        task?.Start().Wait();
+
+        Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
+        Console.ReadLine();
 
 
         string InitIP()

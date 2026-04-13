@@ -105,7 +105,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
                    WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) &&
-                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) /*&& NetworkTest(workParams)*/
+                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
                    && RestoreSettingsTest(workParams) && RebootTest(workParams)/* && InvalidParamsTest(workParams)*/;
         }
 
