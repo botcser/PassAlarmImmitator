@@ -109,8 +109,8 @@ namespace PassAlarmSimulator.Validator
                     i.SetIp(ip);
                 });
 
-                Console.WriteLine($"Waiting for device setup IP {13000}ms");
-                Thread.Sleep(13000);
+                Console.WriteLine($"Waiting for device setup IP {19000}ms");
+                Thread.Sleep(19000);
             } while (true);
 
             var device = FoundDevices.FirstOrDefault(i => i.IP == "192.168.1.3");
@@ -123,8 +123,8 @@ namespace PassAlarmSimulator.Validator
 
                 device.SetIp(ip);
 
-                Console.WriteLine($"Waiting for device setup IP {13000}ms");
-                Thread.Sleep(13000);
+                Console.WriteLine($"Waiting for device setup IP {19000}ms");
+                Thread.Sleep(19000);
             }
         }
 

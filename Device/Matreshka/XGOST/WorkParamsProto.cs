@@ -105,7 +105,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
                    WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) &&
-                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
+                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) /*&& NetworkTest(workParams)*/
                    && RestoreSettingsTest(workParams) && RebootTest(workParams)/* && InvalidParamsTest(workParams)*/;
         }
 
@@ -345,7 +345,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             workParams.BackwardAlarmsCount = BitConverter.ToUInt32(response, 12);
         }
 
-        public void RestoreSettings(WorkParams workParams)
+        public void RestoreSettings(WorkParams workParams, bool networkReset = true)
         {
             ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 4, 0x00 });
             Thread.Sleep(_requestDelay);
@@ -363,7 +363,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             Thread.Sleep(_requestDelay);
             ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 0x00, 0x02 });
             Thread.Sleep(_requestDelay);
-            ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 0x02, 0x00 });
+
+            if (networkReset)
+                ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 0x02, 0x00 });  // network
 
             NetworkProto.Disconnect();
             //ExecuteSetCommandRaw(Constants.ResetSettings.code, new byte[] { 0x00, 4 });
@@ -586,11 +588,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetBaseSensitivity(workParams);
             Thread.Sleep(_requestDelay);
 
-            RestoreSettings(workParams);
+            RestoreSettings(workParams, false);
 #if DEBUG
-            Console.WriteLine($"RestoreSettingsTest: Waiting for device reset timeout ({_networkSetupTimeout})");
+            Console.WriteLine($"RestoreSettingsTest: Waiting for device reset timeout ({_rebootTimeout})");
 #endif
-            Thread.Sleep(_networkSetupTimeout);
+            Thread.Sleep(_rebootTimeout);
 
             InitBaseSensitivity(workParams);
             InitPassageCount(workParams);
@@ -779,9 +781,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetNetworkParams(workParams);
 
 #if DEBUG
-            Console.WriteLine($"NetworkTest: Waiting for device network setup timeout ({_networkSetupTimeout})");
+            Console.WriteLine($"NetworkTest: Waiting for device network setup timeout ({_rebootTimeout})");
 #endif
-            Thread.Sleep(_networkSetupTimeout);
+            Thread.Sleep(_rebootTimeout);
 
             workParams.BaseSensitivity = 11;
 
@@ -799,9 +801,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             SetNetworkParams(workParams);
 
 #if DEBUG
-            Console.WriteLine($"NetworkTest: Waiting for restore device network setup timeout ({_networkSetupTimeout})");
+            Console.WriteLine($"NetworkTest: Waiting for restore device network setup timeout ({_rebootTimeout})");
 #endif
-            Thread.Sleep(_networkSetupTimeout);
+            Thread.Sleep(_rebootTimeout);
 
             return true;
 

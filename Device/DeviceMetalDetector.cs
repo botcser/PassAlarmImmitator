@@ -262,7 +262,8 @@ namespace IRAPROM.MyCore.Device
             WorkParams = new WorkParams
             {
                 IP = IP = ip,
-                PortTCP = PortTCP = 0,
+                PortTCP = PortTCP,
+                PortUDP = PortUDP,
                 Mask = Mask,
                 Gateway = Gateway
             };
