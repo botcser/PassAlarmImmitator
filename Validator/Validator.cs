@@ -6,11 +6,15 @@ using PassAlarmSimulator.Device.Simulator;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace PassAlarmSimulator.Validator
 {
     public class Validator : IStart
     {
+        [DllImport("Iphlpapi.dll", SetLastError = true)]
+        public static extern int FlushIpNetTable(int dwIfIndex);
+
         public static List<DeviceMetalDetector> FoundDevices = new List<DeviceMetalDetector>();
 
         private readonly DeviceNetworkServer _networkServerMatreshka;
@@ -310,7 +314,12 @@ namespace PassAlarmSimulator.Validator
         {
             _watchdog.Start();
             
-            var success = FoundDevices.All(device => device.StaticTest());
+            var success = FoundDevices.All(device =>
+            {
+                FlushAllArp(15);
+
+                return device.StaticTest();
+            });
             //var success = FoundDevices.FirstOrDefault()!.StaticTest();
 
             _watchdog.Stop();
@@ -325,6 +334,19 @@ namespace PassAlarmSimulator.Validator
             Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
 
             return success;
+
+
+            void FlushAllArp(int index)
+            {
+                Console.WriteLine($"Flushing ARP cache {index}");
+
+                var result = FlushIpNetTable(index);
+
+                if (result != 0)
+                {
+                    Console.WriteLine($"FlushAllArp: Failed with error code: {result}");
+                }
+            }
         }
 
         public static IEnumerable<int> GenerateUniqueRandomNumbers(int count, int minValue, int maxValue)

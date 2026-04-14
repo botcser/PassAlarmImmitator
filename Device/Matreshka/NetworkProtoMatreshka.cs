@@ -72,11 +72,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
                     return false;
                 }
 
+                if (!Socket.Connected) return false;
+
 #if DEBUGG
                 Console.Write("success\n");
 #endif
-
-                if (!Socket.Connected) return false;
 
                 Stream = Socket.GetStream();
 

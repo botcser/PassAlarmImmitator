@@ -105,7 +105,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
             return BaseSensitivityTest(workParams, testValue) && ZonesSensitivityTest(workParams, testValue) && WorkingFreqTest(workParams) &&
                    WorkProgramSceneTest(workParams, testValue) && AlarmParamsTest(workParams, testValue) && OperatorPasswordTest(workParams, 4321) &&
-                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) /*&& NetworkTest(workParams)*/
+                   ClearPassageTest(workParams) && TimeTest(workParams, new DateTime(2026, 2, 2, 2, 2, 2)) && NetworkTest(workParams)
                    && RestoreSettingsTest(workParams) && RebootTest(workParams)/* && InvalidParamsTest(workParams)*/;
         }
 
@@ -486,7 +486,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if DEBUG
             Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
-            var zonesSensorModeTest = (byte)Constants.Models.FirstOrDefault(i => i.Value.ModelId == workParams.ModelId).Value.AvailableZonesCount.Random(); ;
+            var zonesSensorModeTest = (byte)Constants.Models.FirstOrDefault(i => i.Value.ModelId == workParams.ModelId).Value.AvailableZonesCount.Random();
 
             workParams.ZonesSensorMode = zonesSensorModeTest;
             workParams.WorkProgram = testValue;
@@ -626,15 +626,26 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             
             var baseSensitivityCurrent = workParams.BaseSensitivity;
 
+            workParams.PortTCP = 5001;
+            SetNetworkParams(workParams);
+#if DEBUG
+            Console.WriteLine($"NetworkTest: Waiting for device network setup timeout ({_rebootTimeout})");
+#endif
+            Thread.Sleep(_rebootTimeout);
+
             RebootDevice(workParams);
 
 #if DEBUG
-            Console.WriteLine($"RebootTest: waiting for {_rebootTimeout}msec...");
+            Console.WriteLine($"RebootTest: waiting for {_rebootTimeout}ms...");
 #endif
             Thread.Sleep(_rebootTimeout);
 
             InitBaseSensitivity(workParams);
-            Thread.Sleep(_requestDelay);    
+            Thread.Sleep(_requestDelay); 
+            
+            workParams.PortTCP = 5000;
+            SetNetworkParams(workParams);
+            Thread.Sleep(_requestDelay);
 
             if (workParams.BaseSensitivity != baseSensitivityCurrent)
             {
@@ -798,6 +809,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             }
 
             workParams.IP = ipBuff;
+            workParams.PortTCP = 5000;
             SetNetworkParams(workParams);
 
 #if DEBUG

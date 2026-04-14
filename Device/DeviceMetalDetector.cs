@@ -269,6 +269,8 @@ namespace IRAPROM.MyCore.Device
             };
 
             WorkParamsProto.SetNetworkParams(WorkParams);
+
+            WorkParams = null;
         }
 
         public bool Equals(DeviceMetalDetector other)
