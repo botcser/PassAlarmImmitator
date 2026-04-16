@@ -28,6 +28,7 @@ namespace IRAPROM.MyCore.MyNetwork
         private readonly UdpClient _udpClient;
         private readonly int _port;
         private Timer _timeoutTimer;
+        private bool firstTime = true;
 
         public UdpListenerServer(int port, ObservableCollection<string> lgMessages)
         {
@@ -44,7 +45,11 @@ namespace IRAPROM.MyCore.MyNetwork
 #endif
 
 #if DEBUG
-            Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}\n");
+            if (firstTime)
+            {
+                Console.WriteLine($"UDPServer: CreateUdpClient: Listening port = {_port}\n");
+                firstTime = false;
+            }
 #endif
 
             try

@@ -1,8 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using IRAPROM.MyCore.Model.WP;
 using PassAlarmSimulator.Device;
-using PassAlarmSimulator.Validator;
+//using PassAlarmSimulator.Validator;
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
@@ -141,7 +146,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                 Thread.Sleep(1000);
 
-                alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+                //alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
                 if (alarmPassage != null) break;
 
@@ -159,7 +164,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
             MetalDetectorPassage lastPassage = null;
 
             Console.WriteLine($"\nOK. Now you must make a passage (clean) through all devices at once. You have 20 seconds to do this!");
-            Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
+            //Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)!.LastPassage = null;
 
             do
             {
@@ -167,7 +172,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                 Thread.Sleep(1000);
 
-                lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
+                //lastPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
                 if (lastPassage != null) break;
 
@@ -203,6 +208,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
             try
             {
                 var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
+                
+                if (response.Length == 0)
+                {
+                    throw new Exception("");
+                }
 
                 workParams.SensorsSensitivity = null;
                 workParams.SensorsSensitivity ??= new short[response.Length / 2];
@@ -217,6 +227,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 try
                 {
                     var response = ExecuteGetCommand(Constants.GetZonesSensitivity6.code);
+                    
+                    if (response.Length == 0)
+                    {
+                        throw new Exception("");
+                    }
 
                     workParams.SensorsSensitivity = null;
                     workParams.SensorsSensitivity ??= new short[response.Length / 2];
@@ -228,23 +243,23 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 }
                 catch (Exception __)
                 {
-                    try
+                    var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
+                    
+                    if (response.Length == 0)
                     {
-                        var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
-
-                        workParams.SensorsSensitivity = null;
-                        workParams.SensorsSensitivity ??= new short[response.Length / 2];
-
-                        for (byte i = 0; i < response.Length; i += 2)
-                        {
-                            workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
-                        }
+                        throw new Exception($"InitZonesSensitivity: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!" +
+                                            $"\nERROR: InitZonesSensitivity: unknown coils count of device {workParams.MAC}!");
                     }
-                    catch (Exception ___)
+
+                    workParams.SensorsSensitivity = null;
+                    workParams.SensorsSensitivity ??= new short[response.Length / 2];
+
+                    for (byte i = 0; i < response.Length; i += 2)
                     {
-                        Console.WriteLine($"ERROR: InitZonesSensitivity: unknown coils count of device {workParams.IP}:{workParams.MAC}!");
-                        return;
+                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
                     }
+
+                    Console.WriteLine();
                 }
             }
         }
@@ -252,6 +267,11 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public void InitNetworkParams(WorkParams workParams)
         {
             var response = ExecuteGetCommand(Constants.GetNetworkParams.code);
+            
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitNetworkParams: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
 
             using (var ms = new MemoryStream(response))
             {
@@ -272,17 +292,36 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void InitBaseSensitivity(WorkParams workParams)
         {
-             workParams.BaseSensitivity = ExecuteGetCommand(Constants.GetBaseSensitivity.code).FirstOrDefault();
+            var response = ExecuteGetCommand(Constants.GetBaseSensitivity.code);
+
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitNetworkParams: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
+
+            workParams.BaseSensitivity = response.FirstOrDefault(); ;
         }
 
         public void InitWorkFrequency(WorkParams workParams)
         {
-            workParams.WorkingFreq = ExecuteGetCommand(Constants.GetWorkFrequency.code).FirstOrDefault();
+            var response = ExecuteGetCommand(Constants.GetWorkFrequency.code);
+
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitWorkFrequency: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
+
+            workParams.WorkingFreq = response.FirstOrDefault();
         }
 
         public void InitAlarmParams(WorkParams workParams)
         {
             var response = ExecuteGetCommand(Constants.GetAlarmParams.code);
+            
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitAlarmParams: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
 
             workParams.AlarmDuration = response[0];
             workParams.AlarmVolume = response[1];
@@ -291,12 +330,24 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void InitWorkProgramScene(WorkParams workParams)
         {
-            workParams.WorkProgram = ExecuteGetCommand(Constants.GetWorkProgramScene.code).FirstOrDefault();
+            var response = ExecuteGetCommand(Constants.GetWorkProgramScene.code);
+
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitWorkProgramScene: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
+
+            workParams.WorkProgram = response.FirstOrDefault();
         }
 
         public void InitZonesWorkMode(WorkParams workParams)
         {
             var response = ExecuteGetCommand(Constants.GetZonesWorkMode.code);
+            
+            if (response.Length == 0)
+            {
+                throw new Exception($"InitZonesWorkMode: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
+            }
 
             workParams.ZonesSensorMode = response[0];
             workParams.WorkProgram = response[1];

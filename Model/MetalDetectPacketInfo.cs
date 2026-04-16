@@ -330,16 +330,16 @@ namespace IRAPROM.MyCore.Model
                                 rec.ProductModel = metDetector.Name;
                             }
 
-                            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
-                                              $"\n\tEnterPassagesCount {enterPassagesCount}" +
-                                              $"\n\tExitPassagesCount {exitPassagesCount}" +
-                                              $"\n\tEnterAlarmCount {enterAlarmCount}" +
-                                              $"\n\tExitAlarmCount {exitAlarmCount}" +
-                                              $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
-                                              $"\n\tAlarmZoneMode {alarmZoneMode}" +
-                                              $"\n\tmetalQuantity {metalQuantity}" +
-                                              $"\n\tsensors {Convert.ToHexString(sensors)}" +
-                                              $"\n\tmac {Convert.ToHexString(mac)}");
+                            //Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
+                            //                  $"\n\tEnterPassagesCount {enterPassagesCount}" +
+                            //                  $"\n\tExitPassagesCount {exitPassagesCount}" +
+                            //                  $"\n\tEnterAlarmCount {enterAlarmCount}" +
+                            //                  $"\n\tExitAlarmCount {exitAlarmCount}" +
+                            //                  $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
+                            //                  $"\n\tAlarmZoneMode {alarmZoneMode}" +
+                            //                  $"\n\tmetalQuantity {metalQuantity}" +
+                            //                  $"\n\tsensors {Convert.ToHexString(sensors)}" +
+                            //                  $"\n\tmac {Convert.ToHexString(mac)}");
 
                             if (metDetector != null)
                             {

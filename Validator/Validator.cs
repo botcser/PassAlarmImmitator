@@ -22,12 +22,15 @@ namespace PassAlarmSimulator.Validator
         private readonly DeviceNetworkServer _networkServerImpulse;
         private CancellationTokenSource _cancellationTokenSource;
         private readonly string _ip;
+        private readonly bool _alarm, _clean;
 
         private Stopwatch _watchdog = new Stopwatch();
 
-        public Validator(string ip, int port = 0, int listenPort = 0)
+        public Validator(string ip, int port = 0, int listenPort = 0, bool alarm = false, bool clean = false)
         {
             _ip = ip;
+            _alarm = alarm;
+            _clean = clean;
             _cancellationTokenSource = new CancellationTokenSource();
 
             if (port != 0)
@@ -36,11 +39,11 @@ namespace PassAlarmSimulator.Validator
             }
         }
 
-        public Task Start()
+        public async Task Start()
         {
             Console.WriteLine($"Validator: started");
 
-            var task = new Task(async void () =>
+            await Task.Run(async Task () =>
             {
                 try
                 {
@@ -48,18 +51,21 @@ namespace PassAlarmSimulator.Validator
 
                     FindDevices(_ip);
 
-                    if (FoundDevices.Count > 0)
+                    if (FoundDevices.Count == 0)
                     {
-                        FixIpCollisions();
-
-                        InitAllFoundDevices();
-
-                        await Validate();
+                        Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
+                        Console.ReadLine();
+                        Environment.Exit(0);
                     }
 
-                    Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
-                    Console.ReadLine();
-                    Environment.Exit(0);
+                    if (_alarm || _clean)
+                    {
+                        await TestPassages(_alarm, _clean);
+                    }
+                    else
+                    {
+                        await PcValidatorDo();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -67,9 +73,17 @@ namespace PassAlarmSimulator.Validator
                 }
             });
 
-            task.Start();
+            return;
 
-            return task;
+
+            async Task PcValidatorDo()
+            {
+                FixIpCollisions();
+
+                InitAllFoundDevices();
+
+                await Validate();
+            }
         }
 
         private void FixIpCollisions()
@@ -309,6 +323,96 @@ namespace PassAlarmSimulator.Validator
             return success;
         }
 
+        private async Task<bool> TestPassages(bool alarm, bool clean)
+        {
+            Console.WriteLine($"\n____________Starting test Passages...");
+
+            uint alarmCount = 0, alarmCountNew = 0;
+            uint cleanCount = 0, cleanCountNew = 0;
+            uint deltaAlarmClean = 0, deltaAlarmCleanNew = 0;
+
+            FoundDevices.ForEach(i =>
+            {
+                alarmCount += i.LastPassage.EnterAlarmCount + i.LastPassage.ExitAlarmCount;
+                cleanCount += i.LastPassage.EnterPassagesCount + i.LastPassage.ExitPassagesCount;
+            });
+            deltaAlarmClean = Math.Max(alarmCount, cleanCount) - Math.Min(alarmCount, cleanCount);
+
+            if (alarm)
+            {
+                if (clean)
+                {
+                    Console.WriteLine($"\n\tMake sequential passes Clean-Alarm-Clean-Alarm...");
+                }
+                else
+                {
+                    Console.WriteLine($"\n\tMake sequential passes Alarm-Alarm-Alarm-Alarm...");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"\n\tMake sequential passes Clean-Clean-Clean-Clean...");
+            }
+
+            do
+            {
+                await Task.Delay(500);
+
+                FoundDevices.ForEach(i =>
+                {
+                    alarmCountNew += i.LastPassage.EnterAlarmCount + i.LastPassage.ExitAlarmCount;
+                    cleanCountNew += i.LastPassage.EnterPassagesCount + i.LastPassage.ExitPassagesCount;
+                }); 
+                deltaAlarmCleanNew = Math.Max(alarmCountNew, cleanCountNew) - Math.Min(alarmCountNew, cleanCountNew);
+
+                if (alarmCountNew - alarmCount > 1 || cleanCountNew - cleanCount > 1)
+                {
+                    Console.WriteLine($"\nTestPassages: Fail: it was more then one Alarm/Clean!");
+                    return false;
+                }
+
+                if (alarmCountNew != alarmCount)
+                {
+                    Console.Write($"_Alarm_");
+                    alarmCount = alarmCountNew;
+                }
+                if (clean && !alarm)
+                {
+                    if (alarmCountNew != alarmCount)
+                    {
+                        Console.Write($"_FAIL_!!!");
+                        return false;
+                    }
+                }
+
+                if (cleanCountNew != cleanCount)
+                {
+                    Console.Write($"_Clean_");
+                    cleanCount = cleanCountNew;
+                }
+                if (alarm && !clean)
+                {
+                    if (cleanCountNew != cleanCount)
+                    {
+                        Console.Write($"_FAIL_!!!");
+                        return false;
+                    }
+                }
+
+                if (alarm && clean)
+                {
+                    if (deltaAlarmCleanNew - deltaAlarmClean > 1)
+                    {
+                        Console.Write($"_FAIL_!!!");
+                        return false;
+                    }
+                }
+
+            } while (!_cancellationTokenSource.IsCancellationRequested);
+
+            Console.WriteLine($"\n____________Passages test done.");
+            return true;
+        }
 
         private bool StaticTests()
         {

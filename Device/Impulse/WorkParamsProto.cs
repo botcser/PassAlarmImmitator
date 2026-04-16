@@ -31,7 +31,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             _responseWorkParamsDatagram = ExecuteGetCommandRaw(Constants.GetWorkParams.code);
             NetworkProto.Disconnect();
 
-            if (_responseWorkParamsDatagram == null) throw new Exception($"GetWorkParams: Устройство не вернуло настройки! (Импульс) {NetworkProto.Ip}");
+            if (_responseWorkParamsDatagram == null || !_responseWorkParamsDatagram.Any(i => i > 0)) throw new Exception($"GetWorkParams: Устройство не вернуло настройки! (Импульс) {NetworkProto.Ip}");
 
             return ParseWorkParams(_responseWorkParamsDatagram);
         }
@@ -344,6 +344,14 @@ namespace IRAPROM.MyCore.Device.Impulse
 
             (zoneMode, alarmZoneMode, maxZoneMode, alarmLampSwapMode) = Parse86ByteAlarmMode(alarmByte86);
 
+            switch ((Constants.Model)workParams.ModelId)
+            {
+                case Constants.Model.PC600MKX:
+                case Constants.Model.PC600MKZ:
+                    zoneMode = zoneMode == 0 ? zoneMode : --zoneMode;
+                    break;
+            }
+
             workParams.ZonesSensorMode = zoneMode;
             workParams.ZoneMode = ParseZoneMode(zoneMode, workParams.ModelId);
             workParams.AlarmInfraMode = alarmZoneMode;
@@ -409,7 +417,17 @@ namespace IRAPROM.MyCore.Device.Impulse
         
         private static byte PackAlarmMode(WorkParams workParams)
         {
-            return (byte)((workParams.ZonesSensorMode << 6) + (workParams.AlarmInfraMode << 4) + (workParams.MaxZoneMode << 2) + workParams.AlarmLampSwapMode);
+            var zoneMode = workParams.ZonesSensorMode;
+
+            switch ((Constants.Model)workParams.ModelId)
+            {
+                case Constants.Model.PC600MKX:
+                case Constants.Model.PC600MKZ:
+                    zoneMode = zoneMode == 2 ? zoneMode : ++zoneMode;
+                    break;
+            }
+
+            return (byte)((zoneMode << 6) + (workParams.AlarmInfraMode << 4) + (workParams.MaxZoneMode << 2) + workParams.AlarmLampSwapMode);
         }
 
         private (byte, byte, byte, byte) Parse86ByteAlarmMode(byte byte86)

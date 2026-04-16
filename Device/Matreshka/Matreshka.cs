@@ -138,6 +138,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             IP = ip;
             PortTCP = port;
+            Name = "Unknown Matreshka";
         }
 #endif
 

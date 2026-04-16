@@ -236,7 +236,7 @@ namespace IRAPROM.MyCore.Device
             }
 
 #if DEBUG
-            Console.WriteLine($"___StaticTest: {_ip}:{MAC} OK {ModelName} {WorkParams.SerialNumber}");
+            Console.WriteLine($"___DynamicTest: {_ip}:{MAC} OK {ModelName} {WorkParams.SerialNumber}");
 #endif
 
             return true;

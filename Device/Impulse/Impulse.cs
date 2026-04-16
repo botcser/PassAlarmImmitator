@@ -69,6 +69,7 @@ namespace IRAPROM.MyCore.Device.Impulse
         {
             IP = ip;
             PortTCP = portTCP;
+            Name = "Unknown Impulse";
         }
 #endif
 

@@ -11,7 +11,7 @@ namespace IRAPROM.MyCore.Device
         {
             getCommands.ForEach(cmd =>
             {
-                GetCommandsList.Add(new Command(datagramProto.MakeRequestDatagram(cmd.Item1), cmd.Item2, cmd.Item1, cmd.Item3, cmd.Item4));
+                GetCommandsList.Add(new Command(datagramProto.MakeRequestDatagram(cmd.Item1), cmd.Item1, cmd.Item2, cmd.Item3, cmd.Item4));
             });
 
             setCommands.ForEach(cmd =>

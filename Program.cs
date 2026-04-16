@@ -15,17 +15,12 @@ public class App
 
     public static async Task Main()
     {
-        Console.WriteLine("Hello, World!");
-        Console.WriteLine(
-            $"Choose the program, press number:\n\t 1 = PC Pass Alarm Simulator\n\t 2 = PC Validator\n\t 0 = Exit\n");
+        Console.WriteLine("Hello, World! Current PID: {Environment.ProcessId}");
+        Console.WriteLine("Choose the program, press number:\n\t 1 = PC Pass Alarm Simulator \n\t 2 = PC Validator \n\t 0 = Exit\n");
 
-        var programNumber = "?";
         IStart task = null;
-        
-        Console.WriteLine($"Current PID: {Environment.ProcessId}");
 
-        programNumber = "2";
-        //programNumber = Console.ReadLine();
+        var programNumber = "2";//Console.ReadLine();                                                                       // <== User Input
 
         switch (programNumber)
         {
@@ -33,24 +28,48 @@ public class App
                 task = new PassAlarmSimulator.PassAlarmSimulator();
                 break;
             case "2":
-                var ip = "192.168.1.255";
+                var ip = "192.168.16.255";
                 //var ip = InitIP();
-                Console.WriteLine($"Testing in {ip} network...");
+                Console.WriteLine($"Testing in {ip} network..."); 
+                
+                Console.WriteLine($"Choose the program, press number:\n\t 1 = Auto Tests \n\t 2 = Passage validate \n");
+                programNumber = "1";//Console.ReadLine();                                                                   // <== User Input
 
-                //Console.WriteLine($"Enter lower computer UDP port\n");
-                //int.TryParse(Console.ReadLine(), out var port);
+                switch (programNumber)
+                {
+                    case "1":
+                        //Console.WriteLine($"Enter lower computer UDP port\n");
+                        //int.TryParse(Console.ReadLine(), out var port);
 
-                //Console.WriteLine($"Enter higher computer UDP port to listen\n");
-                //int.TryParse(Console.ReadLine(), out var portListen);
+                        //Console.WriteLine($"Enter higher computer UDP port to listen\n");
+                        //int.TryParse(Console.ReadLine(), out var portListen); \n\t 3 = PC 
 
-                task = new Validator(ip, 0, 0);
+                        task = new Validator(ip, 0, 0);
+                        break;
+                    case "2":
+                        Console.WriteLine($"Choose the program, press number:\n\t 1 = Clean only \n\t 2 = Alarm only \n\t 3 = Clean_Alarm both\n");
+                        programNumber = Console.ReadLine();                                                                // <== User Input
+
+                        switch (programNumber)
+                        {
+                            case "1":
+                                task = new Validator(ip, clean: true);
+                                break;
+                            case "2":
+                                task = new Validator(ip, alarm: true);
+                                break;
+                            case "3":
+                                task = new Validator(ip, clean: true, alarm: true);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                }
                 break;
             case "0":
-                task?.Shutdown();
                 Console.WriteLine("Goodbye, World!");
                 Environment.Exit(0);
-                break;
-            default:
                 break;
         }
 
