@@ -51,6 +51,10 @@ namespace PassAlarmSimulator.Validator
 
                     FindDevices(_ip);
 
+                    FixIpCollisions();
+
+                    InitAllFoundDevices();
+
                     if (FoundDevices.Count == 0)
                     {
                         Console.WriteLine($"\nValidator: job is done. Press any key to exit.");
@@ -64,7 +68,7 @@ namespace PassAlarmSimulator.Validator
                     }
                     else
                     {
-                        await PcValidatorDo();
+                        await Validate();
                     }
                 }
                 catch (Exception e)
@@ -74,16 +78,6 @@ namespace PassAlarmSimulator.Validator
             });
 
             return;
-
-
-            async Task PcValidatorDo()
-            {
-                FixIpCollisions();
-
-                InitAllFoundDevices();
-
-                await Validate();
-            }
         }
 
         private void FixIpCollisions()
@@ -250,7 +244,7 @@ namespace PassAlarmSimulator.Validator
 
         private bool InitAllFoundDevices()
         {
-            FoundDevices.All(device =>
+            return FoundDevices.All(device =>
             {
 #if DEBUG
                 Console.WriteLine($"___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}... ");
@@ -277,14 +271,12 @@ namespace PassAlarmSimulator.Validator
                 workParams.IP = device.IP;
                 device.WorkParams = workParams;
 
-#if DEBUG
+#if DEBUGG
                 Console.WriteLine("...OK ");
 #endif
 
                 return workParams != null;
             });
-
-            return false;
         }
 
         private short FindOutModelId(Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
@@ -333,10 +325,8 @@ namespace PassAlarmSimulator.Validator
 
             FoundDevices.ForEach(i =>
             {
-                alarmCount += i.LastPassage.EnterAlarmCount + i.LastPassage.ExitAlarmCount;
-                cleanCount += i.LastPassage.EnterPassagesCount + i.LastPassage.ExitPassagesCount;
+                i.CleanStatistics();
             });
-            deltaAlarmClean = Math.Max(alarmCount, cleanCount) - Math.Min(alarmCount, cleanCount);
 
             if (alarm)
             {
@@ -356,12 +346,12 @@ namespace PassAlarmSimulator.Validator
 
             do
             {
-                await Task.Delay(500);
+                await Task.Delay(200);
 
                 FoundDevices.ForEach(i =>
                 {
-                    alarmCountNew += i.LastPassage.EnterAlarmCount + i.LastPassage.ExitAlarmCount;
-                    cleanCountNew += i.LastPassage.EnterPassagesCount + i.LastPassage.ExitPassagesCount;
+                    alarmCountNew += i.LastPassage.EnterAlarmCount + i.LastPassage.ExitAlarmCount - alarmCount;
+                    cleanCountNew += i.LastPassage.EnterPassagesCount + i.LastPassage.ExitPassagesCount - cleanCount;
                 }); 
                 deltaAlarmCleanNew = Math.Max(alarmCountNew, cleanCountNew) - Math.Min(alarmCountNew, cleanCountNew);
 
@@ -374,7 +364,6 @@ namespace PassAlarmSimulator.Validator
                 if (alarmCountNew != alarmCount)
                 {
                     Console.Write($"_Alarm_");
-                    alarmCount = alarmCountNew;
                 }
                 if (clean && !alarm)
                 {
@@ -384,11 +373,14 @@ namespace PassAlarmSimulator.Validator
                         return false;
                     }
                 }
+                if (alarmCountNew != alarmCount)
+                {
+                    alarmCount = alarmCountNew;
+                }
 
                 if (cleanCountNew != cleanCount)
                 {
                     Console.Write($"_Clean_");
-                    cleanCount = cleanCountNew;
                 }
                 if (alarm && !clean)
                 {
@@ -397,6 +389,10 @@ namespace PassAlarmSimulator.Validator
                         Console.Write($"_FAIL_!!!");
                         return false;
                     }
+                }
+                if (cleanCountNew != cleanCount)
+                {
+                    cleanCount = cleanCountNew;
                 }
 
                 if (alarm && clean)

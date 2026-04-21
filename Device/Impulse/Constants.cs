@@ -23,7 +23,7 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0xC1, 0xC1, DatagramMetaInfoLength + ChecksumLength, "SetNetworkParams");
         public static (short deviceCode, short code, int responseLenght, string name) SetWorkParams = (0xA5, 0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
         public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x14, 0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
-        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, DatagramMetaInfoLength + ChecksumLength, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, 0, "ClearPassageCount");
         public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallPassage");
         public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0xAEE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallAlarm");
 

@@ -192,7 +192,7 @@ namespace IRAPROM.MyCore.Model
 
                         if (rec.ExistAlarm())
                         {
-                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode);
+                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum); // импульс передает в тревоге статистику. А матреаха?
                         }
                         else
                         {

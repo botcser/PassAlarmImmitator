@@ -495,10 +495,10 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             Thread.Sleep(_requestDelay);
             InitZonesWorkMode(workParams);
 
-            if (workParams.WorkProgram != testValue && workParams.ZonesSensorMode != zonesSensorModeTest && workParams.InfraredPassCounterMode != testValue)
+            if (workParams.WorkProgram != testValue || workParams.ZonesSensorMode != zonesSensorModeTest || workParams.InfraredPassCounterMode != testValue)
             {
 #if DEBUG
-                Console.WriteLine($"WorkProgramSceneTest: {workParams.IP}:\t WorkProgram test fail!");
+                Console.WriteLine($"WorkProgramSceneTest: {workParams.IP}:\t WorkProgram test fail! ({workParams.WorkProgram} != {testValue} || {workParams.ZonesSensorMode} != {zonesSensorModeTest} || {workParams.InfraredPassCounterMode} != {testValue})");
 #endif
                 return false;
             }

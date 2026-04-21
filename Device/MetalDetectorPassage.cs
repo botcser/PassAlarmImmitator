@@ -67,7 +67,21 @@ namespace IRAPROM.MyCore.Device
             ExitPassagesCount = exitPassagesCount;
             ExitAlarmCount = exitAlarmCount;
         }
-        
+
+        public MetalDetectorPassage(string mac, byte[] sensors, DateTime time, short sensorMode, uint enterPassagesCount, uint enterAlarmCount, uint exitPassagesCount, uint exitAlarmCount)
+        {
+            MAC = mac;
+            SensorMode = sensorMode;
+            Sensors = sensors;
+            Time = time;
+            LastPassageTime = LastAlarmTime = time.ToString("dd.MM.yy HH:mm:ss");
+            IsAlarm = true;
+            EnterPassagesCount = enterPassagesCount;
+            EnterAlarmCount = enterAlarmCount;
+            ExitPassagesCount = exitPassagesCount;
+            ExitAlarmCount = exitAlarmCount;
+        }
+
         public void Clean()
         {
             EnterPassagesCount = EnterAlarmCount = ExitPassagesCount = ExitAlarmCount = 0;

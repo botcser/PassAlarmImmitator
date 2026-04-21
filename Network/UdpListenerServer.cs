@@ -194,8 +194,11 @@ namespace IRAPROM.MyCore.MyNetwork
 #else
             if (IsSentByServer(remoteIpEndPoint)) return;
 #endif
+
+#if DEBUGG
             Console.WriteLine($"Received: UDP Response: {remoteIpEndPoint.Address.ToString()}\n" +
                               $"\tresponse bytes: {BitConverter.ToString(bytes)}\n");
+#endif
 
             ParseResponse(bytes, remoteIpEndPoint);
         }

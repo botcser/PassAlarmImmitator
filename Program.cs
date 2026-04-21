@@ -11,7 +11,7 @@ await App.Main();
 
 public class App
 {
-    public static int Loader_UDPPortRetransmission = 11; // заглушка импорта
+    public static int Loader_UDPPortRetransmission = 0; // заглушка импорта
 
     public static async Task Main()
     {
@@ -20,7 +20,7 @@ public class App
 
         IStart task = null;
 
-        var programNumber = "2";//Console.ReadLine();                                                                       // <== User Input
+        var programNumber = Console.ReadLine();                                                                       // <== User Input
 
         switch (programNumber)
         {
@@ -28,12 +28,12 @@ public class App
                 task = new PassAlarmSimulator.PassAlarmSimulator();
                 break;
             case "2":
-                var ip = "192.168.16.255";
+                var ip = "192.168.1.255";                                                                       // <== User Input
                 //var ip = InitIP();
                 Console.WriteLine($"Testing in {ip} network..."); 
                 
                 Console.WriteLine($"Choose the program, press number:\n\t 1 = Auto Tests \n\t 2 = Passage validate \n");
-                programNumber = "1";//Console.ReadLine();                                                                   // <== User Input
+                programNumber = Console.ReadLine();                                                                   // <== User Input
 
                 switch (programNumber)
                 {
