@@ -476,7 +476,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public bool SimulateAlarm()
         {
-            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x01, 0x2A,0x2A,0x00,0x00, 0x2A,0x2A,0x00,0x00 });
+            ExecuteGetCommand(Constants.SimulatePass.code, new byte[] { 0x01, 0x05, 0x00,0x00,0x00, 0x05, 0x00,0x00,0x00 });
 
             return true;
         }

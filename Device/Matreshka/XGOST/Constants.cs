@@ -79,7 +79,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 { PCGOSTx1800Name, (0x0033, new List <short>{ 6, 12, 18 }, PCGOSTx1800Name, new List<int> {6, 3}, 6 ) },
                 { PCGOSTx3300Name, (0x0048, new List <short>{ 11, 22, 33 }, PCGOSTx3300Name, new List<int> {11, 3}, 11 ) },
                 { PCGOSTx6300Name, (0x004A, new List <short>{ 21, 42, 63 }, PCGOSTx6300Name, new List<int> {33, 3}, 11 ) },
-                { MGOST6Name, (0x0064, new List <short>{ 3, 6, 9 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
+                { MGOST6Name, (0x0064, new List <short>{ 6 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
             };
 
         public const short PortTCPDefault = 5000;
