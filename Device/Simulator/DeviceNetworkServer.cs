@@ -40,6 +40,7 @@ namespace PassAlarmSimulator.Device.Simulator
             _commandExtractor = new CommandExtractor(dirPath);
             _tcpServer = new TcpListener(IPAddress.Any, _tcpPort);
             _udpInputClient = new UdpClient(inputUdpPort);
+            _udpInputClient.EnableBroadcast = true;
         }
 
         public bool Run()
@@ -184,7 +185,10 @@ namespace PassAlarmSimulator.Device.Simulator
 
             return Task.Run(() =>
             {
-                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+                var ip = "255.255.255.255";
+                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse(ip), _outputUdpPort));
+
+                Console.WriteLine($"UDPSend: SendAsync: {bytes.Length} bytes send to {ip}:{_outputUdpPort}!");
             });
         }
 
