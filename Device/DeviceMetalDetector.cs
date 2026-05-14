@@ -177,8 +177,10 @@ namespace IRAPROM.MyCore.Device
             var exitAlarmCount = WorkParams?.BackwardAlarmsCount ?? 0;
 
 #if DEBUG
-            Console.WriteLine($"\n___DynamicTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
-                              $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
+            Console.WriteLine($"\n___DynamicTest Before:\n\t EnterPassagesCount {enterPassagesCount}\t EnterAlarmCount {enterAlarmCount}" +
+                              $"\t ExitPassagesCount {exitPassagesCount}\t ExitAlarmCount {exitAlarmCount}");
+            Console.WriteLine($"\t EnterPassagesCount {LastPassage.EnterPassagesCount}\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
+                              $"\t ExitPassagesCount {LastPassage.ExitPassagesCount}\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
 #endif
             var success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, true);
             
@@ -186,8 +188,8 @@ namespace IRAPROM.MyCore.Device
 
 
 #if DEBUG
-            Console.WriteLine($"\n___DynamicTest After: \n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\n\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
-                              $"\n\t ExitPassagesCount {LastPassage.ExitPassagesCount}\n\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
+            Console.WriteLine($"\n___DynamicTest After:\n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
+                              $"\t ExitPassagesCount {LastPassage.ExitPassagesCount}\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
 #endif
 
             if (LastPassage == null || !LastPassage.IsAlarm || !success)
