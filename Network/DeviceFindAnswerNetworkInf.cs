@@ -21,7 +21,6 @@ namespace IRAPROM.MyCore.MyNetwork
         public ushort PortUDP { get; set; } = 0;
 
         public byte[] mac { get; set; } = new byte[6];
-        //public string MAC => MyTools.ConvertByteArrayToHexString(mac);
         public string MAC => Convert.ToHexString(mac);
 
         public string Model { get; set; } = ""; //Для новых монопанелей
@@ -90,7 +89,7 @@ namespace IRAPROM.MyCore.MyNetwork
             return rec;
         }
 
-        public static DeviceFindAnswerNetworkInf GetRecFromPacketMonopanel(byte[] arr)
+        public static DeviceFindAnswerNetworkInf ParseOldImpulseResponse(byte[] arr)
         {
             if (arr.Length != (22))
                 return null;

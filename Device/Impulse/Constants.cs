@@ -21,21 +21,24 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static (short deviceCode, short code, int responseLenght, string name) GetPassageCountE = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "GetPassageCountE");
 
         public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0xC1, 0xC1, DatagramMetaInfoLength + ChecksumLength, "SetNetworkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkParams = (0xA5, 0xA5, DatagramMetaInfoLength + ChecksumLength, "SetWorkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x14, 0x14, DatagramMetaInfoLength + ChecksumLength, "SetWorkScene");
-        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, 0, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkParams = (0xA5, 0xA5, 0, "SetWorkParams");                         // PC1800MK 43.0 не посылает ответ
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x14, 0x14, 0, "SetWorkScene");                    // PC1800MK 43.0 не посылает ответ
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0xA7, 0xA7, 0, "ClearPassageCount");                 
         public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallPassage");
         public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0xAEE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallAlarm");
 
-        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>GridCellDefinitions, int RealCoilsCount)> Models
         {
-            { PC600MKName, (0x0004, new List<short>{ 6 }, PC600MKName, new List<int> {3, 2}, 6) },
-            { PC1800MKName, (0x0002, new List<short>{ 18, 12, 6 }, PC1800MKName, new List < int > { 6, 3 }, 6) },
-            { PC4400MKName, (0x0001, new List<short>{ 33, 22, 11 }, PC4400MKName, new List < int > { 11, 3 }, 11) },
-            { PC3300MName, (0x0006, new List<short>{ 33, 22, 11 }, PC3300MName, new List < int > { 11, 3 }, 11) },
-            { UnknownName, (0x00ff, new List <short>{ 6 }, UnknownName, new List < int > { 6, 1 }, 6) },
-        };      
-        
+            get;
+        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        {
+            { 0x0004, (PC600MKName, new List<short>{ 6 }, PC600MKName, new List<int> {6, 1}, 6) },
+            { 0x0002, (PC1800MKName, new List<short>{ 18, 12, 6 }, PC1800MKName, new List < int > { 6, 3 }, 6) },
+            { 0x0001, (PC4400MKName, new List<short>{ 33, 22, 11 }, PC4400MKName, new List < int > { 11, 3 }, 11) },
+            { 0x0006, (PC3300MName, new List<short>{ 33, 22, 11 }, PC3300MName, new List < int > { 11, 3 }, 11) },
+            { 0x00ff, (UnknownName, new List <short>{ 6 }, UnknownName, new List < int > { 6, 1 }, 6) },
+        };
+
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
             GetWorkParams, GetPassageCountD, GetPassageCountE
@@ -48,7 +51,7 @@ namespace IRAPROM.MyCore.Device.Impulse
         
         public enum Model
         {
-            Unknown = -1,
+            Unknown = 0,
 
             z400 = 1111,
             x400 = 2222,
@@ -61,7 +64,7 @@ namespace IRAPROM.MyCore.Device.Impulse
             z1800 = 31,
             x1800 = 32,
 
-            PC600MKZ = 0,   //6-зонник
+            PC600MKZ = 8,   //6-зонник
             PC600MKX = 4,   //6-зонник
             PC1800MKZ = 2,  //18-зонник
             PC1800MKX = 3,   //18-зонник
@@ -214,16 +217,6 @@ namespace IRAPROM.MyCore.Device.Impulse
                     return "Unknown";
             }
         }
-        
-        public static List<string> GetAllModelsNames()
-        {
-            return Models.Keys.ToList();
-        }
-
-        public override List<string> GetAllModels()
-        {
-            return Models.Keys.ToList();
-        }
 
         public override Task Find(string ip, IUDPSend sender)
         {
@@ -243,23 +236,6 @@ namespace IRAPROM.MyCore.Device.Impulse
             throw new System.NotImplementedException(); // TODO sometime in future
         }
 
-        public override int GetModelId(string val)                                 // Update MetalDetectorModelFromName
-        {
-            return val switch
-            {
-                PC600MKName => Models[PC600MKName].ModelId,
-                PC1800MKName => Models[PC1800MKName].ModelId,
-                PC4400MKName => Models[PC4400MKName].ModelId,
-                PC3300MName => Models[PC3300MName].ModelId,
-                _ => -1
-            };
-        }
-        
-        public override string GetModelName(int id)
-        {
-            return GetModelName((Model)id);
-        }
-
         public static bool CheckImpulseHeader(byte[] arr)
         {
             if ((arr[0] == Device.Impulse.Constants.HeaderMagicNumber[0]) && (arr[1] == Device.Impulse.Constants.HeaderMagicNumber[1]) && (arr[2] == Device.Impulse.Constants.HeaderMagicNumber[2]))
@@ -271,5 +247,6 @@ namespace IRAPROM.MyCore.Device.Impulse
             return false;
         }
 
+        public override Dictionary<int, string> InfraModesList { get; } = new Dictionary<int, string>() { { 1, "Неактивный" }, { 2, "Статистика" }, { 3, "Вход-Выход" }, { 4, "Калькулятор" } };
     }
 }

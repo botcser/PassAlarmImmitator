@@ -13,13 +13,14 @@ using IRAPROM.MyCore.Model.MD;
 using IRAPROM.MyCore.Model.WP;
 using IRAPROM.MyCore.MyNetwork;
 //using Npgsql;
+//using NpgsqlTypes;
 
 namespace IRAPROM.MyCore.Model
 {
     public class MetalDetectPacketInfo : MDSaveInfo
     {
 
-        public short IdModel = 0; //Добавил недавно
+        public short IdModel = 0;
         public string ProductModel = "";
 
         public byte[] head = new byte[4];
@@ -146,9 +147,6 @@ namespace IRAPROM.MyCore.Model
                 return true;
 
             if ((arr[0] == Constants.RequestMagicNumber[0]) && (arr[1] == Constants.RequestMagicNumber[1]) && (arr[2] == Constants.RequestMagicNumber[2]))
-                return true;
-
-            if ((arr[0] == Constants.RequestMagicNumberMonopanel[0]) && (arr[1] == Constants.RequestMagicNumberMonopanel[1]) && (arr[2] == Constants.RequestMagicNumberMonopanel[2]))
                 return true;
 
             return false;
@@ -314,7 +312,7 @@ namespace IRAPROM.MyCore.Model
                             var metalQuantity = br.ReadUInt16();
                             var sensors = rec.sensors = br.ReadBytes(8);
                             var mac = br.ReadBytes(6);
-
+                            
                             var md = MyARM.Instance.ShowAddedDevices().FirstOrDefault(i => i.Value.MAC == Convert.ToHexString(mac));
                             MetDetector metDetector = null;
                             Action<MetDetector> metDetectorOnChanged = null;
@@ -330,16 +328,16 @@ namespace IRAPROM.MyCore.Model
                                 rec.ProductModel = metDetector.Name;
                             }
 
-                            //Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
-                            //                  $"\n\tEnterPassagesCount {enterPassagesCount}" +
-                            //                  $"\n\tExitPassagesCount {exitPassagesCount}" +
-                            //                  $"\n\tEnterAlarmCount {enterAlarmCount}" +
-                            //                  $"\n\tExitAlarmCount {exitAlarmCount}" +
-                            //                  $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
-                            //                  $"\n\tAlarmZoneMode {alarmZoneMode}" +
-                            //                  $"\n\tmetalQuantity {metalQuantity}" +
-                            //                  $"\n\tsensors {Convert.ToHexString(sensors)}" +
-                            //                  $"\n\tmac {Convert.ToHexString(mac)}");
+                            Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:\n\tsensors {Convert.ToHexString(rec.sensors)} " +
+                                              $"\n\tEnterPassagesCount {enterPassagesCount}" +
+                                              $"\n\tExitPassagesCount {exitPassagesCount}" +
+                                              $"\n\tEnterAlarmCount {enterAlarmCount}" +
+                                              $"\n\tExitAlarmCount {exitAlarmCount}" +
+                                              $"\n\tInfraredPassCounterMode {infraredPassCounterMode}" +
+                                              $"\n\tAlarmZoneMode {alarmZoneMode}" +
+                                              $"\n\tmetalQuantity {metalQuantity}" +
+                                              $"\n\tsensors {Convert.ToHexString(sensors)}" +
+                                              $"\n\tmac {Convert.ToHexString(mac)}");
 
                             if (metDetector != null)
                             {
@@ -382,38 +380,84 @@ namespace IRAPROM.MyCore.Model
             return rec;
         }
 
+        public string dataTypeNameForXML
+        {
+            get
+            {
+
+                switch (command)
+                {
+                    case MDCommands.METDET_CMD_ALARM:
+                        return "UDP alarm";
+
+                    case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                        return "UDP general";
+
+                    default:
+                        return "";
+
+                }
+            }
+        }
+
+        public string InfForXML
+        {
+            get
+            {
+                var res = "";
+                switch (command)
+                {
+                    case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
+                        res = $"{NormalPassNum};{NormalReturnNum};{AlarmPassNum};{AlarmReturnNum}";
+                        break;
+
+                    case MDCommands.METDET_CMD_ALARM:
+                        //0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+                        for (var i = 0; i < sensors.Length; i++)
+                        {
+                            if (i > 0)
+                                res += ",";
+                            res += sensors[i].ToString();
+                        }
+                        break;
+                }
+
+                return res;
+            }
+        }
+
         public static DeviceMetalDetector MakeMetalDeviceFromPacketInfo(MetalDetectPacketInfo rec, MetalDetectorSeries series)
         {
-            MetDetector dev = null;
+            //MetDetector dev = null;
 
-            //if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var dev, out var onChanged))
-            //{
-            //    if (dev.dtLastInfFindMD == default)
-            //    {
-            //        dev.dtLastInfFindMD = DateTime.Now;
-            //        dev.FindNetworkStatus = 1;
-            //    }
-            //    else
-            //    {
-            //        dev.FindNetworkStatus = 1;
-            //        dev.dtLastInfFindMD = DateTime.Now;
+            if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var dev, out var onChanged))
+            {
+                if (dev.dtLastInfFindMD == default)
+                {
+                    dev.dtLastInfFindMD = DateTime.Now;
+                    dev.FindNetworkStatus = 1;
+                }
+                else
+                {
+                    dev.FindNetworkStatus = 1;
+                    dev.dtLastInfFindMD = DateTime.Now;
 
-            //        if (dev.dtLastInfFindMD.AddSeconds(10) < DateTime.Now)  //Информация с прошлых запросов
-            //        {
-            //            //Что-то делаем
-            //        }
-            //        else //Информация уже найдена на предыдущих срабатываниях таймера текущего поиска - просто меняем время
-            //        {
-            //        }
-            //    }
+                    if (dev.dtLastInfFindMD.AddSeconds(10) < DateTime.Now)  //Информация с прошлых запросов
+                    {
+                        //Что-то делаем
+                    }
+                    else //Информация уже найдена на предыдущих срабатываниях таймера текущего поиска - просто меняем время
+                    {
+                    }
+                }
 
-            //    onChanged(dev);
+                onChanged(dev);
 
-            //    return dev.DeviceMetalDetector;
-            //}
+                return dev.DeviceMetalDetector;
+            }
 
-            //dev = MyARM.Instance.DevicesFound.FirstOrDefault(x => x.MAC == rec.MAC);
-
+            dev = MyARM.Instance.DevicesFound.FirstOrDefault(x => string.Equals(x.MAC, rec.MAC, StringComparison.CurrentCultureIgnoreCase));
+            
             if (dev == null)
             {
                 if (rec.MetDetector == null)
@@ -436,7 +480,7 @@ namespace IRAPROM.MyCore.Model
                 if (rec.deviceFindAnswerNetworkInf.Model == MDModel.cMZ6MK)
                 {
                     dev.ModelId = (short)MetalDetectorModel.PCVx9300_MZ6MK;
-                    
+
                     //if (MyTools.ExistValue(rec.deviceFindAnswerNetworkInf.Version))
                     //{
                     //    dev.Version = rec.deviceFindAnswerNetworkInf.Version;
@@ -454,7 +498,6 @@ namespace IRAPROM.MyCore.Model
                         dev.Name ??= $"{dev.IP}:{dev.MAC}";
                         dev.ModelSeries = MetalDetectorSeries.BlockPost;
                         dev.DeviceMetalDetector ??= new Device.Impulse.Impulse(dev.IP, dev.PortTCP) { MAC = dev.MAC, Gateway = dev.Gateway, Mask = dev.Mask };
-
                         break;
                     case MetalDetectorSeries.Unknown:
                     case MetalDetectorSeries.BlockPost:
@@ -463,10 +506,10 @@ namespace IRAPROM.MyCore.Model
                         dev.ModelSeries = MetalDetectorSeries.BlockPost;
                         break;
                 }
-
+                
                 dev.dtLastInfFindMD = DateTime.Now;
 
-                //MyARM.Instance.DevicesFound.Add(dev);
+                MyARM.Instance.DevicesFound.Add(dev);
             }
             else
                 dev.dtLastInfFindMD = DateTime.Now;

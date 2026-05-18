@@ -67,20 +67,24 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static (short deviceCode, short code, int responseLenght, string name) SimulatePass = (0x42, 0x42, ResponseMetaInfoLength, "SimulatePass");
         public static (short deviceCode, short code, int responseLenght, string name) RebootDevice = (0x43, 0x43, ResponseMetaInfoLength, "RebootDevice");
 
-        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
-            {
-                { PCX600PROName, (0x006E, new List <short>{ 6 }, PCX600PROName, new List<int> {6, 1}, 6 ) },
-                { PCX1100PROName, (0x006F, new List <short>{ 11 }, PCX1100PROName, new List<int> {11, 1}, 11 ) },
-                { PCGOST900Name, (0x0028, new List <short>{ 3, 6, 9 }, PCGOST900Name, new List<int> {3, 3}, 6 ) },
-                { PCGOST1800Name, (0x0029, new List <short>{ 6, 12, 18 }, PCGOST1800Name, new List<int> {6, 3}, 6 ) },
-                { PCGOST3300Name, (0x003E, new List <short>{ 11, 22, 33 }, PCGOST3300Name, new List<int> {11, 3}, 11 ) },
-                { PCGOST6300Name, (0x0040, new List <short>{ 21, 42, 63 }, PCGOST6300Name, new List<int> {33, 3}, 11 ) },
-                { PCGOSTx900Name, (0x0032, new List <short>{ 3, 6, 9 }, PCGOSTx900Name, new List<int> {3, 3}, 6 ) },
-                { PCGOSTx1800Name, (0x0033, new List <short>{ 6, 12, 18 }, PCGOSTx1800Name, new List<int> {6, 3}, 6 ) },
-                { PCGOSTx3300Name, (0x0048, new List <short>{ 11, 22, 33 }, PCGOSTx3300Name, new List<int> {11, 3}, 11 ) },
-                { PCGOSTx6300Name, (0x004A, new List <short>{ 21, 42, 63 }, PCGOSTx6300Name, new List<int> {33, 3}, 11 ) },
-                { MGOST6Name, (0x0064, new List <short>{ 6 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
-            };
+        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models
+        {
+            get;
+        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        {
+                { 0x006E, (PCX600PROName, new List <short>{ 6 }, PCX600PROName, new List<int> {6, 1}, 6 ) },
+                { 0x006F, (PCX1100PROName, new List <short>{ 11 }, PCX1100PROName, new List<int> {11, 1}, 11 ) },
+                { 0x0028, (PCGOST900Name, new List <short>{ 3, 6, 9 }, PCGOST900Name, new List<int> {3, 3}, 6 ) },
+                { 0x0029, (PCGOST1800Name, new List <short>{ 6, 12, 18 }, PCGOST1800Name, new List<int> {6, 3}, 6 ) },
+                { 0x003E, (PCGOST3300Name, new List <short>{ 11, 22, 33 }, PCGOST3300Name, new List<int> {11, 3}, 11 ) },
+                { 0x0040, (PCGOST6300Name, new List <short>{ 21, 42, 63 }, PCGOST6300Name, new List<int> {33, 3}, 11 ) },
+                { 0x0032, (PCGOSTx900Name, new List <short>{ 3, 6, 9 }, PCGOSTx900Name, new List<int> {3, 3}, 6 ) },
+                { 0x0033, (PCGOSTx1800Name, new List <short>{ 6, 12, 18 }, PCGOSTx1800Name, new List<int> {6, 3}, 6 ) },
+                { 0x0048, (PCGOSTx3300Name, new List <short>{ 11, 22, 33 }, PCGOSTx3300Name, new List<int> {11, 3}, 11 ) },
+                { 0x004A, (PCGOSTx6300Name, new List <short>{ 21, 42, 63 }, PCGOSTx6300Name, new List<int> {33, 3}, 11 ) },
+                { 0x0064, (MGOST6Name, new List <short>{ 6 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
+                { 0x00FF, (UnknownGOSTName, new List <short>{ 6 }, MGOST6Name, new List<int> {6, 3}, 6 ) },
+        };
 
         public const short PortTCPDefault = 5000;
         public const short PortUDPDefault = 1021;
@@ -127,7 +131,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public const string PCGOSTx3300Name = "PC Vx 3300 GOST";
         public const string PCGOSTx6300Name = "PC Vx 6300 GOST";
         public const string MGOST6Name = "M V 6 GOST";
-        public const string UnknownName = "Unknown GOST Matreshka";
+        public const string UnknownGOSTName = "Unknown GOST VX";
 
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
         {
@@ -217,7 +221,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public enum Model
         {
-            UnknownMatreshka = 0xFE,
+            UnknownMatreshka = 0x00,
 
             PCX600PRO = 0x6E,
             PCX1100PRO = 0x6F,
@@ -287,35 +291,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
                 default: return "Unknown GOST Matreshka";
             }
         }
-        
-        public static List<string> GetAllModelsNames()
-        {
-            return Models.Keys.ToList();
-        }
-
-        public override List<string> GetAllModels()
-        {
-            return Models.Keys.ToList();
-        }
-
-        public override int GetModelId(string name)                                 // Update MetalDetectorModelFromName
-        {
-            return name switch
-            {
-                PCX600PROName => Models[PCX600PROName].ModelId,
-                PCX1100PROName => Models[PCX1100PROName].ModelId,
-                PCGOST900Name => Models[PCGOST900Name].ModelId,
-                PCGOST1800Name => Models[PCGOST1800Name].ModelId,
-                PCGOST3300Name => Models[PCGOST3300Name].ModelId,
-                PCGOST6300Name => Models[PCGOST6300Name].ModelId,
-                PCGOSTx900Name => Models[PCGOSTx900Name].ModelId,
-                PCGOSTx1800Name => Models[PCGOSTx1800Name].ModelId,
-                PCGOSTx3300Name => Models[PCGOSTx3300Name].ModelId,
-                PCGOSTx6300Name => Models[PCGOSTx6300Name].ModelId,
-                MGOST6Name => Models[MGOST6Name].ModelId,
-                _ => -1
-            };
-        }
 
         public override Task Find(string ip, IUDPSend sender)
         {
@@ -369,9 +344,6 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             return result;
         }
 
-        public override string GetModelName(int id)
-        {
-            return GetModelName((Model)id);
-        }
+        public override Dictionary<int, string> InfraModesList { get; } = new Dictionary<int, string>() { { 0, "Выключено" }, { 1, "На вход" }, { 2, "На выход" }, { 3, "Включено" } };
     }
 }

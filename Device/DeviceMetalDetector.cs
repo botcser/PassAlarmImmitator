@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
-using Assets.Common;
-using IRAPROM.MyCore.Device.Matreshka.XGOST;
 using IRAPROM.MyCore.Model;
-using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
 using PassAlarmSimulator.Device;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device
 {
@@ -48,13 +47,17 @@ namespace IRAPROM.MyCore.Device
         public abstract byte ZonesCount { get; set; }
         [JsonIgnore]
         public abstract List<short> AvailableZonesCount { get; }
+        [JsonIgnore]
+        public abstract Dictionary<int, string> InfraModesList { get; }
         public abstract string SeriesName { get; }
         public abstract ushort ModelId { set; get; }
         public abstract string ModelName { get; }
         public abstract string ProductModelName { set; get; }
+        public abstract string InfraModeName { get; }
 
         [JsonProperty]
         public abstract MetalDetectorPassage LastPassage { get; set; }
+
 
         public abstract void CleanStatistics();
 
@@ -79,16 +82,25 @@ namespace IRAPROM.MyCore.Device
 
         protected DeviceMetalDetector(IWorkParamsProto workParamsProto, FamilyInfo familyInfo)
         {
+            UID = Guid.NewGuid();
             WorkParamsProto = workParamsProto;
             FamilyInfo = familyInfo;
+        }
+
+        protected DeviceMetalDetector(string ip, ushort portTCP, IWorkParamsProto workParamsProto, FamilyInfo familyInfo)
+        {
             UID = Guid.NewGuid();
+            WorkParamsProto = workParamsProto;
+            FamilyInfo = familyInfo;
+            _ip = ip;
+            _portTCP = portTCP;
         }
 
         public virtual WorkParams GetWorkParams()
         {
-            var bufModelId = WorkParams?.ModelId ?? (byte)0xfe;
+            var bufModelId = WorkParams?.ModelId ?? 0;
 
-            if (bufModelId == 0xfe && ModelId != 0 && ModelId != 0xFE && ModelId != 0xFF)
+            if (bufModelId == 0xfe && ModelId != 0)
             {
                 bufModelId = (byte)ModelId;
             }
@@ -97,11 +109,12 @@ namespace IRAPROM.MyCore.Device
 
             if (WorkParams != null)
             {
-                if (WorkParams.ModelId == 0 || WorkParams.ModelId == 0xFF || WorkParams.ModelId == 0xFE)
+                if (WorkParams.ModelId == 0)
                 {
                     WorkParams.ModelId = bufModelId;
                 }
 
+                ModelId = WorkParams.ModelId;
                 WorkParams.IP ??= _ip;
                 WorkParams.Mask ??= _mask;
                 WorkParams.Gateway ??= _gateway;
@@ -117,7 +130,7 @@ namespace IRAPROM.MyCore.Device
             }
 
 #if DEBUG
-            Console.WriteLine($"GetWorkParams: complete {_ip}:{MAC}:{ModelName}");
+            Console.WriteLine($@"GetWorkParams: complete {_ip}:{MAC}:{ModelName}");
 #endif
             return WorkParams;
         }
@@ -126,22 +139,28 @@ namespace IRAPROM.MyCore.Device
         {
             var res = WorkParamsProto.SetWorkParams(WorkParams);
 #if DEBUG
-            Console.WriteLine($"SetWorkParams: complete {_ip}:{MAC}:{ModelName}");
+            Console.WriteLine($@"SetWorkParams: {_ip}:{MAC}:{ModelName} {(res ? "success" : "FAIL!")}");
 #endif
             return res;
         }
 
-        public virtual void SetWorkProgramScene()
+        public virtual bool SetWorkProgramScene()
         {
-            WorkParamsProto.SetWorkingMode(WorkParams);
+            var res = WorkParamsProto.SetWorkingMode(WorkParams);
+
 #if DEBUG
-            Console.WriteLine($"SetWorkingMode: complete {_ip}:{MAC}:{ModelName}");
+            Console.WriteLine($@"SetWorkingMode: complete {_ip}:{MAC}:{ModelName} {(res ? "success" : "FAIL!")}");
 #endif
+
+            return res;
         }
 
         public virtual bool StaticTest()
         {
-            Console.WriteLine($"\n\n____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}\n");
+            Console.WriteLine($@"
+
+____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}
+");
 
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
 
@@ -177,10 +196,8 @@ namespace IRAPROM.MyCore.Device
             var exitAlarmCount = WorkParams?.BackwardAlarmsCount ?? 0;
 
 #if DEBUG
-            Console.WriteLine($"\n___DynamicTest Before:\n\t EnterPassagesCount {enterPassagesCount}\t EnterAlarmCount {enterAlarmCount}" +
-                              $"\t ExitPassagesCount {exitPassagesCount}\t ExitAlarmCount {exitAlarmCount}");
-            Console.WriteLine($"\t EnterPassagesCount {LastPassage.EnterPassagesCount}\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
-                              $"\t ExitPassagesCount {LastPassage.ExitPassagesCount}\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
+            Console.WriteLine($"\n___DynamicTest: \n\t EnterPassagesCount {enterPassagesCount}\n\t EnterAlarmCount {enterAlarmCount}" +
+                              $"\n\t ExitPassagesCount {exitPassagesCount}\n\t ExitAlarmCount {exitAlarmCount}");
 #endif
             var success = ((ITestsProto)WorkParamsProto).DynamicTest(WorkParams, milliSecondsTimeout, true);
             
@@ -188,14 +205,14 @@ namespace IRAPROM.MyCore.Device
 
 
 #if DEBUG
-            Console.WriteLine($"\n___DynamicTest After:\n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
-                              $"\t ExitPassagesCount {LastPassage.ExitPassagesCount}\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
+            Console.WriteLine($"\n___DynamicTest After: \n\t EnterPassagesCount {LastPassage.EnterPassagesCount}\n\t EnterAlarmCount {LastPassage.EnterAlarmCount}" +
+                              $"\n\t ExitPassagesCount {LastPassage.ExitPassagesCount}\n\t ExitAlarmCount {LastPassage.ExitAlarmCount}");
 #endif
 
             if (LastPassage == null || !LastPassage.IsAlarm || !success)
             {
 #if DEBUG
-                Console.WriteLine($"DynamicTest: Error: missing simulate alarm or it was not alarm! {LastPassage} {LastPassage.IsAlarm} {success}");
+                Console.WriteLine($"DynamicTest: Error: missing simulate alarm or it was not alarm!");
 #endif
                 return false;
             }

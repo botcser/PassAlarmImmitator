@@ -15,7 +15,7 @@ namespace IRAPROM.MyCore.Device.KPP
             return null;
         }
 
-        public void SetWorkingMode(WorkParams workParams)
+        public bool SetWorkingMode(WorkParams workParams)
         {
             throw new NotImplementedException();
         }

@@ -6,7 +6,7 @@ namespace IRAPROM.MyCore.Device
     {
         WorkParams GetWorkParams();
 
-        void SetWorkingMode(WorkParams workParams);
+        bool SetWorkingMode(WorkParams workParams);
 
         bool SetWorkParams(WorkParams workParams);
 

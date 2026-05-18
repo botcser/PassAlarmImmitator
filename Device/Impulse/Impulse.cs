@@ -14,23 +14,25 @@ namespace IRAPROM.MyCore.Device.Impulse
         public override string ModelName => Constants.GetModelName(Model);
         public override string ProductModelName { get; set; }
         public Constants.Model Model => ModelId == 0 ? WorkParams == null ? Constants.Model.Unknown : (Constants.Model)WorkParams.ModelId : (Constants.Model)ModelId;
-        public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
-        public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
-        public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
+        public override List<short> AvailableZonesCount => WorkParams == null ? null : FamilyInfo.Models[ModelId].AvailableZonesCount;
+        public override List<int> GridCellDefinitions => (WorkParams == null || Model == 0) ? null : FamilyInfo.Models[ModelId].GridCellDefinitions;
+        public override int RealCoilsCount => (WorkParams == null || Model == 0) ? 0 : FamilyInfo.Models[ModelId].RealCoilsCount;
+        public override Dictionary<int, string> InfraModesList => FamilyInfo.InfraModesList;
+        public override string InfraModeName => WorkParams == null ? "" : InfraModesList[WorkParams.InfraredPassCounterMode];
 
         [JsonIgnore]
         public override byte ZonesCount
         {
-            get => (byte)(WorkParams == null ? 0 : Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode]);
+            get => (byte)(WorkParams == null ? 0 : FamilyInfo.Models[ModelId].AvailableZonesCount[WorkParams.ZonesSensorMode]);
             set
             {
-                if (WorkParams == null || value >= Constants.Models[ModelName].AvailableZonesCount.Count) return;  
+                if (WorkParams == null || value >= FamilyInfo.Models[ModelId].AvailableZonesCount.Count) return;  
 
                 WorkParams.ZonesSensorMode = (byte)value;
-                WorkParams.ZoneMode = Constants.Models[ModelName].AvailableZonesCount[WorkParams.ZonesSensorMode].ToString();
+                WorkParams.ZoneMode = FamilyInfo.Models[ModelId].AvailableZonesCount[WorkParams.ZonesSensorMode].ToString();
             }
         }
-        
+
         public override MetalDetectorPassage LastPassage
         {
             get => _lastPassage;
@@ -54,10 +56,10 @@ namespace IRAPROM.MyCore.Device.Impulse
         private int RowsCount => GridCellDefinitions != null ? GridCellDefinitions[0] : 0;
         private int ColumnsCount => GridCellDefinitions != null ? GridCellDefinitions[1] : 0;
 
-        public Impulse() : base(new WorkParamsProto(new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public Impulse() : this(new Constants())
         {
-
         }
+
 #if USE_COMMAND_CENTER            
         public Impulse(string ip, short portTCP) : base(new WorkParamsProto(new NetworkProtoHttp(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
         {
@@ -65,14 +67,19 @@ namespace IRAPROM.MyCore.Device.Impulse
             PortTCP = portTCP;
         }
 #else
-        public Impulse(string ip, ushort portTCP) : base(new WorkParamsProto(new NetworkProtoImpulse(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public Impulse(string ip, ushort portTCP) : this(ip, portTCP, new Constants())
         {
-            IP = ip;
-            PortTCP = portTCP;
+        }
+
+        private Impulse(Constants familyInfo) : base(new WorkParamsProto(new DatagramProto(), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
+        {
+        }
+
+        private Impulse(string ip, ushort portTCP, Constants familyInfo) : base(ip, portTCP, new WorkParamsProto(new NetworkProtoImpulse(ip, portTCP), new DatagramProto(), Constants.GetCommands, Constants.SetCommands, familyInfo), new Constants())
+        {
             Name = "Unknown Impulse";
         }
 #endif
-
 
         private void ProcessAlarm(MetalDetectorPassage value)
         {

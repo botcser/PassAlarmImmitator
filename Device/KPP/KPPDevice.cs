@@ -24,9 +24,11 @@ namespace IRAPROM.MyCore.Device.KPP
         public override ushort ModelId { get; set; }
         public override string ModelName { get; }
         public override string ProductModelName { get; set; }
-        public override MetalDetectorPassage LastPassage { get; set; }
+        public override string InfraModeName { get; }
         public override byte ZonesCount { get; set; }
+        public override MetalDetectorPassage LastPassage { get; set; }
         public override List<short> AvailableZonesCount { get; }
+        public override Dictionary<int, string> InfraModesList { get; }
 
         public SortedList<DateTime, MetalDetectorPassage> ActiveAlarms =  new SortedList<DateTime, MetalDetectorPassage>();
 

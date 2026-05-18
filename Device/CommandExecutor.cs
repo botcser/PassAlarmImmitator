@@ -14,6 +14,7 @@ namespace IRAPROM.MyCore.Device
     public class CommandExecutor
     {
         public static bool IsBusy;
+        public readonly FamilyInfo FamilyInfo;
 
         private static readonly object Lock = new object();
 
@@ -23,16 +24,18 @@ namespace IRAPROM.MyCore.Device
 
         private readonly Commands _commands;
 
-        public CommandExecutor(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
+        public CommandExecutor(FamilyInfo familyInfo, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
         {
             DatagramProto = datagramProto;
+            FamilyInfo = familyInfo;
             _commands = new Commands(datagramProto, getCommands, setCommands);
         }
 
-        public CommandExecutor(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
+        public CommandExecutor(FamilyInfo familyInfo, INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands)
         {
             NetworkProto = networkProto;
             DatagramProto = datagramProto;
+            FamilyInfo = familyInfo;
 
             _commands = new Commands(datagramProto, getCommands, setCommands);
         }

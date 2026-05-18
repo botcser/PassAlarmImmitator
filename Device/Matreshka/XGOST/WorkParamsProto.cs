@@ -1,20 +1,18 @@
 ﻿using Assets.Common;
-using IRAPROM.MyCore.Model.WP;
 using PassAlarmSimulator.Device;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Extensions;
 using static System.Net.Mime.MediaTypeNames;
+using IRAPROM.MyCore.Model.WP;
 //using PassAlarmSimulator.Validator;
 
 namespace IRAPROM.MyCore.Device.Matreshka.XGOST
@@ -25,11 +23,11 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private readonly int _networkSetupTimeout = (int)TimeSpan.FromMilliseconds(13000).TotalMilliseconds;
         private readonly int _rebootTimeout = (int)TimeSpan.FromMilliseconds(19000).TotalMilliseconds;
 
-        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
+        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, FamilyInfo familyInfo) : base(familyInfo, networkProto, datagramProto, getCommands, setCommands)
         {
         }
 
-        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
+        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, FamilyInfo familyInfo) : base(familyInfo, datagramProto, getCommands, setCommands)
         {
         }
 
@@ -37,7 +35,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             var workParams = new WorkParams
             {
-                ModelId = (byte)Constants.Model.UnknownMatreshka
+                ModelId = (byte)Constants.Model.PCGOSTx900
             };
 
             try
@@ -71,32 +69,44 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 
         public bool SetWorkParams(WorkParams workParams)
         {
-            SetWorkingMode(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetWorkingMode(workParams);
-            Thread.Sleep(_requestDelay);
+            var success = true;
 
-            SetZonesSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetBaseSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetWorkFrequency(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetAlarmParams(workParams);
-            Thread.Sleep(_requestDelay);
-
-            if (NetworkProto.Ip != workParams.IP || NetworkProto.PortTCP != workParams.PortTCP)
+            try
             {
-                SetNetworkParams(workParams);
+                SetWorkingMode(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetWorkingMode(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetZonesSensitivity(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetBaseSensitivity(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetWorkFrequency(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetAlarmParams(workParams);
+                Thread.Sleep(_requestDelay);
+
+                if (NetworkProto.Ip != workParams.IP || NetworkProto.PortTCP != workParams.PortTCP)
+                {
+                    SetNetworkParams(workParams);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                success = false;
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
             }
 
-            NetworkProto.Disconnect();
-
-            return true;
+            return success;
         }
         
         public bool StaticTest(WorkParams workParams)
@@ -462,9 +472,26 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             NetworkProto.PortTCP = workParams.PortTCP;
         }
 
-        public void SetWorkingMode(WorkParams workParams)
+        public bool SetWorkingMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkingMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
+            var success = true;
+
+            try
+            {
+                ExecuteSetCommandRaw(Constants.SetWorkingMode.code, new[] { workParams.ZonesSensorMode, workParams.WorkProgram, workParams.InfraredPassCounterMode });
+                Task.Delay(_requestDelay);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                success = false;
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
+
+            return success;
         }
 
         public bool SimulatePass()
@@ -486,7 +513,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if DEBUG
             Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
-            var zonesSensorModeTest = (byte)Constants.Models.FirstOrDefault(i => i.Value.ModelId == workParams.ModelId).Value.AvailableZonesCount.Random();
+            var zonesSensorModeTest = (byte)FamilyInfo.Models.FirstOrDefault(i => i.Key == workParams.ModelId).Value.AvailableZonesCount.Random();
 
             workParams.ZonesSensorMode = zonesSensorModeTest;
             workParams.WorkProgram = testValue;

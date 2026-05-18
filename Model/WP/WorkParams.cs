@@ -23,7 +23,7 @@ namespace IRAPROM.MyCore.Model.WP
         public bool ExchangeFrontBack { get; set; }     // 85 byte Infrared Mode 8 7 6 5 bits
         public short[] SensorsSensitivity { get; set; }
         public string ZoneMode { get; set; }          // 86 byte Alarm Mode 7,6 bits: 00(33/24/18) 01(22/16/12) 10(11/8/6) || Matreshka: 2(33/24/18) 1(22/16/12) 0(11/8/6)
-        public byte AlarmInfraMode { get; set; }         // 86 byte Alarm Mode 5,4 bits: Matreshka: UNUSABLE | Impulse: Alarm any OR Alarm largest only UNUSED
+        public byte AlarmModeAny { get; set; }         // 86 byte Alarm Mode 5,4 bits: Matreshka: UNUSABLE | Impulse: Alarm any OR Alarm largest only UNUSED
         public byte MaxZoneMode { get; set; }              // 86 byte Alarm Mode 3,2 bits: 00(33) 01(24) 10(18)
         public byte AlarmLampSwapMode { get; set; }     // 86 byte Alarm Mode 1,0 bits
         public string IP { get; set; }
@@ -55,7 +55,7 @@ namespace IRAPROM.MyCore.Model.WP
             WorkingFreq = (byte)rec.WorkingFreq;
             WorkProgram = (byte)rec.WorkProgram;
             AlarmLampSwapMode = rec.AlarmLampSwapMode;
-            AlarmInfraMode = rec.AlarmZoneMode;
+            AlarmModeAny = rec.AlarmZoneMode;
             MaxZoneMode = rec.MaxZoneMode;
             ZoneMode = rec.ZoneMode;
             ExchangeFrontBack = rec.ExchangeFrontBack;
@@ -195,7 +195,7 @@ namespace IRAPROM.MyCore.Model.WP
         private static WorkParams ParseImpulseResponse(byte[] response, MetalDetectorModel model, MetalDetectorSeries series)
         {
             var resultWorkParams = new WorkParams();
-            var zonesCount = (byte)((response[86] >> 2) & 0x03); //Кол-во зон
+            var zonesCount = (byte)(response[86] >> 2 & 0x03); //Кол-во зон
             
             if (model == MetalDetectorModel.Unknown)
             {
@@ -312,7 +312,7 @@ namespace IRAPROM.MyCore.Model.WP
         public bool Equals(WorkParams other)
         {
             return other != null && WorkProgram == other.WorkProgram && WorkingFreq == other.WorkingFreq && ExchangeFrontBack == other.ExchangeFrontBack && IP == other.IP &&
-                   InfraredPassCounterMode == other.InfraredPassCounterMode && AlarmTone == other.AlarmTone && AlarmInfraMode == other.AlarmInfraMode && AlarmLampSwapMode == other.AlarmLampSwapMode &&
+                   InfraredPassCounterMode == other.InfraredPassCounterMode && AlarmTone == other.AlarmTone && AlarmModeAny == other.AlarmModeAny && AlarmLampSwapMode == other.AlarmLampSwapMode &&
                    AlarmDuration == other.AlarmDuration && AlarmMode == other.AlarmMode && AlarmVolume == other.AlarmVolume && ForwardAlarmsCount == other.ForwardAlarmsCount && 
                    ForwardPassageCount == other.ForwardPassageCount && ZoneMode == other.ZoneMode && ZonesSensorMode == other.ZonesSensorMode && MAC == other.MAC && ModelId == other.ModelId;
         }

@@ -22,7 +22,7 @@ namespace IRAPROM.MyCore.Device
         [JsonProperty]
         private readonly int _port;
         [JsonProperty]
-        public int Timeout { get; set; } = 5000;
+        public int Timeout { get; set; } = 3000;
 
         [JsonIgnore]
         internal IPEndPoint IPEndPoint => new IPEndPoint(IPAddress.Parse(Ip), _port);

@@ -24,11 +24,13 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public override string ProductModelName { get; set; }
         public Constants.Model Model => ModelId == 0 ? WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model) WorkParams.ModelId :(Constants.Model) ModelId;
 
-        public override List<short> AvailableZonesCount => WorkParams == null ? null : Constants.Models[ModelName].AvailableZonesCount;
+        public override List<short> AvailableZonesCount => WorkParams == null ? null : FamilyInfo.Models[ModelId].AvailableZonesCount;
         public override ushort PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
         public override ushort PortUDP { get => _portUDP == 0 ? FamilyInfo.PortUDP : _portUDP; set {} }
-        public override List<int> GridCellDefinitions => WorkParams == null ? null : Constants.Models[ModelName].GridCellDefinitions;
-        public override int RealCoilsCount => WorkParams == null ? 0 : Constants.Models[ModelName].RealCoilsCount;
+        public override List<int> GridCellDefinitions => WorkParams == null ? null : FamilyInfo.Models[ModelId].GridCellDefinitions;
+        public override int RealCoilsCount => WorkParams == null ? 0 : FamilyInfo.Models[ModelId].RealCoilsCount;
+        public override Dictionary<int, string> InfraModesList => FamilyInfo.InfraModesList;
+        public override string InfraModeName => WorkParams == null ? "" : InfraModesList[WorkParams.InfraredPassCounterMode];
 
         public override MetalDetectorPassage LastPassage
         {
@@ -71,7 +73,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             WorkParams = new WorkParams()
             {
                 AlarmDuration = 1,
-                AlarmInfraMode = 0,
+                AlarmModeAny = 0,
                 AlarmLampSwapMode = 0,
                 AlarmMode = 1,
                 AlarmTone = 1,
@@ -128,7 +130,9 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         private int ColumnsCount => GridCellDefinitions != null ? GridCellDefinitions[1] : 0;
 
 
-        public XPROGOST() : base(new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands), new Constants()) { }
+        public XPROGOST() : this(new Constants())
+        {
+        }
 
 #if USE_COMMAND_CENTER
         public Matreshka(string ip, short port) : base(new WorkParamsProto(new NetworkProtoHttp(ip, Constants.PortTCPDefault), new DatagramProto(), Constants.GetCommands, Constants.SetCommands), new Constants())
@@ -137,11 +141,17 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             PortTCP = port;
         }
 #else
-        public XPROGOST(string ip, ushort port, ushort hardwareAddress) : base(new WorkParamsProto(new NetworkProtoXPROGOST(ip, port == 0 ? Constants.PortTCPDefault : port), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands), new Constants())
+        public XPROGOST(string ip, ushort portTCP, ushort hardwareAddress) : this(ip, portTCP, new Constants())
         {
-            IP = ip;
-            PortTCP = port;
             HardwareAddress = hardwareAddress;
+        }
+
+        private XPROGOST(string ip, ushort portTCP, Constants familyInfo) : base(ip, portTCP, new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
+        {
+        }
+
+        private XPROGOST(Constants familyInfo) : base(new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
+        {
         }
 #endif
 

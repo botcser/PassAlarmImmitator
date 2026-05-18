@@ -257,11 +257,11 @@ namespace PassAlarmSimulator.Validator
                     
                     if (deviceType == typeof(IRAPROM.MyCore.Device.Impulse.Constants))
                     {
-                        device.ModelId = (ushort)FindOutModelId(IRAPROM.MyCore.Device.Impulse.Constants.Models);
+                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.DeviceMetalDetector.FamilyInfoVariants[1].Models);
                     }
                     else
                     {
-                        device.ModelId = (ushort)FindOutModelId(IRAPROM.MyCore.Device.Matreshka.Constants.Models);
+                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.DeviceMetalDetector.FamilyInfoVariants[1].Models);
                     }
                 }
 
@@ -279,7 +279,7 @@ namespace PassAlarmSimulator.Validator
             });
         }
 
-        private short FindOutModelId(Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
+        private ushort AskModelId(Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
         {
             var index = 0;
             var indexes = Enumerable.Range(0, models.Count).ToArray();
@@ -287,14 +287,16 @@ namespace PassAlarmSimulator.Validator
 
             foreach (var model in models)
             {
-                if (model.Value.ModelId >= 0xFE) continue;
+                if (model.Key >= 0xFE) continue;
+
                 Console.WriteLine($"{indexes[index++]} - {model.Key}");
-                modelsList.Add(model.Key);
+
+                modelsList.Add(model.Value.ModelName);
             }
 
             index = int.Parse(Console.ReadLine() ?? string.Empty);
 
-            return models[modelsList[index]].ModelId;
+            return models.FirstOrDefault(i => i.Value.ModelName == modelsList[index]).Key;
         }
 
         private async Task<bool> DynamicTests()                             // assume to start after Static tests!

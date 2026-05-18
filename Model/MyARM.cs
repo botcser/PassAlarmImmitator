@@ -16,15 +16,11 @@ using IRAPROM.MyCore.Device;
 
 namespace IRAPROM.MyCore.Model
 {
-    public class MyARM
+    public class MyARM 
     {
         public bool DeviceSearchInProgress = false;
         public bool bOtladka = true;
         public List<string> msgList = new List<string>();
-        //public List<KPP> lstKPP = new List<KPP>();
-        //public List<MyCOMTemperature> lstSensorsTemperature = new List<MyCOMTemperature>(); //Список МД с датчиками температур
-        //public List<MyExplosivesSensor> lstExplosivesSensor = new List<MyExplosivesSensor>(); //Список датчиков взрывчатых веществ
-        //public List<MyRadiationSensor> lstRadiationSensor = new List<MyRadiationSensor>(); //Список датчиков радиации
         public List<MetDetector> DevicesFound = new List<MetDetector>();
         
         public event Action<MetDetector, MetDetector> AddedDeviceOnChange;
@@ -137,7 +133,7 @@ namespace IRAPROM.MyCore.Model
 
             return true;
         }
-
+        
         public int AddedDevicesCount()
         {
             return ShowAddedDevices().Count;
@@ -267,7 +263,6 @@ namespace IRAPROM.MyCore.Model
         }
 
 
-
-        //protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) => this.RaisePropertyChanged(propertyName);
+        
     }
 }

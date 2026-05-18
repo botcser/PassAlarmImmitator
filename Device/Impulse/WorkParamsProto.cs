@@ -1,5 +1,4 @@
 ﻿using IRAPROM.MyCore.Model.MD;
-using IRAPROM.MyCore.Model.WP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,27 +7,29 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using PassAlarmSimulator.Device;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device.Impulse
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
         private int WorkParamsLength11 = 82; 
-        private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
+        private readonly int _requestDelay = (int)TimeSpan.FromMilliseconds(2000).TotalMilliseconds;
 
         private byte[] _responseWorkParamsDatagram { get; set; }
 
-        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
+        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, FamilyInfo familyInfo) : base(familyInfo, networkProto, datagramProto, getCommands, setCommands)
         {
         }
 
-        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
+        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, FamilyInfo familyInfo) : base(familyInfo, datagramProto, getCommands, setCommands)
         {
         }
 
         public WorkParams GetWorkParams()
         {
             _responseWorkParamsDatagram = ExecuteGetCommandRaw(Constants.GetWorkParams.code);
+            Thread.Sleep(150);
             NetworkProto.Disconnect();
 
             if (_responseWorkParamsDatagram == null || !_responseWorkParamsDatagram.Any(i => i > 0)) throw new Exception($"GetWorkParams: Устройство не вернуло настройки! (Импульс) {NetworkProto.Ip}");
@@ -38,25 +39,28 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         public bool SetWorkParams(WorkParams workParams)
         {
+            var success = true;
+
             try
             {
                 SetWorkParamsDo();
-                Task.Delay(1500);
+                //Task.Delay(1500);
                 //SetWorkParamsDo();
                 //Task.Delay(200);
-                SetNetworkParams();
-                Task.Delay(10000);
+                //SetNetworkParams();
+                Thread.Sleep(_requestDelay);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                success = false;
             }
             finally
             {
                 NetworkProto.Disconnect();
             }
 
-            return true;
+            return success;
             
             void SetWorkParamsDo()
             {
@@ -139,9 +143,26 @@ namespace IRAPROM.MyCore.Device.Impulse
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { });
         }
 
-        public void SetWorkingMode(WorkParams workParams)
+        public bool SetWorkingMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
+            var success = true;
+            
+            try
+            {
+                ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
+                Task.Delay(_requestDelay);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                success = false;
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
+
+            return success;
         }
 
         public bool StaticTest(WorkParams workParams)
@@ -193,14 +214,11 @@ namespace IRAPROM.MyCore.Device.Impulse
             workParams.AlarmVolume = testValue;
             workParams.AlarmTone = testValue;
             workParams.ZonesSensorMode = testValue;
-            workParams.AlarmInfraMode = (byte)(testValue - testValue);      // TODO: PC1800 UNUSED;
-            workParams.SensorsSensitivity = new[]
+
+            for (var i = 0; i < workParams.SensorsSensitivity.Length; i++)
             {
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-                    (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                    (short)testValue,
-            };
+                workParams.SensorsSensitivity[i] = testValue;
+            }
 
             byte workingFreq = 2;
 
@@ -212,15 +230,14 @@ namespace IRAPROM.MyCore.Device.Impulse
             workParams.WorkingFreq = workingFreq;
 
             SetWorkParams(workParams);
-            Thread.Sleep(_requestDelay * 100);
+            Thread.Sleep(_requestDelay);
 
             workParams = GetWorkParams();
 
-            if (workParams.SensorsSensitivity[01] != testValue || workParams.SensorsSensitivity[03] != testValue || workParams.SensorsSensitivity[06] != testValue)
+            if (workParams.SensorsSensitivity.Any(i => i != testValue))
             {
-#if DEBUG
                 Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesSensitivity test fail!");
-#endif
+
                 result = false;
             }
 
@@ -276,16 +293,20 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         private WorkParams ParseWorkParams(byte[] response)
         {
-            var workParams = new WorkParams();
+            var workParams = new WorkParams()
+            {
+                ModelId = (byte)Constants.Model.PC1800MKZ                                   // TODO: Импульсы еще не имеют эту фичу - поумолчанию
+            };
+            
             var zoneSensitivityEndIndex = response.Length - Constants.AfterZonesSensitivityBytesCountSuppose;
-
+                    
             workParams.SensorsSensitivity = GetZonesSensitivity();
-
+                
             workParams.BaseSensitivity = (short)((response[zoneSensitivityEndIndex] << 8) + response[zoneSensitivityEndIndex + 1]);
             workParams.WorkingFreq = response[zoneSensitivityEndIndex + 2];
             workParams.AlarmDuration = response[zoneSensitivityEndIndex + 3];
             workParams.WorkProgram = response[zoneSensitivityEndIndex + 4];
-            workParams.ModelId = response[zoneSensitivityEndIndex + 5];
+            //workParams.ModelId = response[zoneSensitivityEndIndex + 5];                    // TODO: Импульсы еще не имеют эту фичу 
             workParams.AlarmVolume = response[zoneSensitivityEndIndex + 6];
             workParams.AlarmTone = response[zoneSensitivityEndIndex + 7];
             workParams.ExchangeFrontBack = response[zoneSensitivityEndIndex + 10] >> 4 != 0; //Infrared mode:
@@ -293,23 +314,22 @@ namespace IRAPROM.MyCore.Device.Impulse
                                                                                              //Low 4 bits: Режим инфракрасных датчиков на проходы: 0x04 считать оба направления прохода; 0x03 считать только проход вперед (хз, мб и наоборот);
                                                                                              //0x02 считать только проход обратно (хз, мб и наоборот); 0x01 проходы выключены.
 
-            workParams.InfraredPassCounterMode = (byte)((response[zoneSensitivityEndIndex + 10] & 0x0F) - 1);
+            workParams.InfraredPassCounterMode = (byte)(response[zoneSensitivityEndIndex + 10] & 0x0F);
 
-
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch ((MetalDetectorModel)workParams.ModelId)
-            {
-                case MetalDetectorModel.PC600MKX:
-                case MetalDetectorModel.PC1800MKZ:
-                case MetalDetectorModel.PC4400MK:
-                case MetalDetectorModel.PC600MKZ:
-                case MetalDetectorModel.PC4400MKZ:
-                case MetalDetectorModel.PC4400MKX:
-                case MetalDetectorModel.PC6300MKZ:
-                case MetalDetectorModel.PC6300MKX:
-                    ParseAlarmMode(workParams, response[zoneSensitivityEndIndex + 11]);
-                    break;
-            }
+            ParseAlarmMode(workParams, response[zoneSensitivityEndIndex + 11]);             // TODO: Импульсы еще не имеют эту фичу response[zoneSensitivityEndIndex + 5];
+            //switch ((MetalDetectorModel)workParams.ModelId)
+            //{
+            //    case MetalDetectorModel.PC600MKX:
+            //    case MetalDetectorModel.PC1800MKZ:
+            //    case MetalDetectorModel.PC4400MK:
+            //    case MetalDetectorModel.PC600MKZ:
+            //    case MetalDetectorModel.PC4400MKZ:
+            //    case MetalDetectorModel.PC4400MKX:
+            //    case MetalDetectorModel.PC6300MKZ:
+            //    case MetalDetectorModel.PC6300MKX:
+            //        ParseAlarmMode(workParams, response[zoneSensitivityEndIndex + 11]);
+            //        break;
+            //}
 
             return workParams;
 
@@ -338,11 +358,11 @@ namespace IRAPROM.MyCore.Device.Impulse
         private void ParseAlarmMode(WorkParams workParams, byte alarmByte86)
         {
             byte zoneMode;
-            byte alarmZoneMode;
+            byte alarmModeAny;
             byte maxZoneMode;
             byte alarmLampSwapMode;
 
-            (zoneMode, alarmZoneMode, maxZoneMode, alarmLampSwapMode) = Parse86ByteAlarmMode(alarmByte86);
+            (zoneMode, alarmModeAny, maxZoneMode, alarmLampSwapMode) = Parse86ByteAlarmMode(alarmByte86);
 
             switch ((Constants.Model)workParams.ModelId)
             {
@@ -354,37 +374,23 @@ namespace IRAPROM.MyCore.Device.Impulse
 
             workParams.ZonesSensorMode = zoneMode;
             workParams.ZoneMode = ParseZoneMode(zoneMode, workParams.ModelId);
-            workParams.AlarmInfraMode = alarmZoneMode;
+            workParams.AlarmModeAny = alarmModeAny;
             workParams.MaxZoneMode = maxZoneMode;
             workParams.AlarmLampSwapMode = alarmLampSwapMode;
         }
 
         private string ParseZoneMode(byte zoneMode, byte modelId)
         {
+            if (modelId == 0)
+                return FamilyInfo.Models.FirstOrDefault(i => i.Key == (int)Constants.Model.PC1800MKZ).Value.AvailableZonesCount[zoneMode].ToString();
+
             try
             {
-                return Constants.Models.Values.FirstOrDefault(i => i.ModelId == modelId).AvailableZonesCount[zoneMode].ToString();
-
-                switch ((Constants.Model)modelId)
-                {
-                    case Constants.Model.PC1800MKZ:
-                    case Constants.Model.PC1800MKX:
-                        return Constants.ZoneMode1800[zoneMode];
-                    case Constants.Model.PC4400MKZ:
-                    case Constants.Model.PC4400MKX:
-                        return Constants.ZoneMode4400[zoneMode];
-                    case Constants.Model.PC3300M:
-                        return Constants.ZoneMode3300[zoneMode];
-                    case Constants.Model.PC600MKX:
-                    case Constants.Model.PC600MKZ:
-                    default:
-                        return "6";
-                }
+                return FamilyInfo.Models.FirstOrDefault(i => i.Key == modelId).Value.AvailableZonesCount[zoneMode].ToString();
             }
             catch (Exception)
             {
-                Console.WriteLine($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
-                throw new Exception($"EX: ParseZoneMode: unknown zone mode {zoneMode} for modelId = {modelId}!");
+                return FamilyInfo.Models.FirstOrDefault(i => i.Key == (int)Constants.Model.PC1800MKZ).Value.AvailableZonesCount[zoneMode].ToString();
             }
         }
 
@@ -427,7 +433,7 @@ namespace IRAPROM.MyCore.Device.Impulse
                     break;
             }
 
-            return (byte)((zoneMode << 6) + (workParams.AlarmInfraMode << 4) + (workParams.MaxZoneMode << 2) + workParams.AlarmLampSwapMode);
+            return (byte)((zoneMode << 6) + (workParams.AlarmModeAny << 4) + (workParams.MaxZoneMode << 2) + workParams.AlarmLampSwapMode);
         }
 
         private (byte, byte, byte, byte) Parse86ByteAlarmMode(byte byte86)

@@ -28,7 +28,7 @@ namespace IRAPROM.MyCore.Model
 
         //public byte[] sensors = new byte[72]; 
         public byte[] sensors = new byte[33];
-
+        
         public bool ExistAlarm()
         {
             for (int i = 0; i < sensors.Length; i++) 

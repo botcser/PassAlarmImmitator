@@ -27,7 +27,7 @@ namespace IRAPROM.MyCore.MyNetwork
                 ip = "127.0.0.1";
             }
 
-#if DEBUGG
+#if DEBUG
             Console.WriteLine($"UDPSender: Send:\n" +
                               $"\tto {ip}:{port}:\n" +
                               $"\t\tbytes = {BitConverter.ToString(bytes)}\n");

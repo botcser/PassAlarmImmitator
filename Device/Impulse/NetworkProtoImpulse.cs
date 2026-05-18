@@ -13,16 +13,17 @@ namespace IRAPROM.MyCore.Device.Impulse
 
         public override byte[] SendAndGet(byte[] outputBytes, int getCount)
         {
-            if (!Send(outputBytes))
-            {
-                return null;
-            }
-
-            var _try = 5;
+            var _try = 3;
             var inputBytes = new byte[2048];
+
 
             while (_try > 0)
             {
+                if (!Send(outputBytes))
+                {
+                    return null;
+                }
+
                 _try--;
 
                 try
@@ -68,7 +69,7 @@ namespace IRAPROM.MyCore.Device.Impulse
                     Console.WriteLine($"EX: SendAndGet: {e.Message}!\n");
                 }
 
-                Thread.Sleep(150);
+                Thread.Sleep(2000);
             }
 
 #if DEBUG

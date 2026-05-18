@@ -1,15 +1,15 @@
 ﻿using IRAPROM.MyCore.Auxiliary;
-using System.Net;
-using System.Text;
-using System.Xml.Linq;
-using Casualbunker.Server.Common;
-using IRAPROM.MyCore.Device;
+using IRAPROM.MyCore.DBModel;
 using IRAPROM.MyCore.Model.MD;
+//using Npgsql;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Xml.Linq;
 using Casualbunker.Server.Common;
 using IRAPROM.MyCore.Device;
-using System.Net;
-using System.Text;
 
 namespace IRAPROM.MyCore.Model
 {
@@ -122,131 +122,7 @@ namespace IRAPROM.MyCore.Model
         {
             return sensors.Any(i => i > 0);
         }
-
-        public static int GetCount(byte[] arCnt)
-        {
-            var st = Convert.ToHexString(arCnt);
-
-            return !int.TryParse(st, out var val) ? val : 0;
-        }
-
-        public static MonopanelPacketInfo ParseImpulseMessageUDP(byte[] arr)
-        {
-            if (arr.Length != 29)
-                return null;
-
-            if (!Device.Impulse.Constants.CheckImpulseHeader(arr))
-                return null;
-
-            var rec = new MonopanelPacketInfo();
-
-            rec.logTime = DateTime.Now;
-
-            using (var ms = new MemoryStream(arr))
-            {
-                using (var br = new BinaryReader(ms))
-                {
-                    var artmp = br.ReadBytes(5); //0-4
-                    
-                    var byAlarmPassNum = br.ReadBytes(3); //5-7 
-                    rec.NormalPassNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000
-                                               + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100
-                                               + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
-
-                    
-                    byAlarmPassNum = br.ReadBytes(3); //8-10
-
-                    rec.NormalReturnNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000
-                                                 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100
-                                                 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
-
-
-
-                    byAlarmPassNum = br.ReadBytes(3); //11-13
-                    rec.AlarmPassNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
-                    
-                    byAlarmPassNum = br.ReadBytes(3); //8-10
-                    rec.AlarmReturnNum = (uint)(((byAlarmPassNum[0] >> 4) * 10 + (byAlarmPassNum[0] & 0x0f)) * 10000 + ((byAlarmPassNum[1] >> 4) * 10 + (byAlarmPassNum[1] & 0x0f)) * 100 + (byAlarmPassNum[2] >> 4) * 10 + (byAlarmPassNum[2] & 0x0f));
-
-                    var sen = br.ReadBytes(4); //17-20
-
-                    for (var i = 0; i < 6; i++)
-                    {
-                        rec.sensors[i] = (byte)((sen[0] >> i) & 0x01);
-                        rec.sensors[i + 12] = (byte)((sen[2] >> i) & 0x01);
-                        rec.sensors[i + 6] = (byte)(rec.sensors[i] & rec.sensors[i + 12]);
-                    }
-                    
-                    var bMode = br.ReadByte(); //21
-                    
-                    rec.ZonesSensorMode = (byte)MDSensorMode.enItems.Zones_0;
-
-                    var btmp = br.ReadByte(); //22
-
-                    rec.mac = br.ReadBytes(6); //23-28
-
-                    if (MyARM.Instance.AddedDevicesTryGetValue(rec.MAC, out var metDetector, out var onChanged))
-                    {
-                        rec.MetDetector = metDetector;
-                        //MDAlarm.SetSensorsProcessedImpulse(metDetector.Model, metDetector.ModelSeries, rec.sensors, rec.sensorsProcessed);  // PC 1800 MK
-
-                        if (rec.ExistAlarm())
-                        {
-                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.sensors, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum); // импульс передает в тревоге статистику. А матреаха?
-                        }
-                        else
-                        {
-                            metDetector.DeviceMetalDetector.LastPassage = new MetalDetectorPassage(rec.MAC, rec.logTime, rec.ZonesSensorMode, rec.NormalPassNum, rec.AlarmPassNum, rec.NormalReturnNum, rec.AlarmReturnNum);
-                        }
-
-                        onChanged(metDetector);
-                    }
-                }
-            }
-
-            return rec;
-        }
-
-
-        public string dataTypeNameForXML(short command)
-        {
-
-            switch (command)
-            {
-                case MDCommands.METDET_CMD_ALARM:
-                    return "UDP alarm";
-
-                case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
-                    return "UDP general";
-
-                default:
-                    return "";
-
-            }
-        }
-
-        public string InfForXML(short command, byte[] sensors)
-        {
-            var res = "";
-            switch (command)
-            {
-                case MDCommands.METDET_CMD_NORMAL_GET_PASSAGES:
-                    res = $"{NormalPassNum};{NormalReturnNum};{AlarmPassNum};{AlarmReturnNum}";
-                    break;
-
-                case MDCommands.METDET_CMD_ALARM:
-                    //0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0
-                    for (var i = 0; i < sensors.Length; i++)
-                    {
-                        if (i > 0)
-                            res += ",";
-                        res += sensors[i].ToString();
-                    }
-                    break;
-            }
-
-            return res;
-        }
+        
         
     }//class MonopanelPacketInfo
 }

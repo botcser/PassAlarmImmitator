@@ -3,6 +3,7 @@ using System.ComponentModel;
 using IRAPROM.MyCore.Device;
 using IRAPROM.MyCore.Device.Impulse;
 using IRAPROM.MyCore.Device.Matreshka;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.DBModel
 {
@@ -712,7 +713,7 @@ namespace IRAPROM.MyCore.DBModel
 
         #endregion
 
-        public void Init(Model.WP.WorkParams workParams)
+        public void Init(WorkParams workParams)
         {
             if (workParams == null) return;
 
@@ -727,7 +728,7 @@ namespace IRAPROM.MyCore.DBModel
             WorkProgram = workParams.WorkProgram;
             Model = (MetalDetectorModel)workParams.ModelId;
             ModelId = workParams.ModelId;
-            AlarmZoneMode = workParams.AlarmInfraMode;
+            AlarmZoneMode = workParams.AlarmModeAny;
             ZoneMode = workParams.ZoneMode;
             MaxZoneMode = workParams.MaxZoneMode;
             AlarmLampSwapMode = workParams.AlarmLampSwapMode;
@@ -750,7 +751,7 @@ namespace IRAPROM.MyCore.DBModel
 
         public byte SceneMode { get; set; }
 
-        public Model.WP.WorkParams GetWorkParams()
+        public WorkParams GetWorkParams()
         {
             var workParams = new Model.WP.WorkParams();
 
@@ -764,7 +765,7 @@ namespace IRAPROM.MyCore.DBModel
             workParams.WorkingFreq = (byte)WorkingFreq;
             workParams.WorkProgram = (byte)WorkProgram;
             workParams.ModelId = (byte)Model;
-            workParams.AlarmInfraMode = AlarmZoneMode;
+            workParams.AlarmModeAny = AlarmZoneMode;
             workParams.ZoneMode = ZoneMode;
             workParams.MaxZoneMode = MaxZoneMode;
             workParams.AlarmLampSwapMode = AlarmLampSwapMode;
@@ -782,7 +783,7 @@ namespace IRAPROM.MyCore.DBModel
 
         public byte AlarmMode { get; set; }
 
-        private void GetMetSensorsFieldsFromArray(Model.WP.WorkParams workParams)
+        private void GetMetSensorsFieldsFromArray(WorkParams workParams)
         {
             Sens01 = workParams.SensorsSensitivity[0];
             Sens02 = workParams.SensorsSensitivity[1];

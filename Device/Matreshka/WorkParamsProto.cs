@@ -1,25 +1,28 @@
-﻿using System;
+﻿using PassAlarmSimulator.Device;
+using IRAPROM.MyCore.Model.WP;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using IRAPROM.MyCore.Model.WP;
-using PassAlarmSimulator.Device;
+using System.Threading.Tasks;
 //using PassAlarmSimulator.Validator;
+// ReSharper disable LocalizableElement
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
     public class WorkParamsProto : CommandExecutor, IWorkParamsProto, ITestsProto
     {
-        private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds;
-        
-        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(networkProto, datagramProto, getCommands, setCommands)
+        private readonly int _requestDelay = TimeSpan.FromMilliseconds(150).Milliseconds; 
+        private FamilyInfo _familyInfo;
+
+        public WorkParamsProto(INetworkProtoDual networkProto, IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, Constants familyInfo) : base(familyInfo, networkProto, datagramProto, getCommands, setCommands)
         {
         }
 
-        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands) : base(datagramProto, getCommands, setCommands)
+        public WorkParamsProto(IDatagramProto datagramProto, List<(short, short, int, string)> getCommands, List<(short, short, int, string)> setCommands, Constants familyInfo) : base(familyInfo, datagramProto, getCommands, setCommands)
         {
         }
 
@@ -27,7 +30,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             var workParams = new WorkParams
             {
-                ModelId = (byte)Constants.Model.UnknownMatreshka
+                ModelId = (byte)Constants.Model.PCV900                          // TODO: Старые матрехи еще не имеют эту фичу - поумолчанию
             };
 
             try
@@ -58,30 +61,42 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public bool SetWorkParams(WorkParams workParams)
         {
-            SetWorkingMode(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetZonesWorkMode(workParams);
-            Thread.Sleep(_requestDelay);
+            var success = true;
 
-            SetZonesSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetBaseSensitivity(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetWorkFrequency(workParams);
-            Thread.Sleep(_requestDelay);
-            
-            SetAlarmParams(workParams);
-            Thread.Sleep(_requestDelay);
+            try
+            {
+                SetWorkingMode(workParams);
+                Thread.Sleep(_requestDelay);
 
-            SetNetworkParams(workParams);
-            Thread.Sleep(_requestDelay);
+                SetZonesWorkMode(workParams);
+                Thread.Sleep(_requestDelay);
 
-            NetworkProto.Disconnect();
+                SetZonesSensitivity(workParams);
+                Thread.Sleep(_requestDelay);
 
-            return true;
+                SetBaseSensitivity(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetWorkFrequency(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetAlarmParams(workParams);
+                Thread.Sleep(_requestDelay);
+
+                SetNetworkParams(workParams);
+                Thread.Sleep(_requestDelay);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                success = false;
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
+
+            return success;
         }
         
         public bool StaticTest(WorkParams workParams)
@@ -102,9 +117,9 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
             workParams.SensorsSensitivity = new[]
             {
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                testValue, testValue, testValue, testValue, testValue,
+                testValue,
+                testValue, testValue, testValue, testValue, testValue,
                 (short)testValue,
             };
             SetZonesSensitivity(workParams);
@@ -135,7 +150,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public bool DynamicTest(WorkParams workParams, int milliSecondsTimeout, bool alarm)
         {
-            Console.WriteLine($"\nYou must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
+            Console.WriteLine($@"You must make a passage (dirty) through all devices at once. You have 20 seconds to do this!");
 
             var timer = milliSecondsTimeout;
             MetalDetectorPassage alarmPassage = null;
@@ -148,17 +163,21 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                 //alarmPassage = Validator.FoundDevices.FirstOrDefault(i => i.MAC == workParams.MAC)?.LastPassage;
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                // ReSharper disable once HeuristicUnreachableCode
                 if (alarmPassage != null) break;
 
             } while (timer > 0);
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (alarmPassage == null)
             {
-                Console.WriteLine($"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
+                Console.WriteLine($@"DynamicTest: Error: No Alarm Passage message was received from the device {workParams.IP}:{workParams.MAC}.");
 
                 return false;
             }
 
+            // ReSharper disable once HeuristicUnreachableCode
             alarmPassage = alarmPassage.Clone();
             timer = milliSecondsTimeout;
             MetalDetectorPassage lastPassage = null;
@@ -219,10 +238,10 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                 for (byte i = 0; i < response.Length; i += 2)
                 {
-                    workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                    workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (response[i + 1] << 8));
                 }
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 try
                 {
@@ -238,10 +257,10 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                     for (byte i = 0; i < response.Length; i += 2)
                     {
-                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (response[i + 1] << 8));
                     }
                 }
-                catch (Exception __)
+                catch (Exception)
                 {
                     var response = ExecuteGetCommand(Constants.GetZonesSensitivity3.code);
                     
@@ -256,7 +275,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
                     for (byte i = 0; i < response.Length; i += 2)
                     {
-                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (((short)response[i + 1]) << 8));
+                        workParams.SensorsSensitivity[i / 2] = (short)(response[i] + (response[i + 1] << 8));
                     }
 
                     Console.WriteLine();
@@ -277,13 +296,13 @@ namespace IRAPROM.MyCore.Device.Matreshka
             {
                 using (var br = new BinaryReader(ms))
                 {
-                    var arIP = br.ReadBytes(4);
+                    var arIp = br.ReadBytes(4);
                     var arMask = br.ReadBytes(4);
-                    var arIPGateway = br.ReadBytes(4);
+                    var arIpGateway = br.ReadBytes(4);
 
-                    workParams.IP = $"{arIP[0]}.{arIP[1]}.{arIP[2]}.{arIP[3]}";
+                    workParams.IP = $"{arIp[0]}.{arIp[1]}.{arIp[2]}.{arIp[3]}";
                     workParams.Mask = $"{arMask[0]}.{arMask[1]}.{arMask[2]}.{arMask[3]}";
-                    workParams.Gateway = $"{arIPGateway[0]}.{arIPGateway[1]}.{arIPGateway[2]}.{arIPGateway[3]}";
+                    workParams.Gateway = $"{arIpGateway[0]}.{arIpGateway[1]}.{arIpGateway[2]}.{arIpGateway[3]}";
                     workParams.PortTCP = br.ReadInt16();
                     workParams.PortUDP = br.ReadInt16();
                 }
@@ -299,7 +318,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 throw new Exception($"InitNetworkParams: EX: no response from {workParams.IP}:{workParams.SerialNumber}:{workParams.FirmwareVersion}!");
             }
 
-            workParams.BaseSensitivity = response.FirstOrDefault(); ;
+            workParams.BaseSensitivity = response.FirstOrDefault();
         }
 
         public void InitWorkFrequency(WorkParams workParams)
@@ -379,12 +398,12 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void SetWorkFrequency(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkFrequency.code, new[] { (byte)workParams.WorkingFreq });
+            ExecuteSetCommandRaw(Constants.SetWorkFrequency.code, new[] { workParams.WorkingFreq });
         }
 
         public void SetAlarmParams(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetAlarmParams.code, new[] { (byte)workParams.AlarmDuration, (byte)workParams.AlarmVolume, (byte)workParams.AlarmTone });
+            ExecuteSetCommandRaw(Constants.SetAlarmParams.code, new[] { workParams.AlarmDuration, workParams.AlarmVolume, workParams.AlarmTone });
         }
 
         public void ClearPassageCount()
@@ -395,9 +414,26 @@ namespace IRAPROM.MyCore.Device.Matreshka
             ExecuteSetCommandRaw(Constants.ClearPassageCount.code, new byte[] { 0x03 });
         }
 
-        public void SetWorkingMode(WorkParams workParams)
+        public bool SetWorkingMode(WorkParams workParams)
         {
-            ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
+            var success = true;
+
+            try
+            {
+                ExecuteSetCommandRaw(Constants.SetWorkProgramScene.code, new byte[] { workParams.WorkProgram });
+                Task.Delay(_requestDelay);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                success = false;
+            }
+            finally
+            {
+                NetworkProto.Disconnect();
+            }
+
+            return success;
         }
 
         public void SetNetworkParams(WorkParams workParams)
@@ -436,12 +472,12 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             workParams.ZonesSensorMode = testValue;
             workParams.WorkProgram = testValue; // TODO: PCV1800 не работает
-            workParams.AlarmInfraMode = testValue;
+            workParams.AlarmModeAny = testValue;
             SetZonesWorkMode(workParams);
             Thread.Sleep(_requestDelay);
             InitZonesWorkMode(workParams);
 
-            if (workParams.ZonesSensorMode != testValue || workParams.AlarmInfraMode != testValue)
+            if (workParams.ZonesSensorMode != testValue || workParams.AlarmModeAny != testValue)
             {
 #if DEBUG
                 Console.WriteLine($"SelfTest: {workParams.IP}:\t ZonesWorkMode test fail!");
@@ -455,9 +491,9 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             workParams.SensorsSensitivity = new[]
             {
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
-                (short)testValue,
-                (short)testValue, (short)testValue, (short)testValue, (short)testValue, (short)testValue,
+                testValue, testValue, testValue, testValue, testValue,
+                testValue,
+                testValue, testValue, testValue, testValue, testValue,
                 (short)testValue,
             };
             SetZonesSensitivity(workParams);
@@ -565,15 +601,15 @@ namespace IRAPROM.MyCore.Device.Matreshka
         {
             var sensorsSensitivityLength = workParams.SensorsSensitivity.Length;
 
-            foreach (var model in Constants.Models.Where(model => model.Value.AvailableZonesCount[0] * 2 == sensorsSensitivityLength))
+            foreach (var model in FamilyInfo.Models.Where(model => model.Value.AvailableZonesCount[0] * 2 == sensorsSensitivityLength))
             {
-                workParams.ModelId = (byte)model.Value.ModelId;
+                workParams.ModelId = (byte)model.Key;
 
                 Console.Write($"ModelBySensors: guess device is {model.Value.Name}");
                 return;
             }
 
-            Console.WriteLine($"Unknown SensorsSensitivity.Length {sensorsSensitivityLength} for identify PCV");
+            Console.WriteLine($@"Unknown SensorsSensitivity.Length {sensorsSensitivityLength} for identify PCV");
         }
     }
 }

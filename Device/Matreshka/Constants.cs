@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using IRAPROM.MyCore.MyNetwork;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IRAPROM.MyCore.MyNetwork;
-using Newtonsoft.Json;
 
 namespace IRAPROM.MyCore.Device.Matreshka
 {
@@ -11,7 +13,6 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public static readonly short[] FindAnswerCodes = { 0x1040, 0x2DE1, 0x1100 };
         public static byte[] RequestMagicNumber = { 0x40, 0x23, 0x24 }; // @#$
         public static byte[] ResponseMagicNumber = { 0x41, 0x59, 0x3E }; // AY>
-        public static byte[] RequestMagicNumberMonopanel = { 0x5C, 0x15, 0xAE };
         public static byte[] FindDatagram = new byte[] { 0x40, 0x23, 0x24, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x30, 0x30, 0x0D, 0x0A };
         public static int MetaInfoLength = 19;
         
@@ -30,31 +31,34 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public static (short deviceCode, short code, int responseLenght, string name) GetWorkProgramScene = (0x002A, 0x002A, MetaInfoLength + 1, "GetWorkProgramScene");
         public static (short deviceCode, short code, int responseLenght, string name) GetAlarmLogs = (0x002B, 0x002B, 0, "GetAlarmLogs");
 
-        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, MetaInfoLength, "SetNetworkParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, MetaInfoLength, "SetBaseSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, MetaInfoLength, "SetZonesSensitivity");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, MetaInfoLength, "SetWorkFrequency");
-        public static (short deviceCode, short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, 0x0005, MetaInfoLength, "SetZonesWorkMode");
-        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, MetaInfoLength, "SetAlarmParams");
-        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, MetaInfoLength, "SetTime");
-        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, MetaInfoLength, "SetSerialNumber");
-        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, MetaInfoLength, "SetWorkingMode");
-        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, MetaInfoLength, "ClearPassageCount");
-        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, MetaInfoLength, "CallPassage");
-        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, MetaInfoLength, "CallAlarm");
-        
-        public static Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models = new Dictionary<string, (short ModelId, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
-            {
-                { PCV3300Name, (0x002A, new List <short>{ 11, 22, 33 }, PCV3300Name, new List<int> {11, 3}, 11 ) },
-                { PCZ3300MKName, (0x0020, new List<short>{ 11, 22, 33 }, PCZ3300MKName, new List<int> {11, 3}, 6 )},
-                { PCV900Name, (0x0028, new List<short>{ 3, 6, 9 }, PCV900Name, new List<int> {3, 3}, 6 )}, 
-                { PCVx900Name, (0x0032, new List<short>{ 3, 6, 9 }, PCVx900Name, new List<int> {3, 3}, 6 ) }, 
-                { PCV1800Name, (0x0029, new List<short>{ 6, 12, 18 }, PCV1800Name, new List<int> {6, 3}, 6 ) }, 
-                { PCVx1800Name, (0x0033, new List<short>{ 6, 12, 18 }, PCVx1800Name, new List<int> {6, 3}, 6 ) }, 
-                { MV6Name, (0x0064, new List <short>{ 6, 6, 6 }, MV6Name, new List<int> {6, 3}, 6 ) },                    // Монопанели передают режим ЗО = 2
-                { MVx6Name, (0x0065, new List <short>{ 6, 6, 6 }, MVx6Name, new List<int> {6, 3}, 6 ) },
-                { UnknownName, (0x00FE, new List <short>{ 6, 6, 6 }, UnknownName, new List<int> {6, 1}, 6 ) },
-            };
+        public static (short deviceCode, short code, int responseLenght, string name) SetNetworkParams = (0x0001, 0x0001, 0, "SetNetworkParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetBaseSensitivity = (0x0002, 0x0002, 0, "SetBaseSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesSensitivity = (0x0003, 0x0003, 0, "SetZonesSensitivity");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkFrequency = (0x0004, 0x0004, 0, "SetWorkFrequency");
+        public static (short deviceCode, short code, int responseLenght, string name) SetZonesWorkMode = (0x0005, 0x0005, 0, "SetZonesWorkMode");
+        public static (short deviceCode, short code, int responseLenght, string name) SetAlarmParams = (0x0006, 0x0006, 0, "SetAlarmParams");
+        public static (short deviceCode, short code, int responseLenght, string name) SetTime = (0x0007, 0x0007, 0, "SetTime");
+        public static (short deviceCode, short code, int responseLenght, string name) SetSerialNumber = (0x0008, 0x0008, 0, "SetSerialNumber");
+        public static (short deviceCode, short code, int responseLenght, string name) SetWorkProgramScene = (0x000A, 0x000A, 0, "SetWorkingMode");
+        public static (short deviceCode, short code, int responseLenght, string name) ClearPassageCount = (0x0009, 0x0009, 0, "ClearPassageCount");
+        public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, 0, "CallPassage");
+        public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, 0, "CallAlarm");
+
+        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>GridCellDefinitions, int RealCoilsCount)> Models
+        {
+            get;
+        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        {
+            { 0x002A, (PCV3300Name, new List<short> { 11, 22, 33 }, PCV3300Name, new List<int> { 11, 3 }, 11) },
+            { 0x0020, (PCZ3300MKName, new List<short> { 11, 22, 33 }, PCZ3300MKName, new List<int> { 11, 3 }, 6) },
+            { 0x0028, (PCV900Name, new List<short> { 3, 6, 9 }, PCV900Name, new List<int> { 3, 3 }, 6) },
+            { 0x0032, (PCVx900Name, new List<short> { 3, 6, 9 }, PCVx900Name, new List<int> { 3, 3 }, 6) },
+            { 0x0029, (PCV1800Name, new List<short> { 6, 12, 18 }, PCV1800Name, new List<int> { 6, 3 }, 6) },
+            { 0x0033, (PCVx1800Name, new List<short> { 6, 12, 18 }, PCVx1800Name, new List<int> { 6, 3 }, 6) },
+            { 0x0064, (MV6Name, new List<short> { 6, 6, 6 }, MV6Name, new List<int> { 6, 3 }, 6) },
+            { 0x0065, (MVx6Name, new List<short> { 6, 6, 6 }, MVx6Name, new List<int> { 6, 3 }, 6) },
+            { 0x00FE, (UnknownName, new List<short> { 6, 6, 6 }, UnknownName, new List<int> { 6, 1 }, 6) },
+        };
 
         public const short PortTCPDefault = 5000;
         public const short PortUDPDefault = 9998;
@@ -391,32 +395,6 @@ namespace IRAPROM.MyCore.Device.Matreshka
                 default: return "Unknown Matreshka";
             }
         }
-        
-        public static List<string> GetAllModelsNames()
-        {
-            return Models.Keys.ToList();
-        }
-
-        public override List<string> GetAllModels()
-        {
-            return Models.Keys.ToList();
-        }
-
-        public override int GetModelId(string name)                                 // Update MetalDetectorModelFromName
-        {
-            return name switch
-            {
-                PCZ3300MKName => Models[PCZ3300MKName].ModelId,
-                PCV900Name => Models[PCV900Name].ModelId,
-                PCVx900Name => Models[PCVx900Name].ModelId,
-                PCV1800Name => Models[PCV1800Name].ModelId,
-                PCVx1800Name => Models[PCVx1800Name].ModelId,
-                PCV3300Name => Models[PCV3300Name].ModelId,
-                MV6Name => Models[MV6Name].ModelId,
-                MVx6Name => Models[MVx6Name].ModelId,
-                _ => -1
-            };
-        }
 
         public override Task Find(string ip, IUDPSend sender)
         {
@@ -436,9 +414,6 @@ namespace IRAPROM.MyCore.Device.Matreshka
             throw new System.NotImplementedException(); // TODO sometime in future
         }
 
-        public override string GetModelName(int id)
-        {
-            return GetModelName((Model)id);
-        }
+        public override Dictionary<int, string> InfraModesList { get; } = new Dictionary<int, string>() { {0,"Выключено" }, {1,"На вход" }, {2,"На выход" }, {3,"Включено" } };
     }
 }
