@@ -259,14 +259,13 @@ namespace IRAPROM.MyCore.Model
 
         public static MetalDetectPacketInfo ParseXGOSTMatreshkaMessageUDP(byte[] arr, IPEndPoint ipEndPoint)
         {
-            var rec = new MetalDetectPacketInfo();
-
             try
             {
                 if (!CheckMatreshkaHeader(arr)) return null;
 
                 if (arr.Length == Device.Matreshka.XGOST.Constants.CommandResponseLength)
                 {
+                    var rec = new MetalDetectPacketInfo();
                     var deviceMetalDetector = DeviceMetalDetector.FamilyInfoVariants[2].ParseFindCommandResponse(arr, out var commandCode);
 
                     rec.MetDetector.DeviceMetalDetector = deviceMetalDetector;
@@ -282,11 +281,25 @@ namespace IRAPROM.MyCore.Model
                     rec.TCPPort = rec.MetDetector.PortTCP = deviceMetalDetector.PortTCP;
                     rec.command = (short)commandCode;
 
+                    Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP:" +
+                                      $"\n\t rec.Ip {rec.Ip} " +
+                                      $"\n\t rec.Mask {rec.Mask}" +
+                                      $"\n\t rec.Gateway {rec.Gateway}" +
+                                      $"\n\t rec.port {rec.port}" +
+                                      $"\n\t rec.Mac {rec.Mac}" +
+                                      $"\n\t rec.IdModel  {rec.IdModel}" +
+                                      $"\n\t rec.ProductModel {rec.ProductModel}" +
+                                      $"\n\t rec.UDPPort {rec.UDPPort}" +
+                                      $"\n\t rec.TCPPort {rec.TCPPort}" +
+                                      $"\n\t rec.command {rec.command}");
+
                     return rec;
                 }
 
                 if (arr.Length == Device.Matreshka.XGOST.Constants.AlarmResponseLength)
                 {
+                    var rec = new MetalDetectPacketInfo();
+
                     using (var ms = new MemoryStream(arr))
                     {
                         using (var br = new BinaryReader(ms))
@@ -339,7 +352,7 @@ namespace IRAPROM.MyCore.Model
                                               $"\n\tsensors {Convert.ToHexString(sensors)}" +
                                               $"\n\tmac {Convert.ToHexString(mac)}");
 
-                            if (metDetector != null)
+                            if (metDetector != null && metDetector.DeviceMetalDetector != null && metDetector.DeviceMetalDetector.WorkParams != null)
                             {
                                 metDetector.AlarmZoneMode = metDetector.DeviceMetalDetector.ZonesCount = metDetector.DeviceMetalDetector.WorkParams.ZonesSensorMode = alarmZoneMode;
                                 metDetector.InfraredPassCounterMode = metDetector.DeviceMetalDetector.WorkParams.InfraredPassCounterMode = infraredPassCounterMode;
@@ -377,7 +390,7 @@ namespace IRAPROM.MyCore.Model
                 Console.WriteLine($"ParseXGOSTMatreshkaMessageUDP: EX: {e.Message}");
             }
 
-            return rec;
+            return null;
         }
 
         public string dataTypeNameForXML

@@ -1,4 +1,5 @@
-﻿using IRAPROM.MyCore.Model.WP;
+﻿//using Ira.Prom.Video.Server.Proto;
+using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device
 {

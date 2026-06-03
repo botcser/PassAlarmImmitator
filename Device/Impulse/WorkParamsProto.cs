@@ -1,4 +1,5 @@
 ﻿using IRAPROM.MyCore.Model.MD;
+using IRAPROM.MyCore.Model.WP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using PassAlarmSimulator.Device;
-using IRAPROM.MyCore.Model.WP;
 
 namespace IRAPROM.MyCore.Device.Impulse
 {
@@ -118,24 +118,22 @@ namespace IRAPROM.MyCore.Device.Impulse
                     args[zoneSensitivityEnd + 1] = baseSensitivity[0];
                 }
             }
-
-            void SetNetworkParams()
-            {
-                var argv = IPAddress.Parse(workParams.IP).GetAddressBytes().ToList();
-
-                argv.AddRange(workParams.Mask.Split('.').Select(byte.Parse));
-                argv.AddRange(workParams.Gateway.Split('.').Select(byte.Parse));
-                argv.AddRange(Convert.FromHexString(workParams.MAC));
-                argv.AddRange(BitConverter.GetBytes((short)workParams.PortUDP).Reverse());
-                argv.AddRange(BitConverter.GetBytes((short)workParams.PortTCP).Reverse());
-
-                ExecuteSetCommandRaw(Constants.SetNetworkParams.code, argv.ToArray());
-            }
         }
 
         public void SetNetworkParams(WorkParams workParams)
         {
-            throw new NotImplementedException();
+            var argv = IPAddress.Parse(workParams.IP).GetAddressBytes().ToList();
+
+            argv.AddRange(workParams.Mask.Split('.').Select(byte.Parse));
+            argv.AddRange(workParams.Gateway.Split('.').Select(byte.Parse));
+            argv.AddRange(Convert.FromHexString(workParams.MAC));
+            argv.AddRange(BitConverter.GetBytes((short)workParams.PortUDP).Reverse());
+            argv.AddRange(BitConverter.GetBytes((short)workParams.PortTCP).Reverse());
+
+            ExecuteSetCommandRaw(Constants.SetNetworkParams.code, argv.ToArray());
+
+            NetworkProto.Disconnect();
+            NetworkProto.Ip = workParams.IP;
         }
 
         public void ClearPassageCount()

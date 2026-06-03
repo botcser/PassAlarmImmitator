@@ -1,5 +1,5 @@
-﻿using PassAlarmSimulator.Device;
-using IRAPROM.MyCore.Model.WP;
+﻿using IRAPROM.MyCore.Model.WP;
+using PassAlarmSimulator.Device;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -447,6 +447,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
             ExecuteSetCommandRaw(Constants.SetNetworkParams.code, args.ToArray());
 
+            NetworkProto.Disconnect();
             NetworkProto.Ip = workParams.IP;
         }
 

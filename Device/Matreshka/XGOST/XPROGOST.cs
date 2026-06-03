@@ -22,7 +22,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public override ushort ModelId { get; set; }
         public override string ModelName => Constants.GetModelName(Model);
         public override string ProductModelName { get; set; }
-        public Constants.Model Model => ModelId == 0 ? WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model) WorkParams.ModelId :(Constants.Model) ModelId;
+        public Constants.Model Model => ModelId == 0 ? (WorkParams == null ? Constants.Model.UnknownMatreshka : (Constants.Model) WorkParams.ModelId) : (Constants.Model) ModelId;
 
         public override List<short> AvailableZonesCount => WorkParams == null ? null : FamilyInfo.Models[ModelId].AvailableZonesCount;
         public override ushort PortTCP { get => _portTCP == 0 ? FamilyInfo.PortTCP : _portTCP; set {} }
@@ -39,11 +39,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             {
                 if (value?.MAC == null) return;
 
-#if OLDPCV
-                RegisterPassage(value);
-#else
                 ProcessAlarm(value);
-#endif
 
                 OnPropertyChanged();
             }
@@ -141,16 +137,16 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
             PortTCP = port;
         }
 #else
-        public XPROGOST(string ip, ushort portTCP, ushort hardwareAddress) : this(ip, portTCP, new Constants())
+        public XPROGOST(string ip, ushort portTCP, ushort hardwareAddress) : this(ip, portTCP, hardwareAddress, new Constants())
+        {
+        }
+
+        private XPROGOST(string ip, ushort portTCP, ushort hardwareAddress, Constants familyInfo) : base(ip, portTCP, new WorkParamsProto(new NetworkProtoXPROGOST(ip, portTCP), new DatagramProto(hardwareAddress), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
         {
             HardwareAddress = hardwareAddress;
         }
 
-        private XPROGOST(string ip, ushort portTCP, Constants familyInfo) : base(ip, portTCP, new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
-        {
-        }
-
-        private XPROGOST(Constants familyInfo) : base(new WorkParamsProto(new DatagramProto(0xFFFE), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
+        private XPROGOST(Constants familyInfo) : base(new WorkParamsProto(new DatagramProto(0xFFFF), Constants.GetCommands, Constants.SetCommands, familyInfo), familyInfo)
         {
         }
 #endif

@@ -27,16 +27,16 @@ namespace IRAPROM.MyCore.Device.Impulse
         public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0xAE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallPassage");
         public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0xAEE, 0xAE, DatagramMetaInfoLength + ChecksumLength, "CallAlarm");
 
-        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>GridCellDefinitions, int RealCoilsCount)> Models
+        public override Dictionary<ushort, MetalDetectorAttrs> Models
         {
             get;
-        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        } = new Dictionary<ushort, MetalDetectorAttrs>()
         {
-            { 0x0004, (PC600MKName, new List<short>{ 6 }, PC600MKName, new List<int> {6, 1}, 6) },
-            { 0x0002, (PC1800MKName, new List<short>{ 18, 12, 6 }, PC1800MKName, new List < int > { 6, 3 }, 6) },
-            { 0x0001, (PC4400MKName, new List<short>{ 33, 22, 11 }, PC4400MKName, new List < int > { 11, 3 }, 11) },
-            { 0x0006, (PC3300MName, new List<short>{ 33, 22, 11 }, PC3300MName, new List < int > { 11, 3 }, 11) },
-            { 0x00ff, (UnknownName, new List <short>{ 6 }, UnknownName, new List < int > { 6, 1 }, 6) },
+            { 0x0004, new MetalDetectorAttrs(0x0004, PC600MKName, new List<short>{ 6 }, new List<int> {6, 1}, 6) },
+            { 0x0002, new MetalDetectorAttrs(0x0002, PC1800MKName, new List<short>{ 18, 12, 6 }, new List < int > { 6, 3 }, 6) },
+            { 0x0001, new MetalDetectorAttrs(0x0001, PC4400MKName, new List<short>{ 33, 22, 11 }, new List < int > { 11, 3 }, 11) },
+            { 0x0006, new MetalDetectorAttrs(0x0006, PC6300MKName, new List<short>{ 33, 22, 11 }, new List < int > { 11, 3 }, 11) },
+            { 0x00ff, new MetalDetectorAttrs(0x00ff, UnknownName, new List <short>{ 6 }, new List < int > { 6, 1 }, 6) },
         };
 
         public static List<(short, short, int, string)> GetCommands = new List<(short, short, int, string)>()
@@ -138,6 +138,7 @@ namespace IRAPROM.MyCore.Device.Impulse
         private const string PC600MKName = "PC 600MK (6)";
         private const string PC1800MKName = "PC 1800MK (18/12/6)";
         private const string PC4400MKName = "PC 4400MK (33/22/11)";
+        private const string PC6300MKName = "PC 6300MK (63/42/21)";
         private const string PC3300MName = "PC-3300M";
         private const string UnknownName = "UnknownImpulse";
 

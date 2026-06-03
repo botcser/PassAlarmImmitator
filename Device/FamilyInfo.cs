@@ -17,7 +17,7 @@ namespace IRAPROM.MyCore.Device
         public abstract DeviceMetalDetector ParseFindCommandResponse(byte[] bytes, out ushort commandCode);
         public abstract Dictionary<int, string> InfraModesList { get; }
 
-        public abstract Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>GridCellDefinitions, int RealCoilsCount)> Models { get; }
+        public abstract Dictionary<ushort, MetalDetectorAttrs> Models { get; }
 
         public List<string> GetAllModelNames()
         {

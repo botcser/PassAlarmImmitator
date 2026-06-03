@@ -23,20 +23,19 @@ namespace PassAlarmSimulator.Validator
         private CancellationTokenSource _cancellationTokenSource;
         private readonly string _ip;
         private readonly bool _alarm, _clean;
+        private short _portUdpAdditional;
+        private short _portUdpListen;
 
         private Stopwatch _watchdog = new Stopwatch();
 
         public Validator(string ip, int port = 0, int listenPort = 0, bool alarm = false, bool clean = false)
         {
             _ip = ip;
+            _portUdpAdditional = (short)port;
+            _portUdpListen = (short)listenPort;
             _alarm = alarm;
             _clean = clean;
             _cancellationTokenSource = new CancellationTokenSource();
-
-            if (port != 0)
-            {
-                DeviceMetalDetector.FamilyInfoVariants.ForEach(i => i.PortUDPAdditional = (short)port);
-            }
         }
 
         public async Task Start()
@@ -52,6 +51,8 @@ namespace PassAlarmSimulator.Validator
                     FindDevices(_ip);
 
                     FixIpCollisions();
+
+                    FlushAllArp(14);
 
                     InitAllFoundDevices();
 
@@ -118,7 +119,7 @@ namespace PassAlarmSimulator.Validator
                     randomIPs.Remove(ip);
                     
                     Console.WriteLine($"\nChanging IP from {i.IP} to {ip}");
-                    i.SetIp(ip);
+                    i.SetIp(ip, i.Mask);
                 });
 
                 Console.WriteLine($"Waiting for device setup IP {19000}ms");
@@ -133,7 +134,7 @@ namespace PassAlarmSimulator.Validator
 
                 Console.WriteLine($"\nChanging IP from {device.IP} to {ip} because this IP is reserved for test");
 
-                device.SetIp(ip);
+                device.SetIp(ip, device.Mask);
 
                 Console.WriteLine($"Waiting for device setup IP {19000}ms");
                 Thread.Sleep(19000);
@@ -145,6 +146,11 @@ namespace PassAlarmSimulator.Validator
             new UdpListenerServer(IRAPROM.MyCore.Device.Impulse.Constants.PortUDPListenDefault, null)?.StartListening();
             new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.Constants.PortUDPListenDefault, null)?.StartListening();
             new UdpListenerServer(IRAPROM.MyCore.Device.Matreshka.XGOST.Constants.PortUDPListenDefault, null)?.StartListening();
+
+            if (_portUdpListen != 0)
+            {
+                new UdpListenerServer(_portUdpListen, null)?.StartListening();      // TODO
+            }
 
             if (DeviceMetalDetector.FamilyInfoVariants[0].PortUDPListenAdditional != 0)
             {
@@ -201,7 +207,7 @@ namespace PassAlarmSimulator.Validator
 
         private void PrintInfo(DeviceMetalDetector device)
         {
-            Console.WriteLine($"\tSeries: {device.SeriesName} \tModel: {device.ModelName} \tIP: {device.IP} \tMAC: {device.MAC}");
+            Console.WriteLine($"\tSeries: {device.SeriesName} \tModel: {device.ModelName}({device.ModelId:X}) \tIP: {device.IP} \tMAC: {device.MAC}");
         }
 
         private void WaitForSeconds(int seconds)
@@ -247,7 +253,7 @@ namespace PassAlarmSimulator.Validator
             return FoundDevices.All(device =>
             {
 #if DEBUG
-                Console.WriteLine($"___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}... ");
+                Console.WriteLine($"\t\t___PreStaticTest: GetWorkParams {device.IP}:{device.MAC}:{device.ModelId:X}... ");
 #endif
                 var deviceType = device.FamilyInfo.GetType();
 
@@ -261,7 +267,7 @@ namespace PassAlarmSimulator.Validator
                     }
                     else
                     {
-                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.DeviceMetalDetector.FamilyInfoVariants[1].Models);
+                        device.ModelId = (ushort)AskModelId(IRAPROM.MyCore.Device.DeviceMetalDetector.FamilyInfoVariants[0].Models);
                     }
                 }
 
@@ -279,7 +285,7 @@ namespace PassAlarmSimulator.Validator
             });
         }
 
-        private ushort AskModelId(Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> models)
+        private ushort AskModelId(Dictionary<ushort, MetalDetectorAttrs> models)
         {
             var index = 0;
             var indexes = Enumerable.Range(0, models.Count).ToArray();
@@ -304,7 +310,6 @@ namespace PassAlarmSimulator.Validator
             Console.WriteLine($"\n____________Starting Dynamic Tests...");
 
             var testTasks = FoundDevices.Select(x => x.DynamicTest(20000));
-            //var testTasks = FoundDevices.FirstOrDefault()!.DynamicTest(20000);
 
             var results = await Task.WhenAll(testTasks);
 
@@ -418,37 +423,16 @@ namespace PassAlarmSimulator.Validator
             
             var success = FoundDevices.All(device =>
             {
-                FlushAllArp(15);
+                FlushAllArp(14);
 
                 return device.StaticTest();
             });
-            //var success = FoundDevices.FirstOrDefault()!.StaticTest();
 
             _watchdog.Stop();
-
-            //Console.WriteLine("Have all device's pass counters been reset? (press 'y' if yes)");
-
-            //if (Console.ReadLine() != "y")
-            //{
-            //    success = false;
-            //}
 
             Console.WriteLine($"{(success ? "...Static Tests OK." : "...Static Tests FAIL!")} {_watchdog.Elapsed.TotalSeconds}s");
 
             return success;
-
-
-            void FlushAllArp(int index)
-            {
-                Console.WriteLine($"Flushing ARP cache {index}");
-
-                var result = FlushIpNetTable(index);
-
-                if (result != 0)
-                {
-                    Console.WriteLine($"FlushAllArp: Failed with error code: {result}");
-                }
-            }
         }
 
         public static IEnumerable<int> GenerateUniqueRandomNumbers(int count, int minValue, int maxValue)
@@ -464,5 +448,16 @@ namespace PassAlarmSimulator.Validator
             return uniqueNumbers;
         }
 
+        private void FlushAllArp(int index = 0)
+        {
+            Console.WriteLine($"Flushing ARP cache {index}");
+
+            var result = FlushIpNetTable(index);
+
+            if (result != 0)
+            {
+                Console.WriteLine($"FlushAllArp: Failed with error code: {result}");
+            }
+        }
     }
 }

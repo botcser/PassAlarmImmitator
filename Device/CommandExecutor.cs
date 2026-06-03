@@ -14,6 +14,7 @@ namespace IRAPROM.MyCore.Device
     public class CommandExecutor
     {
         public static bool IsBusy;
+        [JsonIgnore]
         public readonly FamilyInfo FamilyInfo;
 
         private static readonly object Lock = new object();

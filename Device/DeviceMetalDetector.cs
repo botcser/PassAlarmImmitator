@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
-using IRAPROM.MyCore.Model;
+﻿using IRAPROM.MyCore.Model;
+using IRAPROM.MyCore.Model.WP;
 using Newtonsoft.Json;
 using PassAlarmSimulator.Device;
-using IRAPROM.MyCore.Model.WP;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace IRAPROM.MyCore.Device
 {
-    public abstract class DeviceMetalDetector: CardItem, IEquatable<DeviceMetalDetector>
+    public abstract class DeviceMetalDetector: CardItem, IEquatable<DeviceMetalDetector>, INotifyPropertyChanged
     {
         [JsonIgnore]
         public static List<FamilyInfo> FamilyInfoVariants = new List<FamilyInfo> { new Matreshka.Constants(), new Device.Impulse.Constants(), new IRAPROM.MyCore.Device.Matreshka.XGOST.Constants() };
@@ -24,12 +25,12 @@ namespace IRAPROM.MyCore.Device
                 DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector, DefaultDeviceMetalDetector,
             };
 
-        public Guid UID { get; set; }
-        public string Name { get => _name; set { _name = value; TitleName = value; } }
+        public string Guid { get; set; } = System.Guid.NewGuid().ToString();
+        public string Name { get => _name; set { _name = value; TitleName = value; OnPropertyChanged(); } }
 
         public WorkParams WorkParams { get; set; }
 
-        [JsonProperty]
+        [JsonIgnore]
         public readonly FamilyInfo FamilyInfo;
 
         public virtual string IP { get => _ip; set { _ip = value; if (WorkParams != null) WorkParams.IP = value; } }
@@ -77,19 +78,16 @@ namespace IRAPROM.MyCore.Device
 
         protected DeviceMetalDetector()
         {
-            UID = Guid.NewGuid();
         }
 
         protected DeviceMetalDetector(IWorkParamsProto workParamsProto, FamilyInfo familyInfo)
         {
-            UID = Guid.NewGuid();
             WorkParamsProto = workParamsProto;
             FamilyInfo = familyInfo;
         }
 
         protected DeviceMetalDetector(string ip, ushort portTCP, IWorkParamsProto workParamsProto, FamilyInfo familyInfo)
         {
-            UID = Guid.NewGuid();
             WorkParamsProto = workParamsProto;
             FamilyInfo = familyInfo;
             _ip = ip;
@@ -98,23 +96,16 @@ namespace IRAPROM.MyCore.Device
 
         public virtual WorkParams GetWorkParams()
         {
-            var bufModelId = WorkParams?.ModelId ?? 0;
-
-            if (bufModelId == 0xfe && ModelId != 0)
-            {
-                bufModelId = (byte)ModelId;
-            }
-
             WorkParams = WorkParamsProto.GetWorkParams();
 
             if (WorkParams != null)
             {
-                if (WorkParams.ModelId == 0)
+                if (WorkParams.ModelId != 0)        // TODO проверить на импульсах
                 {
-                    WorkParams.ModelId = bufModelId;
+                    ModelId = WorkParams.ModelId;
                 }
 
-                ModelId = WorkParams.ModelId;
+                WorkParams.ModelId = (byte)ModelId;
                 WorkParams.IP ??= _ip;
                 WorkParams.Mask ??= _mask;
                 WorkParams.Gateway ??= _gateway;
@@ -130,7 +121,7 @@ namespace IRAPROM.MyCore.Device
             }
 
 #if DEBUG
-            Console.WriteLine($@"GetWorkParams: complete {_ip}:{MAC}:{ModelName}");
+            Console.WriteLine($"GetWorkParams: complete {_ip} : {MAC} : {ModelName} : {WorkParams?.FirmwareVersion}");
 #endif
             return WorkParams;
         }
@@ -159,8 +150,7 @@ namespace IRAPROM.MyCore.Device
         {
             Console.WriteLine($@"
 
-____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}
-");
+____________Starting Static Tests ModelName={ModelName}:{ModelId:X}:{WorkParams?.ModelId:X} SerialNumber={WorkParams.SerialNumber} FirmwareVersion={WorkParams.FirmwareVersion}");
 
             var result = ((ITestsProto)WorkParamsProto).StaticTest(WorkParams);
 
@@ -276,25 +266,36 @@ ____________Starting Static Tests ModelName={ModelName} SerialNumber={WorkParams
             return (DeviceMetalDetector)MemberwiseClone();
         }
 
-        public virtual void SetIp(string ip)
+        public virtual void SetIp(string ip, string mask)
         {
-            WorkParams = new WorkParams
+            var tempWorkParams = new WorkParams
             {
                 IP = IP = ip,
                 PortTCP = PortTCP,
                 PortUDP = PortUDP,
-                Mask = Mask,
-                Gateway = Gateway
+                Mask = mask,
+                Gateway = Gateway,
+                MAC = MAC
             };
 
-            WorkParamsProto.SetNetworkParams(WorkParams);
-
-            WorkParams = null;
+            try
+            {
+                WorkParamsProto.SetNetworkParams(tempWorkParams);
+                WorkParams.IP = ip;
+                WorkParams.Mask = mask;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public bool Equals(DeviceMetalDetector other)
         {
-            return other != null && MAC == other.MAC && UID == other.UID && IP == other.IP && ZonesCount == other.ZonesCount && ModelName == other.ModelName && WorkParams.Equals(other.WorkParams);
+            return other != null && MAC == other.MAC && Guid == other.Guid && IP == other.IP && ZonesCount == other.ZonesCount && ModelName == other.ModelName && WorkParams.Equals(other.WorkParams);
         }
+
+        public new event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

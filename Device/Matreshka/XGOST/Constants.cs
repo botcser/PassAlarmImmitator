@@ -67,23 +67,23 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         public static (short deviceCode, short code, int responseLenght, string name) SimulatePass = (0x42, 0x42, ResponseMetaInfoLength, "SimulatePass");
         public static (short deviceCode, short code, int responseLenght, string name) RebootDevice = (0x43, 0x43, ResponseMetaInfoLength, "RebootDevice");
 
-        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int> GridCellDefinitions, int RealCoilsCount)> Models
+        public override Dictionary<ushort, MetalDetectorAttrs> Models
         {
             get;
-        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        } = new Dictionary<ushort, MetalDetectorAttrs>()
         {
-                { 0x006E, (PCX600PROName, new List <short>{ 6 }, PCX600PROName, new List<int> {6, 1}, 6 ) },
-                { 0x006F, (PCX1100PROName, new List <short>{ 11 }, PCX1100PROName, new List<int> {11, 1}, 11 ) },
-                { 0x0028, (PCGOST900Name, new List <short>{ 3, 6, 9 }, PCGOST900Name, new List<int> {3, 3}, 6 ) },
-                { 0x0029, (PCGOST1800Name, new List <short>{ 6, 12, 18 }, PCGOST1800Name, new List<int> {6, 3}, 6 ) },
-                { 0x003E, (PCGOST3300Name, new List <short>{ 11, 22, 33 }, PCGOST3300Name, new List<int> {11, 3}, 11 ) },
-                { 0x0040, (PCGOST6300Name, new List <short>{ 21, 42, 63 }, PCGOST6300Name, new List<int> {33, 3}, 11 ) },
-                { 0x0032, (PCGOSTx900Name, new List <short>{ 3, 6, 9 }, PCGOSTx900Name, new List<int> {3, 3}, 6 ) },
-                { 0x0033, (PCGOSTx1800Name, new List <short>{ 6, 12, 18 }, PCGOSTx1800Name, new List<int> {6, 3}, 6 ) },
-                { 0x0048, (PCGOSTx3300Name, new List <short>{ 11, 22, 33 }, PCGOSTx3300Name, new List<int> {11, 3}, 11 ) },
-                { 0x004A, (PCGOSTx6300Name, new List <short>{ 21, 42, 63 }, PCGOSTx6300Name, new List<int> {33, 3}, 11 ) },
-                { 0x0064, (MGOST6Name, new List <short>{ 6 }, MGOST6Name, new List<int> {3, 1}, 6 ) },
-                { 0x00FF, (UnknownGOSTName, new List <short>{ 6 }, MGOST6Name, new List<int> {6, 3}, 6 ) },
+                { 0x006E, new MetalDetectorAttrs(0x006E, PCX600PROName, new List <short>{ 6 }, new List<int> {6, 1}, 6 ) },
+                { 0x006F, new MetalDetectorAttrs(0x006F, PCX1100PROName, new List < short > { 11 }, new List < int > { 11, 1 }, 11) },
+                { 0x0028, new MetalDetectorAttrs(0x0028, PCGOST900Name, new List < short > { 3, 6, 9 }, new List < int > { 3, 3 }, 6) },
+                { 0x0029, new MetalDetectorAttrs(0x0029, PCGOST1800Name, new List < short > { 6, 12, 18 }, new List < int > { 6, 3 }, 6) },
+                { 0x003E, new MetalDetectorAttrs(0x003E, PCGOST3300Name, new List < short > { 11, 22, 33 }, new List < int > { 11, 3 }, 11) },
+                { 0x0040, new MetalDetectorAttrs(0x0040, PCGOST6300Name, new List < short > { 21, 42, 63 }, new List < int > { 33, 3 }, 11) },
+                { 0x0032, new MetalDetectorAttrs(0x0032, PCGOSTx900Name, new List < short > { 3, 6, 9 }, new List < int > { 3, 3 }, 6) },
+                { 0x0033, new MetalDetectorAttrs(0x0033, PCGOSTx1800Name, new List < short > { 6, 12, 18 }, new List < int > { 6, 3 }, 6) },
+                { 0x0048, new MetalDetectorAttrs(0x0048, PCGOSTx3300Name, new List < short > { 11, 22, 33 }, new List < int > { 11, 3 }, 11) },
+                { 0x004A, new MetalDetectorAttrs(0x004A, PCGOSTx6300Name, new List < short > { 21, 42, 63 }, new List < int > { 33, 3 }, 11) },
+                { 0x0064, new MetalDetectorAttrs(0x0064, MGOST6Name, new List < short > { 6 }, new List < int > { 3, 1 }, 6) },
+                { 0x00FF, new MetalDetectorAttrs(0x00FF, UnknownGOSTName, new List < short > { 6 }, new List < int > { 6, 3 }, 6) },
         };
 
         public const short PortTCPDefault = 5000;

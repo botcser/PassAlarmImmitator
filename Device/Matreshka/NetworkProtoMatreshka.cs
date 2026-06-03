@@ -92,7 +92,7 @@ namespace IRAPROM.MyCore.Device.Matreshka
 
         public void Disconnect()
         {
-            var socketHandle = Socket.Client.Handle;
+            var socketHandle = Socket.Client?.Handle;
 
             Socket.Close();
 #if DEBUGG

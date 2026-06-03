@@ -44,20 +44,20 @@ namespace IRAPROM.MyCore.Device.Matreshka
         public static (short deviceCode, short code, int responseLenght, string name) CallPassage = (0x41, 0x41, 0, "CallPassage");
         public static (short deviceCode, short code, int responseLenght, string name) CallAlarm = (0x42, 0x42, 0, "CallAlarm");
 
-        public override Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>GridCellDefinitions, int RealCoilsCount)> Models
+        public override Dictionary<ushort, MetalDetectorAttrs> Models
         {
             get;
-        } = new Dictionary<ushort, (string ModelName, List<short> AvailableZonesCount, string Name, List<int>, int RealCoilsCount)>()
+        } = new Dictionary<ushort, MetalDetectorAttrs>()
         {
-            { 0x002A, (PCV3300Name, new List<short> { 11, 22, 33 }, PCV3300Name, new List<int> { 11, 3 }, 11) },
-            { 0x0020, (PCZ3300MKName, new List<short> { 11, 22, 33 }, PCZ3300MKName, new List<int> { 11, 3 }, 6) },
-            { 0x0028, (PCV900Name, new List<short> { 3, 6, 9 }, PCV900Name, new List<int> { 3, 3 }, 6) },
-            { 0x0032, (PCVx900Name, new List<short> { 3, 6, 9 }, PCVx900Name, new List<int> { 3, 3 }, 6) },
-            { 0x0029, (PCV1800Name, new List<short> { 6, 12, 18 }, PCV1800Name, new List<int> { 6, 3 }, 6) },
-            { 0x0033, (PCVx1800Name, new List<short> { 6, 12, 18 }, PCVx1800Name, new List<int> { 6, 3 }, 6) },
-            { 0x0064, (MV6Name, new List<short> { 6, 6, 6 }, MV6Name, new List<int> { 6, 3 }, 6) },
-            { 0x0065, (MVx6Name, new List<short> { 6, 6, 6 }, MVx6Name, new List<int> { 6, 3 }, 6) },
-            { 0x00FE, (UnknownName, new List<short> { 6, 6, 6 }, UnknownName, new List<int> { 6, 1 }, 6) },
+            { 0x002A, new MetalDetectorAttrs(0x002A, PCV3300Name, new List < short > { 11, 22, 33 }, new List < int > { 11, 3 }, 11) },
+            { 0x0020, new MetalDetectorAttrs(0x0020, PCZ3300MKName, new List < short > { 11, 22, 33 }, new List < int > { 11, 3 }, 6) },
+            { 0x0028, new MetalDetectorAttrs(0x0028, PCV900Name, new List < short > { 3, 6, 9 }, new List < int > { 3, 3 }, 6) },
+            { 0x0032, new MetalDetectorAttrs(0x0032, PCVx900Name, new List < short > { 3, 6, 9 }, new List < int > { 3, 3 }, 6) },
+            { 0x0029, new MetalDetectorAttrs(0x0029, PCV1800Name, new List < short > { 6, 12, 18 }, new List < int > { 6, 3 }, 6) },
+            { 0x0033, new MetalDetectorAttrs(0x0033, PCVx1800Name, new List < short > { 6, 12, 18 }, new List < int > { 6, 3 }, 6) },
+            { 0x0064, new MetalDetectorAttrs(0x0064, MV6Name, new List < short > { 6, 6, 6 }, new List < int > { 6, 3 }, 6) },
+            { 0x0065, new MetalDetectorAttrs(0x0065, MVx6Name, new List < short > { 6, 6, 6 }, new List < int > { 6, 3 }, 6) },
+            { 0x00FE, new MetalDetectorAttrs(0x00FE, UnknownName, new List < short > { 6, 6, 6 }, new List < int > { 6, 1 }, 6) },
         };
 
         public const short PortTCPDefault = 5000;

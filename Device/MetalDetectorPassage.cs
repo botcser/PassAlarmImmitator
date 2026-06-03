@@ -20,12 +20,7 @@ namespace IRAPROM.MyCore.Device
         public string MAC { get; set; }
         public string LastAlarmTime { get; set; }
 
-        public string LastPassageTime
-        {
-            get => Time.ToString("dd.MM.yy HH:mm:ss");
-            //set { _lastPassageTime = value; OnPropertyChanged(); }
-            set { OnPropertyChanged(); }
-        }
+        public string LastPassageTime { get => Time.ToString("dd.MM.yy HH:mm:ss"); set => OnPropertyChanged(); }
         public bool IsAlarm { get => _isAlarm; set { _isAlarm = value; OnPropertyChanged(); } }
         public DateTime Time { get; set; }
 

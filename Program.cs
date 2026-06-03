@@ -20,7 +20,8 @@ public class App
 
         IStart task = null;
 
-        var programNumber = Console.ReadLine();                                                                       // <== User Input
+        //var programNumber = Console.ReadLine();                                                                       // <== User Input
+        var programNumber = "2";
 
         switch (programNumber)
         {
@@ -33,18 +34,19 @@ public class App
                 Console.WriteLine($"Testing in {ip} network..."); 
                 
                 Console.WriteLine($"Choose the program, press number:\n\t 1 = Auto Tests \n\t 2 = Passage validate \n");
-                programNumber = Console.ReadLine();                                                                   // <== User Input
+                //programNumber = Console.ReadLine();                                                                   // <== User Input
+                programNumber = "1";
 
                 switch (programNumber)
                 {
                     case "1":
-                        //Console.WriteLine($"Enter lower computer UDP port\n");
-                        //int.TryParse(Console.ReadLine(), out var port);
+                        Console.WriteLine($"Enter lower computer UDP port\n");
+                        int.TryParse(Console.ReadLine(), out var port);
 
-                        //Console.WriteLine($"Enter higher computer UDP port to listen\n");
-                        //int.TryParse(Console.ReadLine(), out var portListen); \n\t 3 = PC 
+                        Console.WriteLine($"Enter higher computer UDP port to listen\n");
+                        int.TryParse(Console.ReadLine(), out var portListen);
 
-                        task = new Validator(ip, 0, 0);
+                        task = new Validator(ip, port, portListen);
                         break;
                     case "2":
                         Console.WriteLine($"Choose the program, press number:\n\t 1 = Clean only \n\t 2 = Alarm only \n\t 3 = Clean_Alarm both\n");

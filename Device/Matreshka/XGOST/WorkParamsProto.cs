@@ -35,7 +35,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
         {
             var workParams = new WorkParams
             {
-                ModelId = (byte)Constants.Model.PCGOSTx900
+                ModelId = (byte)Constants.Model.UnknownMatreshka
             };
 
             try
@@ -513,6 +513,7 @@ namespace IRAPROM.MyCore.Device.Matreshka.XGOST
 #if DEBUG
             Console.WriteLine($"\nWorkProgramSceneTest: testing \"Set Working Mode\"...");
 #endif
+
             var zonesSensorModeTest = (byte)FamilyInfo.Models.FirstOrDefault(i => i.Key == workParams.ModelId).Value.AvailableZonesCount.Random();
 
             workParams.ZonesSensorMode = zonesSensorModeTest;
