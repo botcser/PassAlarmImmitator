@@ -99,7 +99,7 @@ namespace PassAlarmSimulator.Device.Simulator
             }
             else
             {
-                if (code == 0x41 || code == 0x42 || code == 0xAE)                    //TODO
+                if (code == 0x41 || code == 0x42 || code == 0xAE || code == 0xAF)                    //TODO
                 {
                     await UDPSend(bytesCommand);
                 }
@@ -126,7 +126,7 @@ namespace PassAlarmSimulator.Device.Simulator
 
                     using (var stream = client.GetStream())
                     {
-                        while (client != null && client.Client != null && client.Connected)
+                        if (client != null && client.Client != null && client.Connected)
                         {
                             var requestLen = await stream.ReadAsync(buffer, 0, buffer.Length, _cancellationTokenSource.Token);
 
@@ -155,8 +155,9 @@ namespace PassAlarmSimulator.Device.Simulator
                                         await SendAnswer(request, 0x42);
                                     }
                                     break;
-                            case 0xae:
-                                    await SendAnswer(request, 0xae);
+                                case 0xae:
+                                case 0xaf:
+                                    await SendAnswer(request, code);
                                     break;
 
                                 default:
