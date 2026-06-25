@@ -281,8 +281,12 @@ ____________Starting Static Tests ModelName={ModelName}:{ModelId:X}:{WorkParams?
             try
             {
                 WorkParamsProto.SetNetworkParams(tempWorkParams);
-                WorkParams.IP = ip;
-                WorkParams.Mask = mask;
+
+                if (WorkParams != null)
+                {
+                    WorkParams.IP = ip;
+                    WorkParams.Mask = mask;
+                }
             }
             catch (Exception e)
             {

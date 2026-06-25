@@ -182,9 +182,16 @@ namespace PassAlarmSimulator.Device.Simulator
         {
             _udpInputClient.Client.SendTimeout = TimeSpan.FromSeconds(500).Milliseconds;
 
+            var ip = IPAddress.Parse("255.255.255.255");
+
+            Console.WriteLine($"UDPSend {ip}:{_outputUdpPort}");
+
             return Task.Run(() =>
             {
-                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("255.255.255.255"), _outputUdpPort));
+                _udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(ip, _outputUdpPort));
+                //_udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("192.168.0.255"), _outputUdpPort));
+                //_udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("192.168.1.255"), _outputUdpPort));
+                //_udpInputClient.SendAsync(bytes, bytes.Length, new IPEndPoint(IPAddress.Parse("192.168.16.255"), _outputUdpPort));
             });
         }
 

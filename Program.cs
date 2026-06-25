@@ -20,8 +20,8 @@ public class App
 
         IStart task = null;
 
-        //var programNumber = Console.ReadLine();                                                                       // <== User Input
-        var programNumber = "2";
+        var programNumber = Console.ReadLine();                                                                       // <== User Input
+        //var programNumber = "2";
 
         switch (programNumber)
         {
@@ -29,13 +29,13 @@ public class App
                 task = new PassAlarmSimulator.PassAlarmSimulator();
                 break;
             case "2":
-                var ip = "192.168.1.255";                                                                       // <== User Input
-                //var ip = InitIP();
+                //var ip = "192.168.1.255";                                                                       // <== User Input
+                var ip = InitIP();
                 Console.WriteLine($"Testing in {ip} network..."); 
                 
                 Console.WriteLine($"Choose the program, press number:\n\t 1 = Auto Tests \n\t 2 = Passage validate \n");
-                //programNumber = Console.ReadLine();                                                                   // <== User Input
-                programNumber = "1";
+                programNumber = Console.ReadLine();                                                                   // <== User Input
+                //programNumber = "1";
 
                 switch (programNumber)
                 {
